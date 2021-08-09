@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">FamilyFinance</string>
+    <string name="text_empty">Здесь пока ничего нет</string>
+    <string name="text_clear_empty">Очистить купленные</string>
+    <string name="text_edit">Редактировать</string>
+    <string name="text_clear_add_cost">Добавить расход</string>
+    <string name="text_share_list">Поделится списком</string>
+    <string name="text_clear_all">Очистить все</string>
+    <string name="text_remove">Удалить</string>
+    <string name="text_error">Ошибка</string>
+    <string name="text_new_list">Создать</string>
+    <string name="text_create_list_item">Название спиcка</string>
+    <string name="text_error_create_list">Ошибка при создании списка</string>
+    <string name="text_select_icon">Иконка</string>
+    <string name="text_list_added">Новый список создан</string>
+    <string name="select_icon">Выбрать иконку</string>
+    <string name="text_change_icon">Изменить иконку</string>
+    <string name="text_empty_statistic_category">Не учитывать</string>
+    <string name="cteate_category">Создать категорию</string>
+    <string name="text_create">Ок</string>
+    <string name="cost_statistic_title">Учитывать в расходах</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/ic_paper_plane.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/font/roboto.xml" value="0.2604166666666667" />
+        <entry key="app/src/main/res/layout/activity_item.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/activity_list.xml" value="0.2893006496699594" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3890625" />
+        <entry key="app/src/main/res/layout/fragment_create_list_item.xml" value="0.392528992778314" />
+        <entry key="app/src/main/res/layout/fragment_navigation_view_main.xml" value="0.23020833333333332" />
+        <entry key="app/src/main/res/layout/fragment_select_icon.xml" value="0.23020833333333332" />
+        <entry key="app/src/main/res/layout/list_element.xml" value="0.542343883661249" />
+        <entry key="app/src/main/res/layout/rv_icon_element.xml" value="0.23020833333333332" />
+        <entry key="app/src/main/res/layout/rv_item.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/rv_list_element.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/toolbar_main.xml" value="0.728" />
+        <entry key="app/src/main/res/menu/context_menu_list_item.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/menu/menu_list_activity.xml" value="0.23020833333333332" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
