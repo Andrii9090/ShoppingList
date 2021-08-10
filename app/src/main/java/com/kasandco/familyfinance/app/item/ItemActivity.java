@@ -1,10 +1,12 @@
 package com.kasandco.familyfinance.app.item;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
@@ -46,5 +48,10 @@ public class ItemActivity extends AppCompatActivity implements ItemContract {
     @Override
     public void hideLoading() {
 
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        return super.onContextItemSelected(item);
     }
 }

@@ -18,5 +18,6 @@
     <string name="text_empty_statistic_category">Не учитывать</string>
     <string name="cteate_category">Создать категорию</string>
     <string name="text_create">Ок</string>
-    <string name="cost_statistic_title">Учитывать в расходах</string>
+    <string name="cost_statistic_title">Учитывать в расходах?</string>
+    <string name="text_add_photo">Добавить фото</string>
 </resources>

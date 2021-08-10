@@ -77,20 +77,20 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/create_list_item_btn_root">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/cost_statistic_title" />
+                <com.google.android.material.textfield.TextInputLayout
+                    style = "@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                    android:layout_width = "match_parent"
+                    android:layout_height = "wrap_content"
+                    android:hint = "@string/cost_statistic_title"
+                    >
 
-                <Spinner
-                    android:id="@+id/create_list_item_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
-                    android:background="@color/white"
-                    android:padding="15dp" />
+                    <AutoCompleteTextView
+                        android:id = "@+id/tv_with_spinner_behavior"
+                        android:layout_width = "match_parent"
+                        android:layout_height = "wrap_content"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

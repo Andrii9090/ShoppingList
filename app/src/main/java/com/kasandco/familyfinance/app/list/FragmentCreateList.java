@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.utils.ImageBackgroundUtil;
 
@@ -34,7 +37,7 @@ public class FragmentCreateList extends Fragment implements AdapterView.OnItemSe
     ImageButton btnCreate;
     Button btnSelectIcon;
     EditText text;
-    Spinner spinnerCostCategory;
+    AutoCompleteTextView spinnerCostCategory;
     boolean isEdit;
     int costCategoryAction;
     String iconPath;
@@ -59,8 +62,7 @@ public class FragmentCreateList extends Fragment implements AdapterView.OnItemSe
         btnCreate = view.findViewById(R.id.create_list_item_enter);
         iconView = view.findViewById(R.id.create_list_item_icon);
         btnSelectIcon = view.findViewById(R.id.create_list_item_select_icon);
-        spinnerCostCategory = view.findViewById(R.id.create_list_item_spinner);
-        spinnerCostCategory.setOnItemSelectedListener(this);
+        spinnerCostCategory = view.findViewById(R.id.tv_with_spinner_behavior);
 
         List<String> category = new ArrayList<>();
 
@@ -69,9 +71,10 @@ public class FragmentCreateList extends Fragment implements AdapterView.OnItemSe
         category.add("Продукты");
         category.add("Для авто");
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, category);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_dropdown_item_1line, category);
 
         spinnerCostCategory.setAdapter(arrayAdapter);
+        //@TODO Реализовать категории расходов в этот адаптер
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override

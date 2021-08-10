@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class ItemPresenter extends BasePresenter<ItemActivity> {
     private List<ItemModel>  itemsActual;
     @Inject
-    private ItemDao itemDao;
+    public ItemDao itemDao;
 
     @Inject
     public ItemPresenter(){
