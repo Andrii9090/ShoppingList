@@ -9,6 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.kasandco.familyfinance.app.icon.IconDao;
 import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.list.ListActivity;
 
 import java.io.IOException;

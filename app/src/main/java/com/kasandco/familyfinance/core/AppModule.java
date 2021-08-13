@@ -2,6 +2,13 @@ package com.kasandco.familyfinance.core;
 
 import android.content.Context;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.kasandco.familyfinance.app.ViewModelCreateFactory;
+import com.kasandco.familyfinance.app.icon.IconDao;
+import com.kasandco.familyfinance.app.item.ItemDao;
+import com.kasandco.familyfinance.app.item.ViewModelItem;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Named;
@@ -30,5 +37,11 @@ public class AppModule {
     @Singleton
     SharedPreferenceUtil provideSharedPreference(@Named("application.context") Context context){
         return new SharedPreferenceUtil(context);
+    }
+
+    @Provides
+    @Singleton
+    ViewModelCreateFactory providesViewModelFactory(){
+        return new ViewModelCreateFactory();
     }
 }

@@ -100,11 +100,11 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
                 switch (view.getId()) {
                     case R.id.list_item_menu:
                         if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
-                            holder.itemView.showContextMenu(holder.itemView.getWidth(), 0);
+                            holder.itemView.showContextMenu(holder.itemView.getWidth(), holder.itemView.getHeight());
                         } else {
                             holder.itemView.showContextMenu();
-                            break;
                         }
+                        break;
                 }
             }
         };
@@ -126,8 +126,8 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         return positionItem;
     }
 
-    public void nullPosition(){
-        positionItem=-1;
+    public void nullPosition() {
+        positionItem = -1;
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.kasandco.familyfinance.app.item;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "list_item")
-public class ItemModel {
+public class ItemModel implements Cloneable{
     @PrimaryKey(autoGenerate = true)
     private long id;
     private String name;
@@ -15,6 +17,16 @@ public class ItemModel {
     @ColumnInfo(name = "image_path")
     private String imagePath;
     private int status;
+
+    public ItemModel(){}
+
+    @Ignore
+    public ItemModel(String name, String quantity){
+        this.name = name;
+        this.quantity = quantity;
+        this.status=1;
+        this.dateMod = String.valueOf(System.currentTimeMillis());
+    }
 
     public int getStatus() {
         return status;
@@ -55,8 +67,8 @@ public class ItemModel {
         return dateMod;
     }
 
-    public void setDateMod(String dateMod) {
-        this.dateMod = dateMod;
+    public void setDateMod(String time) {
+        this.dateMod = time;
     }
 
     public String getQuantity() {
@@ -73,5 +85,19 @@ public class ItemModel {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+
+    public ItemModel clone() {
+        ItemModel newModel = new ItemModel();
+        newModel.setDateMod(dateMod);
+        newModel.setName(name);
+        newModel.setQuantity(quantity);
+        newModel.setImagePath(imagePath);
+        newModel.setStatus(status);
+        newModel.setIsDelete(isDelete);
+        newModel.setId(id);
+        //TODO Сделать серверный айди
+        return newModel;
     }
 }

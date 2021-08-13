@@ -3,6 +3,8 @@ package com.kasandco.familyfinance;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.fragment.app.Fragment;
+
 import com.kasandco.familyfinance.app.item.ItemComponent;
 import com.kasandco.familyfinance.app.item.ItemModule;
 import com.kasandco.familyfinance.app.list.ListActivityComponent;
@@ -42,5 +44,4 @@ public class App extends Application {
         }
         return itemComponent;
     }
-
 }

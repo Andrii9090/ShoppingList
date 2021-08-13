@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import com.kasandco.familyfinance.app.icon.IconDao;
 import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.app.item.ItemActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, ListActivity.class);
+        Intent intent = new Intent(this, ItemActivity.class);
         startActivity(intent);
         SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil(this);
         App.appComponent.inject(this);

@@ -13,4 +13,5 @@ public interface BaseDao<T>{
 
     @Update
     void update(T obj);
+
 }

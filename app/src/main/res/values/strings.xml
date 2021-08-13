@@ -19,5 +19,11 @@
     <string name="cteate_category">Создать категорию</string>
     <string name="text_create">Ок</string>
     <string name="cost_statistic_title">Учитывать в расходах?</string>
-    <string name="text_add_photo">Добавить фото</string>
+    <string name="text_add_photo">Сделать фото</string>
+    <string name="name_quantity_item">Название:количество</string>
+    <string name="select_photo">Выбрать фото</string>
+    <string name="text_item_created">Добавлено</string>
+    <string name="text_select_gallery">Галерея</string>
+    <string name="text_select_camera">Камера</string>
+    <string name="text_add_photo_gallery">Выбрать из галереи</string>
 </resources>

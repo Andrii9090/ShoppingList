@@ -23,21 +23,28 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent">
-
-                <EditText
-                    android:id="@+id/create_list_item_text"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
                     android:layout_weight="9"
+                    android:layout_height="wrap_content"
                     android:hint="@string/text_create_list_item"
-                    android:inputType="textCapSentences" />
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:id="@+id/create_list_item_text"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
                 <ImageButton
                     android:id="@+id/create_list_item_enter"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:layout_marginTop="4dp"
                     android:background="@color/green_toolbar"
                     android:src="@drawable/ic_paper_plane"
                     app:layout_constraintEnd_toEndOf="parent"

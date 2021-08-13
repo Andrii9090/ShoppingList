@@ -10,4 +10,5 @@ import dagger.Subcomponent;
 public interface ListActivityComponent {
     void inject(ListActivity activity);
     void inject(AdapterIcon icon);
+
 }

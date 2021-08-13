@@ -1,47 +1,50 @@
 package com.kasandco.familyfinance.app.item;
 
-import android.os.AsyncTask;
+import android.util.Log;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.core.BasePresenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class ItemPresenter extends BasePresenter<ItemActivity> {
-    private List<ItemModel>  itemsActual;
-    @Inject
-    public ItemDao itemDao;
+public class ItemPresenter extends BasePresenter<ItemContract> {
 
-    @Inject
-    public ItemPresenter(){
+    ItemDao itemDao;
 
+    ItemAdapter adapter;
+
+    ItemRepository repository;
+
+    public ItemPresenter(ItemRepository repository, ItemDao dao, ItemAdapter adapter){
+        this.repository = repository;
+        this.itemDao = dao;
+        this.adapter = adapter;
+        repository.setPresenter(this);
     }
 
     @Override
-    public void viewReady(ItemActivity view) {
+    public void viewReady(ItemContract view) {
         this.view = view;
-        getAllItems();
+        repository.getAll();
+        view.startAdapter(adapter);
     }
 
-    private void getAllItems(){
-        itemsActual = new ArrayList<>();
+    public void removeItem() {
+        repository.remove(adapter.items.get(adapter.getPosition()));
+    }
 
-        class Async extends AsyncTask<Void, Void, Void>{
+    public void clickEdit() {
+        view.showEditForm(adapter.items.get(adapter.getPosition()));
+    }
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                itemsActual.addAll(itemDao.getAllItems());
-                itemsActual.addAll(itemDao.getAllNotActive());
-                return null;
-            }
+    public void setItems(List<ItemModel> list) {
+        adapter.updateList(list);
+    }
 
-            @Override
-            protected void onPostExecute(Void unused) {
-                super.onPostExecute(unused);
-
-            }
-        }
+    public void updateData(ItemModel itemModel) {
+        adapter.setNewItem(itemModel);
     }
 }
