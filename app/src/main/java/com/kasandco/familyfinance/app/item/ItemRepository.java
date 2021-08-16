@@ -1,8 +1,11 @@
 package com.kasandco.familyfinance.app.item;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -77,7 +80,13 @@ public class ItemRepository {
                 });
     }
 
-    private void updateData(ItemModel itemModel) {
-        presenter.updateData(itemModel);
+
+    public void saveImagePath(String imagePath, long id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                itemDao.saveImagePath(imagePath, id);
+            }
+        }).start();
     }
 }

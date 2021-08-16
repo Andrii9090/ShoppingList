@@ -4,30 +4,36 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.app.FragmentZoomImage;
 import com.kasandco.familyfinance.app.item.fragmentCreate.FragmentItemCreate;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
+import com.kasandco.familyfinance.utils.ToastUtils;
 
-import java.util.List;
-import java.util.Objects;
+import java.io.IOException;
 
 import javax.inject.Inject;
 
-public class ItemActivity extends AppCompatActivity implements ItemContract, Constants, FragmentItemCreate.ClickListenerCreateFragment {
+public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZoomImage, FragmentZoomImage.ClickListenerZoomImage, ItemContract, Constants, FragmentItemCreate.ClickListenerCreateFragment {
     @Inject
     ItemPresenter presenter;
 
@@ -37,9 +43,8 @@ public class ItemActivity extends AppCompatActivity implements ItemContract, Con
     @Inject
     ItemRepository repository;
 
-
-    private static final int REQUEST_TAKE_PHOTO = 1;
-
+    @Inject
+    FragmentZoomImage fragmentZoomImage;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -91,6 +96,56 @@ public class ItemActivity extends AppCompatActivity implements ItemContract, Con
     }
 
     @Override
+    public void showGallery() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.select_photo)), REQUEST_TAKE_GALLERY);
+        }else{
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    1);
+            showGallery();
+        }
+    }
+
+    private void askPermission(String[] permission, int request_code) {
+        ActivityCompat.requestPermissions(this, permission,
+                request_code);
+    }
+
+    @Override
+    public void showCamera(Uri photoURI) {
+        if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+        }else {
+            presenter.noCamara();
+        }
+    }
+
+    @Override
+    public void showToast(int resource) {
+        ToastUtils.showToast(getString(resource), this);
+    }
+
+    @Override
+    public void showZoomFragment(String imagePath) {
+        if(!fragmentZoomImage.isAdded()){
+            getSupportFragmentManager().beginTransaction().add(R.id.item_activity_fragment, fragmentZoomImage).commitNow();
+            fragmentZoomImage.setImage(imagePath);
+        }
+    }
+
+    @Override
+    public void closeZoomFragment() {
+        if(fragmentZoomImage.isAdded()){
+            getSupportFragmentManager().beginTransaction().remove(fragmentZoomImage).commitNow();
+        }
+    }
+
+    @Override
     public void showLoading() {
         swipeRefreshLayout.setRefreshing(true);
     }
@@ -104,7 +159,7 @@ public class ItemActivity extends AppCompatActivity implements ItemContract, Con
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item_activity, menu);
-        return false;
+        return true;
     }
 
     @Override
@@ -140,13 +195,20 @@ public class ItemActivity extends AppCompatActivity implements ItemContract, Con
             case R.id.menu_context_item_add_photo_camera:
                 clickCamera();
                 break;
+            case R.id.menu_context_item_add_photo_gallery:
+                clickGallery();
+                break;
         }
 
         return true;
     }
 
-    private void clickCamera() {
+    private void clickGallery() {
+        presenter.clickGallery();
+    }
 
+    private void clickCamera() {
+        presenter.clickCamera();
     }
 
     private void removeItem() {
@@ -163,5 +225,30 @@ public class ItemActivity extends AppCompatActivity implements ItemContract, Con
             KeyboardUtil.hideKeyboard(this);
             getSupportFragmentManager().beginTransaction().remove(createFragment).commit();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            presenter.activityResult(requestCode, resultCode, data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void showZoomImage() {
+        presenter.clickShowZoomImage();
+    }
+
+    @Override
+    public void closeZoomImage() {
+        presenter.clickCloseZoomFragment();
+    }
+
+    @Override
+    public void removeImage() {
+        presenter.clickRemoveImage();
     }
 }

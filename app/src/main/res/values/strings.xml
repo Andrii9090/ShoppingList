@@ -26,4 +26,8 @@
     <string name="text_select_gallery">Галерея</string>
     <string name="text_select_camera">Камера</string>
     <string name="text_add_photo_gallery">Выбрать из галереи</string>
+    <string name="no_camera">На вашем устройстве нет камеры</string>
+    <string name="error_todo_photo">Ошибка камеры</string>
+    <string name="text_change">Изменить</string>
+    <string name="error_show_img">Ошибка  показа изображения</string>
 </resources>

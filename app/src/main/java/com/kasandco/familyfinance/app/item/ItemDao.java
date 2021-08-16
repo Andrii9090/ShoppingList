@@ -24,4 +24,7 @@ public interface ItemDao extends BaseDao<ItemModel> {
 
     @Query("SELECT * FROM list_item WHERE id=(SELECT MAX(id) FROM list_item)")
     Flowable<ItemModel> getLastId();
+
+    @Query("UPDATE list_item SET  image_path=:path WHERE id=:id")
+    void saveImagePath(String path, long id);
 }

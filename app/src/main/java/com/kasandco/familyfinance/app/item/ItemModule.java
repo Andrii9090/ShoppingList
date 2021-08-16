@@ -8,6 +8,7 @@ import com.kasandco.familyfinance.app.item.fragmentCreate.FragmentItemCreate;
 import com.kasandco.familyfinance.app.item.fragmentCreate.FragmentItemCreatePresenter;
 import com.kasandco.familyfinance.app.item.fragmentCreate.ItemCreateScope;
 import com.kasandco.familyfinance.core.AppDataBase;
+import com.kasandco.familyfinance.utils.SaveImageUtils;
 
 import javax.inject.Named;
 
@@ -19,7 +20,7 @@ public class ItemModule {
     @Named("activity_context")
     Context context;
 
-    public ItemModule(@Named("activity_context")Context context){
+    public ItemModule(Context context){
         this.context = context;
     }
 
@@ -30,8 +31,13 @@ public class ItemModule {
 
     @ItemActivityScope
     @Provides
-    ItemPresenter providesPresenter(ItemRepository repository, ItemDao dao, ItemAdapter adapter){
-        return new ItemPresenter(repository, dao, adapter);
+    ItemPresenter providesPresenter(ItemRepository repository, ItemDao dao, ItemAdapter adapter, SaveImageUtils saveImageUtils){
+        return new ItemPresenter(repository, dao, adapter, saveImageUtils);
+    }
+
+    @Provides
+    SaveImageUtils providesSaveImageUtils(@Named("activity_context")Context context){
+        return new SaveImageUtils(context);
     }
 
     @ItemActivityScope
@@ -42,6 +48,7 @@ public class ItemModule {
 
     @ItemActivityScope
     @Provides
+    @Named("activity_context")
     Context provideContext(){
         return this.context;
     }

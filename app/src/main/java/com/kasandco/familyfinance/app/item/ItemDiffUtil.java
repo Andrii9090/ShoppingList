@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ItemDiffUtil extends DiffUtil.Callback {
     List<ItemModel> oldData;
@@ -37,7 +38,7 @@ public class ItemDiffUtil extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         ItemModel oldItem = oldData.get(oldItemPosition);
         ItemModel newItem = newData.get(newItemPosition);
-        return oldItem.getQuantity().equals(newItem.getQuantity()) && oldItem.getName().equals(newItem.getName());
+        return oldItem.getQuantity().equals(newItem.getQuantity()) && oldItem.getName().equals(newItem.getName()) && oldItem.getImagePath().equals(Objects.requireNonNull(newItem.getImagePath()));
     }
 
     @Nullable
@@ -45,6 +46,9 @@ public class ItemDiffUtil extends DiffUtil.Callback {
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
         ItemModel oldItem = oldData.get(oldItemPosition);
         ItemModel newItem = newData.get(newItemPosition);
+        if(oldItem.getImagePath()==null && newItem.getImagePath()==null){
+            return true;
+        }
         if (oldItem.getImagePath() != null && newItem.getImagePath()!= null && oldItem.getImagePath().equals(newItem.getImagePath())){
             return true;
         }

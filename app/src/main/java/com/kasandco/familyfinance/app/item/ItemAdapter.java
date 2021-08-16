@@ -1,8 +1,6 @@
 package com.kasandco.familyfinance.app.item;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -13,21 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.kasandco.familyfinance.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     List<ItemModel> items;
     private int position;
+    private ShowZoomImage zoomImageListener;
 
     public ItemAdapter() {
         position=-1;
@@ -38,6 +37,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_item, parent, false);
+        zoomImageListener = (ShowZoomImage) parent.getContext();
         return new ViewHolder(view);
     }
 
@@ -52,6 +52,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
         if(items.get(position).getImagePath()==null || items.get(position).getImagePath().isEmpty()){
             holder.imageIcon.setVisibility(View.GONE);
+        }else{
+            Picasso.get()
+                    .load(new File(items.get(position).getImagePath()))
+                    .centerCrop()
+                    .resize(100,100)
+                    .into(holder.imageIcon);
         }
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         holder.btnMenu.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +69,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 } else {
                     holder.itemView.showContextMenu();
                 }
+            }
+        });
+        holder.imageIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setPosition(holder.getBindingAdapterPosition());
+                zoomImageListener.showZoomImage();
             }
         });
     }
@@ -111,6 +124,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         private TextView name;
         private TextView quantity;
         private ImageButton btnMenu;
+        private ImageView imageView;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -118,9 +132,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             imageIcon = itemView.findViewById(R.id.rv_item_image);
             name = itemView.findViewById(R.id.rv_item_name);
             quantity = itemView.findViewById(R.id.rv_item_quantity);
+            imageView = itemView.findViewById(R.id.zoomImageView);
             btnMenu = itemView.findViewById(R.id.rv_item_menu);
             itemView.setOnCreateContextMenuListener(this);
-
             itemView.setOnLongClickListener(null);
         }
 
@@ -129,5 +143,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             MenuInflater menuInflater = new MenuInflater(view.getContext());
             menuInflater.inflate(R.menu.menu_context_item, contextMenu);
         }
+    }
+
+    public interface ShowZoomImage{
+        void showZoomImage();
     }
 }
