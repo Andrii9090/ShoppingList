@@ -3,42 +3,40 @@ package com.kasandco.familyfinance.app.list;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.icon.FragmentIcon;
+import com.kasandco.familyfinance.app.item.ItemActivity;
+import com.kasandco.familyfinance.app.list.CreateList.FragmentCreateList;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
-import java.util.Objects;
+import java.io.Serializable;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListActivity extends AppCompatActivity implements Constants, FragmentIcon.OnSelectIcon, FragmentCreateList.CreateListContract, ListContract, ListRvAdapter.ListAdapterListener {
+public class ListActivity extends AppCompatActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener {
     @Inject
     ListPresenter presenter;
-    private ListRvAdapter adapter;
+    @Inject
+    FragmentCreateList fragmentCreateList;
+
     SwipeRefreshLayout refreshLayout;
     RecyclerView recyclerView;
     TextView emptyText;
@@ -55,13 +53,13 @@ public class ListActivity extends AppCompatActivity implements Constants, Fragme
         recyclerView = findViewById(R.id.activity_list_rv_items);
         emptyText = findViewById(R.id.activity_list_text_empty);
         setSupportActionBar(toolbar);
+        refreshLayout.setOnRefreshListener(refreshListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         presenter.viewReady(this);
-        presenter.getListItems();
     }
 
     @Override
@@ -71,7 +69,7 @@ public class ListActivity extends AppCompatActivity implements Constants, Fragme
 
     @Override
     public void itemOnClick(ListRvAdapter.ViewHolder holder) {
-
+        presenter.clickItem(holder);
     }
 
     @Override
@@ -85,10 +83,25 @@ public class ListActivity extends AppCompatActivity implements Constants, Fragme
     }
 
     @Override
-    public void addAdapter() {
-        adapter = new ListRvAdapter(presenter.getItems());
+    public void addAdapter(ListRvAdapter adapter) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        recyclerView.getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                recyclerView.scrollToPosition(positionStart);
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                recyclerView.scrollToPosition(positionStart);
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                recyclerView.scrollToPosition(positionStart);
+            }
+        });
     }
 
     @Override
@@ -106,51 +119,45 @@ public class ListActivity extends AppCompatActivity implements Constants, Fragme
     }
 
     @Override
-    public void updateAdapter(int position, boolean isEdit) {
-        if(!isEdit) {
-            adapter.notifyItemInserted(position);
-            if (Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT)).isAdded()) {
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT);
-                reloadFragment(fragment);
-            }
-            showToast(R.string.text_list_added);
-        }else {
-            adapter.notifyItemChanged(position);
-            adapter.nullPosition();
-            closeFragmentCreate();
-        }
-    }
-
-    private void reloadFragment(Fragment fragment) {
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.remove(fragment);
-        ft.add(R.id.activity_list_fragment, FragmentCreateList.class, null, CREATE_FRAGMENT);
-        ft.commit();
-        getSupportFragmentManager().executePendingTransactions();
-    }
-
-    @Override
-    public void editListItem(ListModel listItem) {
-        if(adapter.getPosition()!=-1){
-            showCrateFragment();
-            if(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT)).isAdded()) {
-                ((FragmentCreateList) Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT))).setEdit();
-                ((FragmentCreateList) Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT))).setText(listItem.getName());
-                ((FragmentCreateList) Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT))).setIcon(listItem.getIcon());
-            }
+    public void showCreateFragment() {
+        if (!fragmentCreateList.isAdded()) {
+            getSupportFragmentManager().beginTransaction().add(R.id.activity_list_fragment, fragmentCreateList).commitNow();
+            KeyboardUtil.showKeyboard(this);
         }
     }
 
     @Override
-    public void removeItemUpdate(int position) {
-        adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+    public void showEditFragment(ListModel listModel) {
+        showCreateFragment();
+        fragmentCreateList.setEditItem(listModel);
+    }
+
+    @Override
+    public void showActivityDetails(ListModel listModel) {
+        Intent intent = new Intent(this, ItemActivity.class);
+        intent.putExtra(LIST_ITEM_ID, listModel.getId());
+        intent.putExtra(LIST_SERVER_ID, listModel.getServerId());
+        intent.putExtra(LIST_NAME, listModel.getName());
+        startActivity(intent);
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        presenter.onContextMenuClick(item.getItemId(), adapter.getPosition());
-        return super.onContextItemSelected(item);
+        switch (item.getItemId()){
+            case R.id.context_menu_list_item_remove:
+                presenter.selectRemoveList();
+                break;
+            case R.id.context_menu_list_item_edit:
+                presenter.selectEditList();
+                break;
+            case R.id.context_menu_list_item_clear_bought:
+                presenter.selectClearBought();
+                break;
+            case R.id.context_menu_list_item_clear_all:
+                presenter.selectClearAll();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -164,78 +171,28 @@ public class ListActivity extends AppCompatActivity implements Constants, Fragme
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_list_activity_add_new_list:
-                showCrateFragment();
+                clickShowCrateFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean showCrateFragment() {
-        if (getSupportFragmentManager().findFragmentById(R.id.activity_list_fragment) == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.activity_list_fragment, FragmentCreateList.class, null, CREATE_FRAGMENT).commit();
-            KeyboardUtil.showKeyboard(this);
-            getSupportFragmentManager().executePendingTransactions();
-            return true;
-        }else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.activity_list_fragment, FragmentCreateList.class, null, CREATE_FRAGMENT).commit();
-            KeyboardUtil.showKeyboard(this);
-            getSupportFragmentManager().executePendingTransactions();
-            return true;
-        }
-    }
-
-    SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-
-        }
-    };
-
-
-    @Override
-    public void create(String text, String iconPath) {
-        presenter.create(text, iconPath);
-        iconPath=null;
-    }
-
-    @Override
-    public void edit(String text, String iconPath) {
-        presenter.edit(adapter.getPosition(), text, iconPath);
+    private void clickShowCrateFragment() {
+        presenter.clickShowCreateFragment();
     }
 
     @Override
     public void closeFragmentCreate() {
-        if (Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT)).isAdded()) {
+        if (fragmentCreateList.isAdded()) {
+            getSupportFragmentManager().beginTransaction().remove(fragmentCreateList).commitNow();
             KeyboardUtil.hideKeyboard(this);
-            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT)).commit();
-
         }
     }
 
-    @Override
-    public void showSelectIconFragment() {
-        getSupportFragmentManager().beginTransaction().add(R.id.activity_list_fragment2, FragmentIcon.class, null, SELECT_ICON_FRAGMENT).commit();
-    }
-
-
-    @Override
-    public void onSelectIcon(String path) {
-        if (Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT)).isAdded()) {
-            ((FragmentCreateList) getSupportFragmentManager().findFragmentByTag(CREATE_FRAGMENT)).setIcon(path);
-
+    private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            presenter.swipeRefresh();
         }
-        closeIconFragment();
-    }
-
-    @Override
-    public void closeIconFragment() {
-        if (Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(SELECT_ICON_FRAGMENT)).isAdded()) {
-            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag(SELECT_ICON_FRAGMENT)).commit();
-        }
-    }
-
-    @Override
-    public void removeIcon() {
-        onSelectIcon(null);
-    }
+    };
 }

@@ -25,6 +25,7 @@ import com.kasandco.familyfinance.utils.ImageBackgroundUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,28 +35,31 @@ import butterknife.BindView;
 
 public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
     List<IconModel> icons;
-    Context context;
-    Fragment fragment;
+    OnClickIconListener listener;
 
-    public AdapterIcon(List<IconModel> icons, Fragment fragment) {
-        this.icons = icons;
-        this.fragment = fragment;
+    @Inject
+    public AdapterIcon(){
+        icons = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_icon_element, parent, false);
-        context = parent.getContext();
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Bitmap bitmap = null;
-        AssetManager am = context.getAssets();
+        AssetManager am = holder.itemView.getContext().getAssets();
         InputStream is = null;
-        OnClickIconListener listener = (OnClickIconListener) fragment;
+
+        if(icons.get(position).isSelect()){
+            holder.btnIcon.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.selected));
+        }else {
+            holder.btnIcon.setBackgroundColor(holder.itemView.getContext().getResources().getColor(android.R.color.transparent));
+        }
         try {
             is = am.open(icons.get(position).path);
             bitmap = BitmapFactory.decodeStream(is);
@@ -67,9 +71,18 @@ public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
         holder.btnIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClickIcon(position);
+                listener.onClickIcon(icons.get(holder.getAbsoluteAdapterPosition()));
             }
         });
+    }
+
+    public void setItems(List<IconModel> items){
+        icons.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void setListener(OnClickIconListener listener){
+        this.listener = listener;
     }
 
     @Override
@@ -88,6 +101,6 @@ public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
     }
 
     public interface OnClickIconListener{
-        void onClickIcon(int position);
+        void onClickIcon(IconModel icon);
     }
 }

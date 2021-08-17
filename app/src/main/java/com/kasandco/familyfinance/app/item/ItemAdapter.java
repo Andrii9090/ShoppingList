@@ -1,6 +1,7 @@
 package com.kasandco.familyfinance.app.item;
 
 import android.annotation.SuppressLint;
+import android.graphics.Paint;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -11,11 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.kasandco.familyfinance.R;
 import com.squareup.picasso.Picasso;
 
@@ -29,7 +29,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private ShowZoomImage zoomImageListener;
 
     public ItemAdapter() {
-        position=-1;
+        position = -1;
         items = new ArrayList<>();
     }
 
@@ -41,22 +41,30 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.name.setText(items.get(position).getName());
-        if(items.get(position).getQuantity()==null || items.get(position).getQuantity().isEmpty()){
+        if (items.get(position).getStatus() == 0) {
+            holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.inActive));
+            holder.name.setPaintFlags(holder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_color));
+            holder.name.setPaintFlags(0);
+        }
+        if (items.get(position).getQuantity() == null || items.get(position).getQuantity().isEmpty()) {
             holder.quantity.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.quantity.setVisibility(View.VISIBLE);
             holder.quantity.setText(items.get(position).getQuantity());
         }
-        if(items.get(position).getImagePath()==null || items.get(position).getImagePath().isEmpty()){
-            holder.imageIcon.setVisibility(View.GONE);
-        }else{
+        if (items.get(position).getImagePath() == null || items.get(position).getImagePath().isEmpty()) {
+            holder.imageIcon.setVisibility(View.INVISIBLE);
+        } else {
             Picasso.get()
                     .load(new File(items.get(position).getImagePath()))
                     .centerCrop()
-                    .resize(100,100)
+                    .resize(100, 100)
                     .into(holder.imageIcon);
         }
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -65,7 +73,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             public void onClick(View view) {
                 setPosition(holder.getBindingAdapterPosition());
                 if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
-                    holder.itemView.showContextMenu(holder.itemView.getWidth(), holder.itemView.getHeight()-3);
+                    holder.itemView.showContextMenu(holder.itemView.getWidth(), holder.itemView.getHeight() - 3);
                 } else {
                     holder.itemView.showContextMenu();
                 }
@@ -78,6 +86,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 zoomImageListener.showZoomImage();
             }
         });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setPosition(holder.getAbsoluteAdapterPosition());
+                OnClickItemListener listener = (OnClickItemListener) holder.imageIcon.getContext();
+                listener.onClickItem();
+            }
+        });
     }
 
     @Override
@@ -87,7 +104,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     @SuppressLint("NotifyDataSetChanged")
     public void updateList(List<ItemModel> newList) {
-        if (items.size()==0) {
+        if (items.size() == 0) {
             setItems(newList);
             notifyDataSetChanged();
         } else {
@@ -112,19 +129,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         this.position = position;
     }
 
-    public void setNewItem(ItemModel itemModel) {
-        List<ItemModel> newList = new ArrayList<>();
-        newList.addAll(items);
-        newList.add(0, itemModel);
-        updateList(newList);
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         private ImageView imageIcon;
         private TextView name;
         private TextView quantity;
         private ImageButton btnMenu;
-        private ImageView imageView;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -132,7 +141,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             imageIcon = itemView.findViewById(R.id.rv_item_image);
             name = itemView.findViewById(R.id.rv_item_name);
             quantity = itemView.findViewById(R.id.rv_item_quantity);
-            imageView = itemView.findViewById(R.id.zoomImageView);
             btnMenu = itemView.findViewById(R.id.rv_item_menu);
             itemView.setOnCreateContextMenuListener(this);
             itemView.setOnLongClickListener(null);
@@ -145,7 +153,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
     }
 
-    public interface ShowZoomImage{
+    public interface ShowZoomImage {
         void showZoomImage();
+    }
+
+    public interface OnClickItemListener {
+        void onClickItem();
     }
 }

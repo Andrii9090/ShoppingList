@@ -16,14 +16,7 @@ public class DataModule {
 
     @ItemActivityScope
     @Provides
-    ViewModelItem providesViewModel(ViewModelCreateFactory viewModelCreateFactory) {
-        return viewModelCreateFactory.create(ViewModelItem.class);
-    }
-
-    @ItemActivityScope
-    @Provides
     ItemDao providesDao(AppDataBase appDataBase) {
         return appDataBase.getItemDao();
     }
-
 }

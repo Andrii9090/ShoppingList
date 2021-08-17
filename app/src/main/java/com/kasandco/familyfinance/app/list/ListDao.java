@@ -6,6 +6,9 @@ import androidx.room.Query;
 import com.kasandco.familyfinance.dao.BaseDao;
 
 import java.util.List;
+
+import io.reactivex.Flowable;
+
 @Dao
 public interface ListDao extends BaseDao<ListModel> {
     @Query("SELECT * FROM list WHERE id=:id")
@@ -14,8 +17,8 @@ public interface ListDao extends BaseDao<ListModel> {
     @Query("SELECT * FROM list")
     List<ListModel> getAllList();
 
-    @Query("SELECT * FROM list WHERE is_delete!=1 ORDER BY name ASC")
-    List<ListModel> getAllActiveList();
+    @Query("SELECT * FROM list WHERE is_delete=0 ORDER BY date_mod DESC")
+    Flowable<List<ListModel>> getAllActiveList();
 
     @Query("SELECT * FROM list WHERE is_delete=1")
     List<ListModel> getDeletedLists();
@@ -25,4 +28,16 @@ public interface ListDao extends BaseDao<ListModel> {
 
     @Query("SELECT MAX(id) FROM list")
     long getLastId();
+
+    @Query("UPDATE list SET quantity_inactive=0 WHERE id=:id")
+    void clearInactiveItems(long id);
+
+    @Query("UPDATE list SET quantity_active=0 WHERE id=:id")
+    void clearActiveItems(long id);
+
+    @Query("DELETE FROM list_item WHERE local_list_id=:localListId AND status=1")
+    void deleteActiveListItem(long localListId);
+
+    @Query("DELETE FROM list_item WHERE local_list_id=:localListId AND status=0")
+    void deleteInactiveListItem(long localListId);
 }

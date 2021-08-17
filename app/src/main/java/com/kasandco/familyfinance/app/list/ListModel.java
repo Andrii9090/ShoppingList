@@ -1,12 +1,17 @@
 package com.kasandco.familyfinance.app.list;
 
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "list")
-public class ListModel {
+public class ListModel implements Serializable {
     public ListModel(){
 
     }
@@ -24,7 +29,7 @@ public class ListModel {
     private int isCost;
 
     @ColumnInfo(name = "cost_category_id", defaultValue = "0")
-    private int statisticCategoryId;
+    private long statisticCategoryId;
 
     @ColumnInfo(name = "list_code", defaultValue = "0")
     private int listCode;
@@ -32,7 +37,7 @@ public class ListModel {
     @ColumnInfo(name = "server_id", defaultValue = "0")
     private int serverId;
 
-    @ColumnInfo(name = "date_mod", defaultValue = "CURRENT_TIMESTAMP")
+    @ColumnInfo(name = "date_mod")
     private String dateMod;
 
     @ColumnInfo(name = "is_delete", defaultValue = "0")
@@ -53,10 +58,11 @@ public class ListModel {
     }
 
     @Ignore
-    public ListModel(String name, String dateMod, String iconPath){
+    public ListModel(String name, String dateMod, String iconPath, long statId){
         this.icon =iconPath;
         this.dateMod = dateMod;
         this.name = name;
+        this.statisticCategoryId = statId;
     }
 
 
@@ -84,7 +90,7 @@ public class ListModel {
         this.isCost = isCost;
     }
 
-    public int getStatisticCategoryId() {
+    public long getStatisticCategoryId() {
         return statisticCategoryId;
     }
 
@@ -146,5 +152,23 @@ public class ListModel {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public ListModel clone() {
+        ListModel cloneItem = new ListModel();
+
+        cloneItem.id = this.id;
+        cloneItem.name = this.name;
+        cloneItem.isOwner = this.isOwner;
+        cloneItem.icon = this.icon;
+        cloneItem.isCost = this.isCost;
+        cloneItem.statisticCategoryId = this.statisticCategoryId;
+        cloneItem.listCode = this.listCode;
+        cloneItem.serverId = this.serverId;
+        cloneItem.dateMod = this.dateMod;
+        cloneItem.isDelete = this.isDelete;
+        cloneItem.quantityActive = this.quantityActive;
+        cloneItem.quantityInactive = this.quantityInactive;
+        return cloneItem;
     }
 }

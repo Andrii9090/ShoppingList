@@ -20,4 +20,8 @@ public interface ItemContract extends BasePresenterInterface {
     void showZoomFragment(String imagePath);
 
     void closeZoomFragment();
+
+    long getListId();
+
+    void showEmptyText(boolean b);
 }

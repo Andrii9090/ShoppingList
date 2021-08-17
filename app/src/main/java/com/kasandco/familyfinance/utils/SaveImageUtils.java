@@ -52,10 +52,6 @@ public class SaveImageUtils {
         return currentFilePath;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
     public Uri getPhotoUri() {
         return FileProvider.getUriForFile(context,
                 "com.kasandco.familyfinance",

@@ -8,6 +8,6 @@
     </style>
 
     <style name="Toolbar">
-        <item name="android:background">@color/green_toolbar</item>
+        <item name="android:background">@color/toolbar</item>
     </style>
 </resources>

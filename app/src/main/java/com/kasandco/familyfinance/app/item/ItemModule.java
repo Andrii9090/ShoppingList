@@ -7,6 +7,7 @@ import com.kasandco.familyfinance.app.item.fragmentCreate.CreateItemModule;
 import com.kasandco.familyfinance.app.item.fragmentCreate.FragmentItemCreate;
 import com.kasandco.familyfinance.app.item.fragmentCreate.FragmentItemCreatePresenter;
 import com.kasandco.familyfinance.app.item.fragmentCreate.ItemCreateScope;
+import com.kasandco.familyfinance.app.list.ListDao;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.utils.SaveImageUtils;
 

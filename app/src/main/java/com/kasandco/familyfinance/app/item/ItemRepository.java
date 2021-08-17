@@ -1,16 +1,10 @@
 package com.kasandco.familyfinance.app.item;
 
-import android.annotation.SuppressLint;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import com.kasandco.familyfinance.App;
+import com.kasandco.familyfinance.app.list.ListDao;
 
 import java.util.List;
 
@@ -22,13 +16,18 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
+@ItemActivityScope
 public class ItemRepository {
     @Inject
     ItemDao itemDao;
 
     ItemPresenter presenter;
 
+    long listId;
+
     private Flowable<List<ItemModel>> allItems;
+
+    private Disposable disposable;
 
     @Inject
     public ItemRepository() {
@@ -36,14 +35,26 @@ public class ItemRepository {
     }
 
     public void create(String[] arrayText) {
-        Handler handler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {
             @Override
             public void run() {
-                itemDao.insert(new ItemModel(arrayText[0], ""));
+                itemDao.insert(new ItemModel(arrayText[0], "", listId));
+                plusActiveItem(listId);
             }
         }).start();
+    }
 
+    public void plusActiveItem(long listId) {
+        itemDao.plusActiveItemsInList(listId);
+    }
+    public void minusActiveItem(long listId) {
+        itemDao.minusActiveItemsInList(listId);
+    }
+    public void plusInactiveItem(long listId) {
+        itemDao.plusInactiveItemsInList(listId);
+    }
+    public void minusInactiveItem(long listId) {
+        itemDao.minusInactiveItemsInList(listId);
     }
 
     public void setPresenter(ItemPresenter presenter) {
@@ -55,6 +66,11 @@ public class ItemRepository {
             @Override
             public void run() {
                 itemDao.delete(item);
+                if (item.getStatus() == 1) {
+                    itemDao.minusActiveItemsInList(listId);
+                } else {
+                    itemDao.minusInactiveItemsInList(listId);
+                }
             }
         }).start();
     }
@@ -68,8 +84,9 @@ public class ItemRepository {
         }).start();
     }
 
-    public void getAll() {
-        itemDao.getAllActiveItems()
+    public void getAll(long listId) {
+        this.listId = listId;
+        disposable = itemDao.getAllActiveItems(listId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<ItemModel>>() {
@@ -86,6 +103,27 @@ public class ItemRepository {
             @Override
             public void run() {
                 itemDao.saveImagePath(imagePath, id);
+            }
+        }).start();
+    }
+
+    public void unSubscribeData() {
+        disposable.dispose();
+        disposable = null;
+    }
+
+    public void changeStatus(ItemModel item) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(item.getStatus()==0){
+                    plusInactiveItem(listId);
+                    minusActiveItem(listId);
+                }else {
+                    plusActiveItem(listId);
+                    minusInactiveItem(listId);
+                }
+                itemDao.update(item);
             }
         }).start();
     }

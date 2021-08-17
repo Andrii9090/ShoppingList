@@ -2,6 +2,7 @@ package com.kasandco.familyfinance.app;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,6 @@ import androidx.fragment.app.Fragment;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.kasandco.familyfinance.R;
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 public class FragmentZoomImage extends Fragment {
@@ -52,6 +48,12 @@ public class FragmentZoomImage extends Fragment {
         image = view.findViewById(R.id.fragment_zoom_image_item);
         image.setVisibility(View.INVISIBLE);
         image.setOnClickListener(clickListener);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                buttonsRoot.setVisibility(View.INVISIBLE);
+            }
+        }, 1500);
         return view;
     }
 

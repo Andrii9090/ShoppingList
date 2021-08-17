@@ -20,7 +20,10 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.FragmentZoomImage;
@@ -33,7 +36,7 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZoomImage, FragmentZoomImage.ClickListenerZoomImage, ItemContract, Constants, FragmentItemCreate.ClickListenerCreateFragment {
+public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZoomImage, ItemAdapter.OnClickItemListener, FragmentZoomImage.ClickListenerZoomImage, ItemContract, Constants, FragmentItemCreate.ClickListenerCreateFragment {
     @Inject
     ItemPresenter presenter;
 
@@ -46,19 +49,32 @@ public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZ
     @Inject
     FragmentZoomImage fragmentZoomImage;
 
+    long listId;
+    String listName;
+    long serverId;
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+    private TextView emptyText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        listId = getIntent().getLongExtra(LIST_ITEM_ID, 0);
+        listName = getIntent().getStringExtra(LIST_NAME);
+        serverId = getIntent().getLongExtra(LIST_SERVER_ID, 0);
         App.getItemComponent(this).inject(this);
         setContentView(R.layout.activity_item);
         recyclerView = findViewById(R.id.item_activity_rv);
+        emptyText = findViewById(R.id.item_activity_text_empty);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         Toolbar toolbar = findViewById(R.id.item_activity_toolbar);
         setSupportActionBar(toolbar);
+        MaterialTextView title = toolbar.findViewById(R.id.toolbar_title);
+        title.setText(listName);
+        swipeRefreshLayout = findViewById(R.id.item_activity_swipe);
+        swipeRefreshLayout.setOnRefreshListener(refreshListener);
     }
 
     @Override
@@ -109,11 +125,6 @@ public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZ
         }
     }
 
-    private void askPermission(String[] permission, int request_code) {
-        ActivityCompat.requestPermissions(this, permission,
-                request_code);
-    }
-
     @Override
     public void showCamera(Uri photoURI) {
         if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
@@ -142,6 +153,20 @@ public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZ
     public void closeZoomFragment() {
         if(fragmentZoomImage.isAdded()){
             getSupportFragmentManager().beginTransaction().remove(fragmentZoomImage).commitNow();
+        }
+    }
+
+    @Override
+    public long getListId() {
+        return listId;
+    }
+
+    @Override
+    public void showEmptyText(boolean isShow) {
+        if(isShow){
+            emptyText.setVisibility(View.VISIBLE);
+        }else{
+            emptyText.setVisibility(View.GONE);
         }
     }
 
@@ -208,7 +233,13 @@ public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZ
     }
 
     private void clickCamera() {
-        presenter.clickCamera();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            presenter.clickCamera();
+        }else{
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    1);
+            clickCamera();
+        }
     }
 
     private void removeItem() {
@@ -250,5 +281,17 @@ public class ItemActivity extends AppCompatActivity implements ItemAdapter.ShowZ
     @Override
     public void removeImage() {
         presenter.clickRemoveImage();
+    }
+
+    private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            presenter.refreshData();
+        }
+    };
+
+    @Override
+    public void onClickItem() {
+        presenter.clickToItem();
     }
 }

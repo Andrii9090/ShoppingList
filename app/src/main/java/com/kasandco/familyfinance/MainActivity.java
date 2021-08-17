@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, ItemActivity.class);
+        Intent intent = new Intent(this, ListActivity.class);
         startActivity(intent);
         SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil(this);
         App.appComponent.inject(this);

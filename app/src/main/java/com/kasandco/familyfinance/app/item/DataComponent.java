@@ -6,5 +6,4 @@ import dagger.Subcomponent;
 @Subcomponent(modules = DataModule.class)
 public interface DataComponent {
     void inject(ItemRepository itemRepository);
-    void inject(ViewModelItem modelItem);
 }

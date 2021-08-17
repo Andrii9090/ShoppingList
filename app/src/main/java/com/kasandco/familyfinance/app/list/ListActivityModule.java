@@ -2,6 +2,7 @@ package com.kasandco.familyfinance.app.list;
 
 import android.content.Context;
 
+import com.kasandco.familyfinance.app.list.CreateList.FragmentCreatePresenter;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.network.ListNetworkInterface;
 
@@ -21,19 +22,19 @@ public class ListActivityModule {
 
     @Provides
     @Named("context")
-    Context provideActivityContext(){
+    Context providesActivityContext(){
         return activityContext;
     }
 
     @Provides
     @ListActivityScope
-    ListDao provideListDao(AppDataBase dataBase){
-        return dataBase.getListDao();
+    ListRepository providesListRepository(ListDao listDao){
+        return new ListRepository(listDao);
     }
 
     @Provides
-
-    ListNetworkInterface provideListNetwork(Retrofit retrofit){
-        return retrofit.create(ListNetworkInterface.class);
+    @ListActivityScope
+    ListDao providesListDao(AppDataBase dataBase){
+        return dataBase.getListDao();
     }
 }

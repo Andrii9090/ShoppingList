@@ -1,13 +1,7 @@
 package com.kasandco.familyfinance.app.item;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.view.View;
-
-import androidx.core.content.FileProvider;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.core.BasePresenter;
@@ -16,9 +10,8 @@ import com.kasandco.familyfinance.utils.SaveImageUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class ItemPresenter extends BasePresenter<ItemContract> {
 
@@ -29,6 +22,9 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     ItemRepository repository;
 
     SaveImageUtils imageUtils;
+
+    long listId;
+    private List<ItemModel> items;
 
     public ItemPresenter(ItemRepository repository, ItemDao dao, ItemAdapter adapter, SaveImageUtils imageUtils) {
         this.repository = repository;
@@ -41,7 +37,12 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     @Override
     public void viewReady(ItemContract view) {
         this.view = view;
-        repository.getAll();
+        prepare();
+    }
+
+    private void prepare() {
+        listId = view.getListId();
+        repository.getAll(listId);
         view.startAdapter(adapter);
     }
 
@@ -54,13 +55,20 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     }
 
     public void setItems(List<ItemModel> list) {
+        items = new ArrayList<>();
+        items.addAll(list);
+        view.hideLoading();
         adapter.updateList(list);
+        setEmptyText();
     }
 
-    public void updateData(ItemModel itemModel) {
-        adapter.setNewItem(itemModel);
+    private void setEmptyText() {
+        if(adapter.getItemCount()>0){
+            view.showEmptyText(false);
+        }else {
+            view.showEmptyText(true);
+        }
     }
-
 
     public void clickCamera() {
         prepareFileForCamera();
@@ -124,5 +132,23 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
 
     public void clickCloseZoomFragment() {
         view.closeZoomFragment();
+    }
+
+    public void refreshData() {
+        items.clear();
+        repository.unSubscribeData();
+        repository.getAll(listId);
+    }
+
+    public void clickToItem() {
+        ItemModel item = items.get(adapter.getPosition());
+        if(item.getStatus()==1){
+            item.setStatus(0);
+        }else{
+            item.setStatus(1);
+        }
+        item.setDateMod(String.valueOf(System.currentTimeMillis()));
+
+        repository.changeStatus(item);
     }
 }

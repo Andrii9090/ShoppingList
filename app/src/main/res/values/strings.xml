@@ -13,10 +13,10 @@
     <string name="text_error_create_list">Ошибка при создании списка</string>
     <string name="text_select_icon">Иконка</string>
     <string name="text_list_added">Новый список создан</string>
-    <string name="select_icon">Выбрать иконку</string>
+    <string name="select_icon">Иконка</string>
     <string name="text_change_icon">Изменить иконку</string>
     <string name="text_empty_statistic_category">Не учитывать</string>
-    <string name="cteate_category">Создать категорию</string>
+    <string name="create_category">Создать категорию</string>
     <string name="text_create">Ок</string>
     <string name="cost_statistic_title">Учитывать в расходах?</string>
     <string name="text_add_photo">Сделать фото</string>
@@ -30,4 +30,5 @@
     <string name="error_todo_photo">Ошибка камеры</string>
     <string name="text_change">Изменить</string>
     <string name="error_show_img">Ошибка  показа изображения</string>
+    <string name="text_name_error">Название не может быть пустым или меньше 3 символов</string>
 </resources>

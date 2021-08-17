@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background_fragment"
         android:orientation="horizontal"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

@@ -7,10 +7,12 @@ import com.kasandco.familyfinance.core.BasePresenterInterface;
 import java.util.List;
 
 public interface ListContract extends BasePresenterInterface {
-    void addAdapter();
+    void addAdapter(ListRvAdapter adapter);
     void showEmptyText(boolean isShow);
     void showToast(int resource);
-    void updateAdapter(int position, boolean isEdit);
-    void editListItem(ListModel listItem);
-    void removeItemUpdate(int position);
+    void showCreateFragment();
+
+    void showEditFragment(ListModel listModel);
+
+    void showActivityDetails(ListModel listModel);
 }

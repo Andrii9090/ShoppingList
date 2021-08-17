@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.R;
@@ -30,6 +31,7 @@ import com.kasandco.familyfinance.utils.ImageBackgroundUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,8 +44,8 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
 
 
     @Inject
-    public ListRvAdapter(List<ListModel> listItems) {
-        this.listItems = listItems;
+    public ListRvAdapter() {
+        this.listItems = new ArrayList<>();
         positionItem = -1;
     }
 
@@ -90,13 +92,13 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             async.execute();
         }
         holder.name.setText(listItems.get(position).getName());
-        holder.quantity.setText(String.format("%d/%d", listItems.get(position).getQuantityActive(), listItems.get(position).getQuantityInactive()));
+        holder.quantity.setText(String.format("%d/%d", listItems.get(position).getQuantityInactive(), listItems.get(position).getQuantityActive()));
         View.OnClickListener menuListener;
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         menuListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setPosition(position);
+                setPosition(holder.getAbsoluteAdapterPosition());
                 switch (view.getId()) {
                     case R.id.list_item_menu:
                         if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
@@ -118,6 +120,10 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         });
     }
 
+    public List<ListModel> getItems(){
+        return listItems;
+    }
+
     private void setPosition(int position) {
         positionItem = position;
     }
@@ -126,13 +132,26 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         return positionItem;
     }
 
-    public void nullPosition() {
+    public void resetPosition(){
         positionItem = -1;
     }
 
     @Override
     public int getItemCount() {
         return listItems.size();
+    }
+
+    public void updateItems(List<ListModel> listItems) {
+        if(getItemCount()>0) {
+            DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffListItem(this.listItems, listItems));
+            this.listItems.clear();
+            this.listItems.addAll(listItems);
+            diff.dispatchUpdatesTo(this);
+        }else {
+            this.listItems.clear();
+            this.listItems.addAll(listItems);
+            notifyDataSetChanged();
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {

@@ -3,102 +3,82 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background_fragment">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:padding="15dp"
+        android:background="@color/white"
+        android:layout_margin="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
+            <EditText
+                android:id="@+id/fragment_create_list_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="@color/white"
+                android:layout_margin="8dp"
+                android:hint="@string/text_create_list_item"
+                android:inputType="textCapSentences"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_create_list_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toTopOf="parent">
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="9"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/text_create_list_item"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fragment_create_list_input"
+                tools:itemCount="20"
+                tools:listitem="@layout/rv_icon_element" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapSentences"
-                        android:id="@+id/create_list_item_text"
-                        />
-
-                </com.google.android.material.textfield.TextInputLayout>
-                <ImageButton
-                    android:id="@+id/create_list_item_enter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:layout_marginTop="4dp"
-                    android:background="@color/green_toolbar"
-                    android:src="@drawable/ic_paper_plane"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/create_list_item_root_spinner" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/create_list_item_btn_root"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/fragment_create_list_text_stat"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout">
+                android:layout_marginStart="10dp"
+                android:text="@string/cost_statistic_title"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_create_list_statistic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_create_list_recycler_view" />
 
-                <ImageView
-                    android:id="@+id/create_list_item_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_cooking_pot"
-                    android:visibility="gone" />
+            <Spinner
+                android:id="@+id/fragment_create_list_statistic"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent=".2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/fragment_create_list_text_stat"
+                app:layout_constraintTop_toBottomOf="@id/fragment_create_list_recycler_view" />
 
-                <Button
-                    android:id="@+id/create_list_item_select_icon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:text="@string/select_icon" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/create_list_item_root_spinner"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/fragment_create_list_btn_create"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/create_list_item_btn_root">
+                android:layout_marginTop="10dp"
+                android:text="@string/text_new_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fragment_create_list_statistic" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style = "@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                    android:layout_width = "match_parent"
-                    android:layout_height = "wrap_content"
-                    android:hint = "@string/cost_statistic_title"
-                    >
-
-                    <AutoCompleteTextView
-                        android:id = "@+id/tv_with_spinner_behavior"
-                        android:layout_width = "match_parent"
-                        android:layout_height = "wrap_content"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </com.google.android.material.card.MaterialCardView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,7 @@ public class ItemDiffUtil extends DiffUtil.Callback {
     List<ItemModel> oldData;
     List<ItemModel> newData;
 
-    public ItemDiffUtil(List<ItemModel> oldData, List<ItemModel> newData){
+    public ItemDiffUtil(List<ItemModel> oldData, List<ItemModel> newData) {
         this.oldData = oldData;
         this.newData = newData;
     }
@@ -31,27 +31,26 @@ public class ItemDiffUtil extends DiffUtil.Callback {
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
         ItemModel oldItem = oldData.get(oldItemPosition);
         ItemModel newItem = newData.get(newItemPosition);
-        return oldItem.getId()==newItem.getId();
+        return oldItem.getId() == newItem.getId();
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         ItemModel oldItem = oldData.get(oldItemPosition);
         ItemModel newItem = newData.get(newItemPosition);
-        return oldItem.getQuantity().equals(newItem.getQuantity()) && oldItem.getName().equals(newItem.getName()) && oldItem.getImagePath().equals(Objects.requireNonNull(newItem.getImagePath()));
+        return !oldItem.getName().equals(newItem.getName()) && oldItem.getDateMod().equals(newItem.getDateMod());
     }
 
     @Nullable
     @Override
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
-        ItemModel oldItem = oldData.get(oldItemPosition);
-        ItemModel newItem = newData.get(newItemPosition);
-        if(oldItem.getImagePath()==null && newItem.getImagePath()==null){
-            return true;
+        if (oldItemPosition > oldData.size()) {
+            ItemModel oldItem = oldData.get(oldItemPosition);
+            ItemModel newItem = newData.get(newItemPosition);
+            if (oldItem.getId() == newItem.getId()) {
+                return !oldItem.getQuantity().equals(newItem.getQuantity());
+            }
         }
-        if (oldItem.getImagePath() != null && newItem.getImagePath()!= null && oldItem.getImagePath().equals(newItem.getImagePath())){
-            return true;
-        }
-        else return false;
+        return false;
     }
 }

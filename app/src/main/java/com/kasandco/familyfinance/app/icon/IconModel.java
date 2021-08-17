@@ -15,10 +15,20 @@ public class IconModel {
     public String path;
     @ColumnInfo(name = "text_search")
     public String textSearch;
+    @Ignore
+    private boolean isSelect;
 
     @Ignore
     public IconModel(String path, String textSearch){
         this.path = path;
         this.textSearch = textSearch;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 }

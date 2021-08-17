@@ -14,6 +14,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/item_activity_text_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:padding="@dimen/ItemTitleTextSize"
+        android:text="@string/text_empty"
+        android:textAlignment="center"
+        android:textColor="@color/text_color_info"
+        android:textSize="@dimen/ItemTitleTextSize"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/item_activity_toolbar" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/item_activity_swipe"
         android:layout_width="match_parent"

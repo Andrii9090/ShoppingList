@@ -1,22 +1,10 @@
 package com.kasandco.familyfinance.app.item.fragmentCreate;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.kasandco.familyfinance.app.item.ItemActivityScope;
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.item.ItemModel;
-import com.kasandco.familyfinance.app.item.ItemModule;
 import com.kasandco.familyfinance.app.item.ItemRepository;
-import com.kasandco.familyfinance.app.item.ViewModelItem;
 import com.kasandco.familyfinance.core.BasePresenter;
-import com.kasandco.familyfinance.utils.ToastUtils;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,10 +15,6 @@ public class FragmentItemCreatePresenter extends BasePresenter<FragmentItemCreat
     public ItemDao itemDao;
     @Inject
     public ItemRepository repository;
-
-    @Inject
-    ViewModelItem model;
-
 
     @Inject
     public FragmentItemCreatePresenter() {

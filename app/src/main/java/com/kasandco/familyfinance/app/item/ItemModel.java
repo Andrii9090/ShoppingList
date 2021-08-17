@@ -10,6 +10,8 @@ import androidx.room.PrimaryKey;
 public class ItemModel implements Cloneable{
     @PrimaryKey(autoGenerate = true)
     private long id;
+    @ColumnInfo(name = "server_id", defaultValue = "0")
+    private long serverId;
     private String name;
     @ColumnInfo(name = "date_mod")
     private String dateMod;
@@ -17,14 +19,21 @@ public class ItemModel implements Cloneable{
     @ColumnInfo(name = "image_path")
     private String imagePath;
     private int status;
+    @ColumnInfo(name = "is_delete", defaultValue = "0")
+    private byte isDelete;
+    @ColumnInfo(name = "server_list_id", defaultValue = "0")
+    private long serverListId;
+    @ColumnInfo(name="local_list_id")
+    private long localListId;
 
     public ItemModel(){}
 
     @Ignore
-    public ItemModel(String name, String quantity){
+    public ItemModel(String name, String quantity, long listId){
         this.name = name;
         this.quantity = quantity;
         this.status=1;
+        this.localListId=listId;
         this.dateMod = String.valueOf(System.currentTimeMillis());
     }
 
@@ -36,16 +45,13 @@ public class ItemModel implements Cloneable{
         this.status = status;
     }
 
-    public int getIsDelete() {
+    public byte getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(int isDelete) {
+    public void setIsDelete(byte isDelete) {
         this.isDelete = isDelete;
     }
-
-    @ColumnInfo(name = "is_delete")
-    private int isDelete;
 
     public long getId() {
         return id;
@@ -97,7 +103,33 @@ public class ItemModel implements Cloneable{
         newModel.setStatus(status);
         newModel.setIsDelete(isDelete);
         newModel.setId(id);
-        //TODO Сделать серверный айди
+        newModel.setServerId(serverId);
+        newModel.setLocalListId(localListId);
+        newModel.setServerListId(serverListId);
         return newModel;
+    }
+
+    public long getServerListId() {
+        return serverListId;
+    }
+
+    public void setServerListId(long serverListId) {
+        this.serverListId = serverListId;
+    }
+
+    public long getLocalListId() {
+        return localListId;
+    }
+
+    public void setLocalListId(long localListId) {
+        this.localListId = localListId;
+    }
+
+    public long getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(long serverId) {
+        this.serverId = serverId;
     }
 }

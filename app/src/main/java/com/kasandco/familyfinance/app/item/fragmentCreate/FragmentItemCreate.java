@@ -23,7 +23,6 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
     TextInputEditText name;
     ImageButton btnCreate;
     ItemModel itemEdit;
-    int position;
 
     public FragmentItemCreate(FragmentItemCreatePresenter presenter){
         App.getItemComponent(getContext()).plus(new CreateItemModule(this)).inject(this);
