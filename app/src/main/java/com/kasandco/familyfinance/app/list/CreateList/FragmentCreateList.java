@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.icon.AdapterIcon;
+import com.kasandco.familyfinance.app.icon.AdapterIcon.OnClickIconListener;
 import com.kasandco.familyfinance.app.icon.IconDao;
 import com.kasandco.familyfinance.app.icon.IconModel;
 import com.kasandco.familyfinance.app.list.ListModel;
@@ -33,13 +34,16 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class FragmentCreateList extends Fragment implements AdapterView.OnItemSelectedListener, CreateListContract, AdapterIcon.OnClickIconListener {
+public class FragmentCreateList extends Fragment implements AdapterView.OnItemSelectedListener, CreateListContract, OnClickIconListener {
 
     @Inject
     FragmentCreatePresenter presenter;
 
     @Inject
     IconDao iconDao;
+
+    @Inject
+    AdapterIcon adapterIcon;
 
     CreateListListener createListener;
     Button btnCreate;
@@ -51,8 +55,6 @@ public class FragmentCreateList extends Fragment implements AdapterView.OnItemSe
     IconModel iconModel;
     long statId;
 
-    @Inject
-    AdapterIcon adapterIcon;
 
     @Inject
     public FragmentCreateList() {
@@ -155,7 +157,7 @@ public class FragmentCreateList extends Fragment implements AdapterView.OnItemSe
         editList = listModel;
         if(listModel!=null) {
             text.setText(listModel.getName());
-            text.setSelection(listModel.getName().length() - 1);
+            text.setSelection(listModel.getName().length());
             statisticItem.setSelection(1);
         }
     }

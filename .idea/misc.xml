@@ -5,24 +5,43 @@
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.41875" />
         <entry key="../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/drawable/ic_calculator.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/ic_paper_plane.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/shape_background.xml" value="0.24375" />
+        <entry key="app/src/main/res/drawable/shape_background_btn.xml" value="0.38425925925925924" />
+        <entry key="app/src/main/res/drawable/shape_background_btn_left.xml" value="0.38425925925925924" />
+        <entry key="app/src/main/res/drawable/shape_background_btn_right.xml" value="0.38425925925925924" />
         <entry key="app/src/main/res/drawable/spinner_border.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/font/roboto.xml" value="0.2604166666666667" />
+        <entry key="app/src/main/res/layout-v21/activity_expense.xml" value="0.22395833333333334" />
+        <entry key="app/src/main/res/layout/activity_expense.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_finance.xml" value="0.253125" />
         <entry key="app/src/main/res/layout/activity_item.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/activity_list.xml" value="0.14527399779330635" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3890625" />
+        <entry key="app/src/main/res/layout/calculator.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/fragment_create_data_finance.xml" value="0.3974358974358974" />
+        <entry key="app/src/main/res/layout/fragment_create_data_financy.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/fragment_create_finance_category.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/fragment_create_financy_category.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_create_item.xml" value="0.33549582947173306" />
         <entry key="app/src/main/res/layout/fragment_create_list_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_expensive_history.xml" value="0.41367632268353716" />
+        <entry key="app/src/main/res/layout/fragment_finance_history.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_navigation_view_main.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/fragment_select_icon.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/fragment_select_photo.xml" value="0.3453125" />
         <entry key="app/src/main/res/layout/fragment_zoom_image.xml" value="0.22447916666666667" />
         <entry key="app/src/main/res/layout/list_element.xml" value="0.542343883661249" />
         <entry key="app/src/main/res/layout/rv_icon_element.xml" value="0.23020833333333332" />
+        <entry key="app/src/main/res/layout/rv_irem_expensive_category.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/rv_item.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/rv_item_expensive_category.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/rv_item_finance_category.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/rv_list_element.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/toolbar_main.xml" value="0.728" />
         <entry key="app/src/main/res/menu/context_menu_list_item.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/menu/menu_context_finance_category.xml" value="0.17864583333333334" />
         <entry key="app/src/main/res/menu/menu_context_item.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/menu/menu_item_activity.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/menu_list_activity.xml" value="0.23020833333333332" />

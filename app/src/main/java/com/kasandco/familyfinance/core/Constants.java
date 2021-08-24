@@ -11,6 +11,9 @@ public interface Constants {
     String LIST_ITEM_ID = "list_id";
     String LIST_SERVER_ID = "list_server_id";
     String LIST_NAME = "list_name";
+    String DEFAULT_CURRENCY = "default_currency";
 
+    int TYPE_COSTS = 1;
+    int TYPE_INCOME = 2;
 
 }

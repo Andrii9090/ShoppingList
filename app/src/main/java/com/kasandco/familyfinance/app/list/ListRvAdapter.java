@@ -170,7 +170,6 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Log.e("Menu", "oklong");
                     return true;
                 }
             });
@@ -185,8 +184,6 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
     }
 
     public interface ListAdapterListener {
-        void menuOnClick(ViewHolder holder);
-
         void itemOnClick(ViewHolder holder);
     }
 }

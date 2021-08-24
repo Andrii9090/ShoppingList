@@ -31,4 +31,24 @@
     <string name="text_change">Изменить</string>
     <string name="error_show_img">Ошибка  показа изображения</string>
     <string name="text_name_error">Название не может быть пустым или меньше 3 символов</string>
+    <string name="btn_expensive">РАСХОДЫ</string>
+    <string name="btn_income">ДОХОДЫ</string>
+    <string name="text_balance">ИТОГО</string>
+    <string name="categories">Категории</string>
+    <string name="text_month">Месяц</string>
+    <string name="text_week">Неделя</string>
+    <string name="text_today">День</string>
+    <string name="text_other_period">Период</string>
+    <string name="text_day">День</string>
+    <string name="text_category_name">Название категории</string>
+    <string name="text_create_list">Создать список покупок для этой  категории</string>
+    <string name="text_create_category">Создать</string>
+    <string name="amount">Сумма</string>
+    <string name="text_comment">Комментарий</string>
+    <string name="text_add">Добавить</string>
+    <string name="text_name_or_icon_error">Ошибка в названии или не выбрана иконка</string>
+    <string name="text_error_category_existed">Такая категория уже есть</string>
+    <string name="text_name_lenght">Длина названия не может быть больше 20 символов</string>
+    <string name="text_error_set_history_category">Выберите категорию в которую хотите добавить расход</string>
+    <string name="error_didvide_0">Разделить на  0 нельзя</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.kasandco.familyfinance.core;
 
 import com.kasandco.familyfinance.MainActivity;
+import com.kasandco.familyfinance.app.expenseHistory.FinanceComponent;
+import com.kasandco.familyfinance.app.expenseHistory.FinanceModule;
 import com.kasandco.familyfinance.app.item.DataComponent;
 import com.kasandco.familyfinance.app.item.DataModule;
 import com.kasandco.familyfinance.app.item.ItemComponent;
@@ -20,7 +22,7 @@ public interface AppComponent {
     ListActivityComponent plus(ListActivityModule module);
     ItemComponent plus(ItemModule module);
     DataComponent plus(DataModule module);
-    DataListComponent plus(DataListModule module);
+    FinanceComponent plus(FinanceModule module);
 
     void inject(MainActivity activity);
 }

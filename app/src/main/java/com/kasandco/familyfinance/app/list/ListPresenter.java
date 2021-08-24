@@ -1,14 +1,5 @@
 package com.kasandco.familyfinance.app.list;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
-
-import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.core.BasePresenterInterface;
 import com.kasandco.familyfinance.core.BasePresenter;
 
 import java.util.ArrayList;

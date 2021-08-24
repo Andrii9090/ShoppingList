@@ -10,4 +10,20 @@
     <style name="Toolbar">
         <item name="android:background">@color/toolbar</item>
     </style>
+
+    <style name="ExpensiveFragmentButtonLeft" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/shape_background_btn_left</item>
+    </style>
+    <style name="ExpensiveFragmentButtonRight" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/shape_background_btn_right</item>
+    </style>
+
+    <style name="PeriodButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+    </style>
+
+    <style name="OutLineButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
 </resources>

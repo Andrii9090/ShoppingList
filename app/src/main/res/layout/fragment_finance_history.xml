@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_background"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_header_fragment"
+            android:backgroundTint="?attr/colorPrimary"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="65"
+                android:fontFamily="@font/roboto_light"
+                android:gravity="center|center_vertical"
+                android:text="@string/categories"
+                android:textColor="@color/white"
+                android:textSize="@dimen/titleTextSize" />
+
+            <ImageButton
+                android:id="@+id/fragment_expensive_btn_add_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="20dp"
+                android:layout_weight="10"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:src="@drawable/ic_plus_white" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_expensive_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintHeight_percent=".83"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        android:scrollbars="vertical"
+        app:spanCount="4"
+        tools:itemCount="20"
+        tools:listitem="@layout/rv_item_finance_category"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".08"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_expensive_recycler_view">
+
+        <ImageButton
+            android:id="@+id/fragment_expensive_btn_scan"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:layout_marginEnd="25dp"
+            style="@style/ExpensiveFragmentButtonLeft"
+            android:src="@drawable/ic_scanner" />
+
+        <ImageButton
+            android:id="@+id/fragment_expensive_btn_add_amount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:layout_marginStart="25dp"
+            style="@style/ExpensiveFragmentButtonRight"
+            android:src="@drawable/ic_plus_white" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

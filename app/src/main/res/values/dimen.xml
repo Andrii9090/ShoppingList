@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="ItemTitleTextSize">20sp</dimen>
+    <dimen name="titleTextSize">24sp</dimen>
     <dimen name="ItemToolbarTextSize">22sp</dimen>
     <dimen name="ItemListSize">18sp</dimen>
+    <dimen name="SizeSecond">13sp</dimen>
+    <dimen name="categorySize">15sp</dimen>
 </resources>

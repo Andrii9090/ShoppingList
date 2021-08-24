@@ -61,12 +61,6 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
         super.onResume();
         presenter.viewReady(this);
     }
-
-    @Override
-    public void menuOnClick(ListRvAdapter.ViewHolder holder) {
-        Log.e("ClickMenu", "okok");
-    }
-
     @Override
     public void itemOnClick(ListRvAdapter.ViewHolder holder) {
         presenter.clickItem(holder);

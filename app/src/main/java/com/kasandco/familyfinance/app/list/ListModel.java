@@ -1,8 +1,5 @@
 package com.kasandco.familyfinance.app.list;
 
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -29,7 +26,7 @@ public class ListModel implements Serializable {
     private int isCost;
 
     @ColumnInfo(name = "cost_category_id", defaultValue = "0")
-    private long statisticCategoryId;
+    private long financeCategoryId;
 
     @ColumnInfo(name = "list_code", defaultValue = "0")
     private int listCode;
@@ -58,11 +55,11 @@ public class ListModel implements Serializable {
     }
 
     @Ignore
-    public ListModel(String name, String dateMod, String iconPath, long statId){
+    public ListModel(String name, String dateMod, String iconPath, long financeCategoryId){
         this.icon =iconPath;
         this.dateMod = dateMod;
         this.name = name;
-        this.statisticCategoryId = statId;
+        this.financeCategoryId = financeCategoryId;
     }
 
 
@@ -90,12 +87,12 @@ public class ListModel implements Serializable {
         this.isCost = isCost;
     }
 
-    public long getStatisticCategoryId() {
-        return statisticCategoryId;
+    public long getFinanceCategoryId() {
+        return financeCategoryId;
     }
 
-    public void setStatisticCategoryId(int statisticCategoryId) {
-        this.statisticCategoryId = statisticCategoryId;
+    public void setFinanceCategoryId(long financeCategoryId) {
+        this.financeCategoryId = financeCategoryId;
     }
 
     public int getListCode() {
@@ -162,7 +159,7 @@ public class ListModel implements Serializable {
         cloneItem.isOwner = this.isOwner;
         cloneItem.icon = this.icon;
         cloneItem.isCost = this.isCost;
-        cloneItem.statisticCategoryId = this.statisticCategoryId;
+        cloneItem.financeCategoryId = this.financeCategoryId;
         cloneItem.listCode = this.listCode;
         cloneItem.serverId = this.serverId;
         cloneItem.dateMod = this.dateMod;

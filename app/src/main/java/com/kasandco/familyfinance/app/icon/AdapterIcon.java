@@ -1,37 +1,26 @@
 package com.kasandco.familyfinance.app.icon;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.utils.ImageBackgroundUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import butterknife.BindView;
 
 public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
     List<IconModel> icons;
@@ -71,14 +60,25 @@ public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
         holder.btnIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setSelectedIconBackground(holder.getAbsoluteAdapterPosition());
                 listener.onClickIcon(icons.get(holder.getAbsoluteAdapterPosition()));
             }
         });
     }
 
+    private void setSelectedIconBackground(int absoluteAdapterPosition) {
+        for (IconModel icon:icons) {
+            if(icon.isSelect()){
+                icon.setSelect(false);
+                notifyItemChanged(icons.indexOf(icon));
+            }
+        }
+        icons.get(absoluteAdapterPosition).setSelect(true);
+        notifyItemChanged(absoluteAdapterPosition);
+    }
+
     public void setItems(List<IconModel> items){
         icons.addAll(items);
-        notifyDataSetChanged();
     }
 
     public void setListener(OnClickIconListener listener){
@@ -88,6 +88,16 @@ public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
     @Override
     public int getItemCount() {
         return icons.size();
+    }
+
+    public void setIcon(String iconPath) {
+        for (IconModel icon:icons) {
+            if(icon.path.equals(iconPath)){
+                icon.setSelect(true);
+                notifyItemChanged(icons.indexOf(icon));
+                break;
+            }
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

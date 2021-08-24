@@ -1,6 +1,6 @@
 package com.kasandco.familyfinance.core;
 
-public interface BasePresenterInterface {
+public interface BaseContract {
     void showLoading();
     void hideLoading();
 }

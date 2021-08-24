@@ -4,9 +4,9 @@ import android.net.Uri;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kasandco.familyfinance.core.BasePresenterInterface;
+import com.kasandco.familyfinance.core.BaseContract;
 
-public interface ItemContract extends BasePresenterInterface {
+public interface ItemContract extends BaseContract {
     void startAdapter(RecyclerView.Adapter<?> adapter);
 
     void showEditForm(ItemModel item);
