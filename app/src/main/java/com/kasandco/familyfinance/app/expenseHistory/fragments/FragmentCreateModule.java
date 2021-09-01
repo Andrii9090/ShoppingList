@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import com.kasandco.familyfinance.app.expenseHistory.FinanceRepository;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateCategoryContract;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.PresenterCreateFinanceCategory;
+import com.kasandco.familyfinance.app.list.ListDao;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,8 +14,8 @@ import dagger.Provides;
 public class FragmentCreateModule {
     @CreateCategoryScope
     @Provides
-    PresenterCreateFinanceCategory providesPresenter(FinanceRepository repository){
-        return new PresenterCreateFinanceCategory(repository);
+    PresenterCreateFinanceCategory providesPresenter(FinanceRepository repository, ListDao listDao){
+        return new PresenterCreateFinanceCategory(repository, listDao);
     }
 
 }

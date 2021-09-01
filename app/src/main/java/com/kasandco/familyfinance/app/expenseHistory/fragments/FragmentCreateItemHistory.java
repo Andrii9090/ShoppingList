@@ -14,11 +14,9 @@ import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.expenseHistory.FinanceActivity;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateHistoryItemContract;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateHistoryItemPresenter;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
@@ -313,6 +311,7 @@ public class FragmentCreateItemHistory extends Fragment implements CreateHistory
 
         private void calculate() {
             y=Double.parseDouble(calcLine.getText().toString().replace(",","."));
+            if(operation!=null)
             switch (operation) {
                 case "+":
                     x = com.kasandco.familyfinance.service.Calculator.addPl(x, y);
@@ -327,7 +326,7 @@ public class FragmentCreateItemHistory extends Fragment implements CreateHistory
                     if(y!=0)
                     x = com.kasandco.familyfinance.service.Calculator.divide(x, y);
                     else
-                        ToastUtils.showToast(getString(R.string.error_didvide_0), getContext());
+                        ToastUtils.showToast(getString(R.string.error_divide_0), getContext());
                     break;
 
             }

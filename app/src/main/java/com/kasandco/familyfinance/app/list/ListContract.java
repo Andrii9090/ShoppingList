@@ -11,4 +11,8 @@ public interface ListContract extends BaseContract {
     void showEditFragment(ListModel listModel);
 
     void showActivityDetails(ListModel listModel);
+
+    void showCreateItemHistoryFragment();
+
+    void setCategoryId(long financeCategoryId);
 }

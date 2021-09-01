@@ -7,7 +7,9 @@ import com.kasandco.familyfinance.dao.BaseDao;
 
 import java.util.List;
 
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
+
 
 @Dao
 public interface ListDao extends BaseDao<ListModel> {
@@ -26,8 +28,8 @@ public interface ListDao extends BaseDao<ListModel> {
     @Query("SELECT * FROM list WHERE cost_category_id=:costCategoryId")
     List<ListModel> getListsForCostId(long costCategoryId);
 
-    @Query("SELECT MAX(id) FROM list")
-    long getLastId();
+    @Query("SELECT id FROM list ORDER BY id DESC LIMIT 1")
+    Single<Long> getLastId();
 
     @Query("UPDATE list SET quantity_inactive=0 WHERE id=:id")
     void clearInactiveItems(long id);
@@ -40,4 +42,7 @@ public interface ListDao extends BaseDao<ListModel> {
 
     @Query("DELETE FROM list_item WHERE local_list_id=:localListId AND status=0")
     void deleteInactiveListItem(long localListId);
+
+    @Query("UPDATE list SET cost_category_id=:categoryId WHERE id=:id")
+    void addFinanceCategoryId(long id, long categoryId);
 }

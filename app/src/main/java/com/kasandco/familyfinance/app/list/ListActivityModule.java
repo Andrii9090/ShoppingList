@@ -2,15 +2,20 @@ package com.kasandco.familyfinance.app.list;
 
 import android.content.Context;
 
-import com.kasandco.familyfinance.app.list.CreateList.FragmentCreatePresenter;
+import com.kasandco.familyfinance.app.expenseHistory.FinanceRepository;
+import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
+import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryDao;
+import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateHistoryItemPresenter;
+import com.kasandco.familyfinance.app.list.createEditList.EditListPresenter;
+import com.kasandco.familyfinance.app.list.createEditList.FragmentCreatePresenter;
+import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
+import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;
 import com.kasandco.familyfinance.core.AppDataBase;
-import com.kasandco.familyfinance.network.ListNetworkInterface;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 
 @Module
 public class ListActivityModule {
@@ -28,13 +33,44 @@ public class ListActivityModule {
 
     @Provides
     @ListActivityScope
-    ListRepository providesListRepository(ListDao listDao){
-        return new ListRepository(listDao);
+    ListRepository providesListRepository(ListDao listDao, AppDataBase appDataBase){
+        return new ListRepository(listDao, appDataBase.getIconDao());
     }
 
     @Provides
     @ListActivityScope
-    ListDao providesListDao(AppDataBase dataBase){
-        return dataBase.getListDao();
+    FragmentEditList providesEditListFragment(EditListPresenter presenter){
+        return new FragmentEditList(presenter);
+    }
+
+
+    @Provides
+    @ListActivityScope
+    FragmentCreateList providesCreateListFragment(FragmentCreatePresenter presenter){
+        return new FragmentCreateList(presenter);
+    }
+
+    @Provides
+    @ListActivityScope
+    FinanceCategoryDao providesFinanceCategoryDao(AppDataBase appDataBase){
+        return appDataBase.getFinanceCategoryDao();
+    }
+
+    @Provides
+    @ListActivityScope
+    CreateHistoryItemPresenter providesCreateItemHistoryPresenter(FinanceRepository repository){
+        return new CreateHistoryItemPresenter(repository);
+    }
+
+    @Provides
+    @ListActivityScope
+    FragmentCreateItemHistory providesCreateItemHistory(CreateHistoryItemPresenter presenter){
+        return new FragmentCreateItemHistory(1, presenter);
+    }
+
+    @Provides
+    @ListActivityScope
+    FinanceRepository providesFinanceRepository(AppDataBase appDataBase){
+        return new FinanceRepository(appDataBase.getFinanceCategoryDao(), appDataBase.getFinanceDoa());
     }
 }

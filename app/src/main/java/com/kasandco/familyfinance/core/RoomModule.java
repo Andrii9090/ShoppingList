@@ -11,6 +11,8 @@ import com.kasandco.familyfinance.app.icon.IconDao;
 import com.kasandco.familyfinance.app.icon.IconModel;
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.list.ListActivity;
+import com.kasandco.familyfinance.app.list.ListActivityScope;
+import com.kasandco.familyfinance.app.list.ListDao;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,5 +37,11 @@ public class RoomModule{
     @Singleton
     IconDao provideIconDao(AppDataBase appDataBase){
         return appDataBase.getIconDao();
+    }
+
+    @Provides
+    @Singleton
+    ListDao providesListDao(AppDataBase dataBase){
+        return dataBase.getListDao();
     }
 }

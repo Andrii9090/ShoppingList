@@ -1,10 +1,14 @@
 package com.kasandco.familyfinance.app.expenseHistory.models;
 
 import androidx.room.Embedded;
+import androidx.room.Ignore;
 
 public class FinanceCategoryWithTotal {
     @Embedded
     FinanceCategoryModel category;
+    double total;
+    @Ignore
+    private boolean isSelected;
 
     public FinanceCategoryModel getCategory() {
         return category;
@@ -22,5 +26,11 @@ public class FinanceCategoryWithTotal {
         this.total = total;
     }
 
-    double total;
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 }

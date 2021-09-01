@@ -2,6 +2,8 @@ package com.kasandco.familyfinance.app.expenseHistory.adapters;
 
 import static com.kasandco.familyfinance.core.Constants.DEFAULT_CURRENCY;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,6 +84,22 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
     @Override
     public void onBindViewHolder(@NonNull FinanceCategoryAdapter.ViewHolder holder, int position) {
         holder.bind(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                setPosition(holder.getAbsoluteAdapterPosition());
+                for (FinanceCategoryWithTotal item:items) {
+                    if(item.isSelected()){
+                        item.setSelected(false);
+                        break;
+                    }
+                }
+                items.get(holder.getAbsoluteAdapterPosition()).setSelected(true);
+                listener.clickToItem();
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -113,21 +132,37 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
                     return false;
                 }
             });
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("ResourceAsColor")
-                @Override
-                public void onClick(View view) {
-                    setPosition(getAbsoluteAdapterPosition());
-                    itemView.setBackgroundColor(name.getContext().getResources().getColor(R.color.selected));
-                    listener.clickToItem();
-                }
-            });
         }
 
         @SuppressLint("DefaultLocale")
         public void bind(int position) {
             //TODO Сделать с Handler  и также в лист адаптере
             AssetManager am = icon.getContext().getAssets();
+            if(items.get(position).isSelected()) {
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), Color.WHITE, ContextCompat.getColor(name.getContext(),R.color.selected));
+                colorAnimation.setDuration(250); // milliseconds
+                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animator) {
+                        itemView.setBackgroundColor((int) animator.getAnimatedValue());
+                    }
+
+                });
+                colorAnimation.start();
+            }else {
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), ContextCompat.getColor(name.getContext(),R.color.selected), Color.WHITE);
+                colorAnimation.setDuration(250); // milliseconds
+                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animator) {
+                        itemView.setBackgroundColor((int) animator.getAnimatedValue());
+                    }
+
+                });
+                colorAnimation.start();
+            }
             InputStream is  = null;
             Bitmap bitmap = null;
             try {
@@ -135,7 +170,7 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
                 bitmap= BitmapFactory.decodeStream(is);
                 icon.setImageBitmap(bitmap);
                 ImageBackgroundUtil.setBackgroundColor(icon, R.attr.colorPrimary);
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
 

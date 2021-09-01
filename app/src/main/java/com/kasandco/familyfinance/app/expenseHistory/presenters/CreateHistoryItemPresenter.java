@@ -9,12 +9,11 @@ import java.util.GregorianCalendar;
 import javax.inject.Inject;
 
 public class CreateHistoryItemPresenter extends BasePresenter<CreateHistoryItemContract> {
-    @Inject
     FinanceRepository repository;
 
     @Inject
-    public CreateHistoryItemPresenter(){
-
+    public CreateHistoryItemPresenter(FinanceRepository repository){
+        this.repository = repository;
     }
 
     @Override

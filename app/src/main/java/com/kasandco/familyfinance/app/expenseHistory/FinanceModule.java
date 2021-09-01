@@ -37,7 +37,7 @@ public class FinanceModule {
     @FinanceActivityScope
     @Provides
     FinanceCategoryDao providesFinanceCatDao(AppDataBase appDataBase){
-       return appDataBase.getFinanceCategoryDoa();
+       return appDataBase.getFinanceCategoryDao();
     }
 
     @FinanceActivityScope

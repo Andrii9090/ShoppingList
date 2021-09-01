@@ -77,6 +77,16 @@ public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
         notifyItemChanged(absoluteAdapterPosition);
     }
 
+    public void setDefaultBackground(){
+        for (IconModel icon:icons) {
+            if(icon.isSelect()){
+                icon.setSelect(false);
+                notifyItemChanged(icons.indexOf(icon));
+                break;
+            }
+        }
+    }
+
     public void setItems(List<IconModel> items){
         icons.addAll(items);
     }

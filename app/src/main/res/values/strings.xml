@@ -9,7 +9,7 @@
     <string name="text_remove">Удалить</string>
     <string name="text_error">Ошибка</string>
     <string name="text_new_list">Создать</string>
-    <string name="text_create_list_item">Название спиcка</string>
+    <string name="text_create_list_item">Название списка</string>
     <string name="text_error_create_list">Ошибка при создании списка</string>
     <string name="text_select_icon">Иконка</string>
     <string name="text_list_added">Новый список создан</string>
@@ -48,7 +48,16 @@
     <string name="text_add">Добавить</string>
     <string name="text_name_or_icon_error">Ошибка в названии или не выбрана иконка</string>
     <string name="text_error_category_existed">Такая категория уже есть</string>
-    <string name="text_name_lenght">Длина названия не может быть больше 20 символов</string>
+    <string name="text_name_length">Длина названия не может быть больше 20 символов</string>
     <string name="text_error_set_history_category">Выберите категорию в которую хотите добавить расход</string>
-    <string name="error_didvide_0">Разделить на  0 нельзя</string>
+    <string name="error_divide_0">Разделить на  0 нельзя</string>
+    <string name="text_select_date">Выбранные даты</string>
+    <string name="lists">Мои списки</string>
+    <string name="text_error_add_cost">К этому списку не прикреплена категория расходов!</string>
+    <string name="menu_finance">Мои финансы</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_feed">Оставить отзыв</string>
+    <string name="menu_pro">Версия PRO</string>
+    <string name="menu_mail_to_dev">Написать разработчикам</string>
+    <string name="text_no_selected_finance_category">Не учитывать</string>
 </resources>

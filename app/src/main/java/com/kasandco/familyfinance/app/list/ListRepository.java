@@ -1,30 +1,33 @@
 package com.kasandco.familyfinance.app.list;
 
-import androidx.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
 
+
+import com.kasandco.familyfinance.app.icon.IconDao;
+import com.kasandco.familyfinance.app.icon.IconModel;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ListRepository {
     ListDao listDao;
     ListRepositoryInterface callback;
 
+    IconDao iconDao;
+
     private Disposable disposable;
 
-    public ListRepository(ListDao listDao){
+    public ListRepository(ListDao listDao, IconDao _iconDao){
         this.listDao = listDao;
+        iconDao=_iconDao;
     }
 
     public void create(ListModel listModel){
@@ -55,6 +58,15 @@ public class ListRepository {
                         callback.setListItems(listModels);
                     }
                 });
+    }
+
+    public void addFinanceCategoryId(long id, long categoryId){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                listDao.addFinanceCategoryId(id, categoryId);
+            }
+        }).start();
     }
 
     public void removeList(ListModel listModel) {
@@ -107,7 +119,48 @@ public class ListRepository {
         disposable.dispose();
     }
 
+    public void getLastId(FinanceCategoryListener callback) {
+        listDao.getLastId()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Throwable {
+                        callback.setLastId(aLong);
+                    }
+                });
+    }
+
+    public void createFinanceHistory(long financeCategoryId) {
+
+    }
+
+    public void getAllIcons(IconCallback callback){
+        iconDao.getAllIcon().observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        callback.setIcons(new ArrayList<>());
+                    }
+                })
+                .subscribe(new Consumer<List<IconModel>>() {
+                    @Override
+                    public void accept(List<IconModel> iconModels) throws Throwable {
+                        callback.setIcons(iconModels);
+                    }
+                });
+    }
     public interface ListRepositoryInterface {
         void setListItems(List<ListModel> listModel);
     }
+
+    public interface IconCallback {
+        void setIcons(List<IconModel> iconModels);
+    }
+
+    public interface FinanceCategoryListener{
+        void setLastId(long id);
+    }
+
 }

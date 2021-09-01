@@ -6,7 +6,7 @@ import androidx.room.Update;
 
 public interface BaseDao<T>{
     @Insert
-    void insert(T obj);
+    long insert(T obj);
 
     @Delete
     void delete(T obj);

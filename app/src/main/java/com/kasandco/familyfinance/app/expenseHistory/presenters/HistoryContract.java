@@ -15,5 +15,5 @@ public interface HistoryContract extends BaseContract {
 
     void showToast(int text_error_set_history_category);
 
-    void showCreateHistoryItemForm(long id);
+    void showCreateHistoryItemForm(long id, int type);
 }

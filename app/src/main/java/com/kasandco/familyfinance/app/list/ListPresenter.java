@@ -1,5 +1,7 @@
 package com.kasandco.familyfinance.app.list;
 
+import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
 import com.kasandco.familyfinance.core.BasePresenter;
 
 import java.util.ArrayList;
@@ -75,5 +77,14 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     public void swipeRefresh() {
         repository.unsubscribe();
         getListItems();
+    }
+
+    public void selectAddCost() {
+        if(adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId()==0){
+            view.showToast(R.string.text_error_add_cost);
+        }else {
+            view.showCreateItemHistoryFragment();
+            view.setCategoryId(adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId());
+        }
     }
 }

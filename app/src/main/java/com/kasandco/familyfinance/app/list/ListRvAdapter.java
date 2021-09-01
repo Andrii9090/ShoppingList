@@ -61,63 +61,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
     @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if (listItems.get(position) != null && listItems.get(position).getIcon() == null) {
-            holder.icon.setVisibility(View.GONE);
-        } else {
-            final Bitmap[] bitmap = {null};
-            AssetManager am = context.getAssets();
-            final InputStream[] is = {null};
-            class Async extends AsyncTask<Void, Void, Void> {
-
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    try {
-                        is[0] = am.open(listItems.get(position).getIcon());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    bitmap[0] = BitmapFactory.decodeStream(is[0]);
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void unused) {
-                    super.onPostExecute(unused);
-                    holder.icon.setImageBitmap(bitmap[0]);
-                    ImageBackgroundUtil.setBackgroundColor(holder.icon, R.attr.colorPrimary);
-
-                }
-            }
-            Async async = new Async();
-            async.execute();
-        }
-        holder.name.setText(listItems.get(position).getName());
-        holder.quantity.setText(String.format("%d/%d", listItems.get(position).getQuantityInactive(), listItems.get(position).getQuantityActive()));
-        View.OnClickListener menuListener;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        menuListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setPosition(holder.getAbsoluteAdapterPosition());
-                switch (view.getId()) {
-                    case R.id.list_item_menu:
-                        if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
-                            holder.itemView.showContextMenu(holder.itemView.getWidth(), holder.itemView.getHeight());
-                        } else {
-                            holder.itemView.showContextMenu();
-                        }
-                        break;
-                }
-            }
-        };
-        holder.menu.setOnClickListener(menuListener);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickListener.itemOnClick(holder);
-            }
-        });
+        holder.bind(position);
     }
 
     public List<ListModel> getItems(){
@@ -159,6 +103,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         TextView name;
         TextView quantity;
         ImageButton menu;
+        ContextMenu contextMenu;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -179,8 +124,69 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             MenuInflater inflater = new MenuInflater(view.getContext());
             inflater.inflate(R.menu.context_menu_list_item, contextMenu);
+            this.contextMenu = contextMenu;
         }
 
+        public void bind(int position) {
+            if (listItems.get(position) != null && listItems.get(position).getIcon() == null) {
+                icon.setVisibility(View.GONE);
+            } else {
+                icon.setVisibility(View.VISIBLE);
+                final Bitmap[] bitmap = {null};
+                AssetManager am = context.getAssets();
+                final InputStream[] is = {null};
+                class Async extends AsyncTask<Void, Void, Void> {
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        try {
+                            is[0] = am.open(listItems.get(position).getIcon());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        bitmap[0] = BitmapFactory.decodeStream(is[0]);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void unused) {
+                        super.onPostExecute(unused);
+                        icon.setImageBitmap(bitmap[0]);
+                        ImageBackgroundUtil.setBackgroundColor(icon, R.attr.colorPrimary);
+
+                    }
+                }
+                Async async = new Async();
+                async.execute();
+            }
+            name.setText(listItems.get(position).getName());
+            quantity.setText(String.format("%d/%d", listItems.get(position).getQuantityInactive(), listItems.get(position).getQuantityActive()));
+            View.OnClickListener menuListener;
+            int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+            menuListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setPosition(getAbsoluteAdapterPosition());
+                    switch (view.getId()) {
+                        case R.id.list_item_menu:
+                            if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
+                                itemView.showContextMenu(itemView.getWidth(), itemView.getHeight());
+                            } else {
+                                itemView.showContextMenu();
+                            }
+                            break;
+                    }
+                }
+            };
+            menu.setOnClickListener(menuListener);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickListener.itemOnClick(ViewHolder.this);
+                }
+            });
+        }
     }
 
     public interface ListAdapterListener {

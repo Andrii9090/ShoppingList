@@ -1,7 +1,6 @@
 package com.kasandco.familyfinance.app.list;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,7 +8,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,30 +17,37 @@ import android.widget.TextView;
 
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.app.BaseActivity;
+import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
 import com.kasandco.familyfinance.app.item.ItemActivity;
-import com.kasandco.familyfinance.app.list.CreateList.FragmentCreateList;
+import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
+import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
-
-import java.io.Serializable;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListActivity extends AppCompatActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener {
+public class ListActivity extends BaseActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener, FragmentCreateItemHistory.ClickListener {
     @Inject
     ListPresenter presenter;
     @Inject
     FragmentCreateList fragmentCreateList;
+
+    @Inject
+    FragmentEditList fragmentEditList;
 
     SwipeRefreshLayout refreshLayout;
     RecyclerView recyclerView;
     TextView emptyText;
     @BindView(R.id.activity_list_toolbar)
     Toolbar toolbar;
+
+    @Inject
+    FragmentCreateItemHistory fragmentCreateItemHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +58,15 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
         refreshLayout = findViewById(R.id.activity_list_swipe_container);
         recyclerView = findViewById(R.id.activity_list_rv_items);
         emptyText = findViewById(R.id.activity_list_text_empty);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
+        toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
         refreshLayout.setOnRefreshListener(refreshListener);
     }
 
@@ -61,6 +75,17 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
         super.onResume();
         presenter.viewReady(this);
     }
+
+    @Override
+    protected void startNewActivity(Class<?> activityClass) {
+        if(activityClass!=getClass()) {
+            Intent intent = new Intent(this, activityClass);
+            startActivity(intent);
+        }else{
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }
+    }
+
     @Override
     public void itemOnClick(ListRvAdapter.ViewHolder holder) {
         presenter.clickItem(holder);
@@ -116,14 +141,13 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
     public void showCreateFragment() {
         if (!fragmentCreateList.isAdded()) {
             getSupportFragmentManager().beginTransaction().add(R.id.activity_list_fragment, fragmentCreateList).commitNow();
-            KeyboardUtil.showKeyboard(this);
         }
     }
 
     @Override
     public void showEditFragment(ListModel listModel) {
-        showCreateFragment();
-        fragmentCreateList.setEditItem(listModel);
+        fragmentEditList.setEditItem(listModel);
+        getSupportFragmentManager().beginTransaction().add(R.id.activity_list_fragment, fragmentEditList).commitNow();
     }
 
     @Override
@@ -133,6 +157,19 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
         intent.putExtra(LIST_SERVER_ID, listModel.getServerId());
         intent.putExtra(LIST_NAME, listModel.getName());
         startActivity(intent);
+    }
+
+    @Override
+    public void showCreateItemHistoryFragment() {
+        fragmentCreateItemHistory.setCallback(this);
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.activity_list_fragment2, fragmentCreateItemHistory).commitNow();
+    }
+
+    @Override
+    public void setCategoryId(long financeCategoryId) {
+        if(fragmentCreateItemHistory.isAdded()){
+            fragmentCreateItemHistory.setCategory(financeCategoryId);
+        }
     }
 
     @Override
@@ -149,6 +186,9 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
                 break;
             case R.id.context_menu_list_item_clear_all:
                 presenter.selectClearAll();
+                break;
+            case R.id.context_menu_list_item_add_cost:
+                presenter.selectAddCost();
                 break;
         }
         return true;
@@ -180,6 +220,9 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
         if (fragmentCreateList.isAdded()) {
             getSupportFragmentManager().beginTransaction().remove(fragmentCreateList).commitNow();
             KeyboardUtil.hideKeyboard(this);
+        }else {
+            getSupportFragmentManager().beginTransaction().remove(fragmentEditList).commitNow();
+            KeyboardUtil.hideKeyboard(this);
         }
     }
 
@@ -189,4 +232,9 @@ public class ListActivity extends AppCompatActivity implements Constants, ListCo
             presenter.swipeRefresh();
         }
     };
+
+    @Override
+    public void closeCreateItemHistory() {
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).remove(fragmentCreateItemHistory).commitNow();
+    }
 }

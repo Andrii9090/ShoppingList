@@ -1,6 +1,5 @@
 package com.kasandco.familyfinance.app.expenseHistory.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,8 +20,10 @@ import com.kasandco.familyfinance.app.expenseHistory.presenters.HistoryContract;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.PresenterFinanceHistory;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
+import javax.inject.Inject;
+
 public class FragmentFinanceHistory extends Fragment implements HistoryContract, FinanceCategoryAdapter.OnClickItemListener {
-    private ImageButton btnAddCategory, btnScan, btnAddAmount;
+    private ImageButton btnAddCategory, btnAddAmount;
     private RecyclerView recyclerView;
 
     private PresenterFinanceHistory presenter;
@@ -30,16 +31,13 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     private ClickFragmentHistory callback;
     private int type;
 
+    @Inject
     public FragmentFinanceHistory(int type, PresenterFinanceHistory presenter){
         this.type = type;
         this.presenter = presenter;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        presenter.viewReady(this);
-    }
+
 
     @Nullable
     @Override
@@ -48,9 +46,7 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
         btnAddCategory = view.findViewById(R.id.fragment_expensive_btn_add_category);
         btnAddCategory.setOnClickListener(clickListener);
 
-        btnScan = view.findViewById(R.id.fragment_expensive_btn_scan);
         btnAddAmount = view.findViewById(R.id.fragment_expensive_btn_add_amount);
-        btnScan.setOnClickListener(addHistoryItemListener);
         btnAddAmount.setOnClickListener(addHistoryItemListener);
 
         recyclerView = view.findViewById(R.id.fragment_expensive_recycler_view);
@@ -60,15 +56,18 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.viewReady(this);
+    }
+
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.fragment_expensive_btn_add_category:
                         callback.onClickAddCategory(type);
-                    break;
-                case R.id.fragment_expensive_btn_scan:
-
                     break;
             }
         }
@@ -111,7 +110,6 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
 
     @Override
     public void unblockButtons() {
-        btnScan.setEnabled(true);
         btnAddAmount.setEnabled(true);
     }
 
@@ -121,8 +119,8 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     }
 
     @Override
-    public void showCreateHistoryItemForm(long id) {
-        callback.onClickAddCosts(id);
+    public void showCreateHistoryItemForm(long id, int type) {
+        callback.onClickAddCosts(id, type);
     }
 
     @Override
@@ -134,19 +132,25 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
         @Override
         public void onClick(View view) {
             switch (view.getId()){
-                case R.id.fragment_expensive_btn_scan:
-                    break;
                 default:
                     presenter.clickToCreateNewHistoryItem();
             }
         }
     };
 
+    public void setPeriod(String startDate, String endDate) {
+        presenter.periodSet(startDate, endDate);
+    }
+
     public interface ClickFragmentHistory {
         void onClickAddCategory(int financeType);
-        void onClickScanCost(long categoryId);
-        void onClickAddCosts(long categoryId);
+        void onClickAddCosts(long categoryId, int type);
         void onClickEdit(int type, FinanceCategoryModel financeCategoryModel);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.destroy();
     }
 }

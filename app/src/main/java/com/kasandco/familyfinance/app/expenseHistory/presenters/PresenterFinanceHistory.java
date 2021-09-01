@@ -19,6 +19,8 @@ import java.util.List;
 public class PresenterFinanceHistory extends BasePresenter<HistoryContract> implements FinanceRepository.FinanceHistoryCallback {
     private int type;
     private FinanceCategoryAdapter adapter;
+    private String startDate;
+    private String endDate;
 
     private FinanceRepository repository;
 
@@ -34,15 +36,23 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
     }
 
     private void getData() {
-        repository.getAllData(type, this);
+        repository.getAllData(type, startDate, endDate,this);
+    }
+
+    public void setNewPeriod(String startDate, String endDate){
+        this.startDate = startDate;
+        this.endDate = endDate;
+        getData();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void setAllItems(List<FinanceCategoryWithTotal> historyList) {
         adapter = new FinanceCategoryAdapter();
-        adapter.setItems(historyList);
-        view.setAdapter(adapter);
+        if(historyList.size()>0) {
+            adapter.setItems(historyList);
+            view.setAdapter(adapter);
+        }
     }
 
     public void contextMenuClick(int itemId) {
@@ -64,9 +74,22 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
 
     public void clickToCreateNewHistoryItem() {
         if(adapter.getCurrentPosition()!=-1){
-            view.showCreateHistoryItemForm(adapter.getItems().get(adapter.getCurrentPosition()).getCategory().getId());
+            view.showCreateHistoryItemForm(adapter.getItems().get(adapter.getCurrentPosition()).getCategory().getId(), type);
         }else {
             view.showToast(R.string.text_error_set_history_category);
         }
+    }
+
+    public void periodSet(String startDate, String endDate) {
+        if(this.startDate!=null){
+            setNewPeriod(startDate, endDate);
+        }else {
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+    }
+
+    public void destroy() {
+        repository.clearDisposable();
     }
 }

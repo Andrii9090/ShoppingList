@@ -19,6 +19,6 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract ListDao getListDao();
     public abstract IconDao getIconDao();
     public abstract ItemDao getItemDao();
-    public abstract FinanceCategoryDao getFinanceCategoryDoa();
+    public abstract FinanceCategoryDao getFinanceCategoryDao();
     public abstract FinanceDao getFinanceDoa();
 }
