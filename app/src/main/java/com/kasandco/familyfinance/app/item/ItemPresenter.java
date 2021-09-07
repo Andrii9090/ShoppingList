@@ -151,4 +151,8 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
 
         repository.changeStatus(item);
     }
+
+    public void createNewItem(String textEntered) {
+        repository.create(new String[]{textEntered});
+    }
 }

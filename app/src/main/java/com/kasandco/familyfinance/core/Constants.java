@@ -11,9 +11,12 @@ public interface Constants {
     String LIST_ITEM_ID = "list_id";
     String LIST_SERVER_ID = "list_server_id";
     String LIST_NAME = "list_name";
-    String DEFAULT_CURRENCY = "default_currency";
+    String SHP_DEFAULT_CURRENCY = "default_currency";
+    String DEFAULT_CURRENCY_VALUE = "USD";
 
     int TYPE_COSTS = 1;
     int TYPE_INCOME = 2;
 
+    int CODE_VOICE_RESULT = 12345;
+    String STAT_TYPE = "statistic_type";
 }

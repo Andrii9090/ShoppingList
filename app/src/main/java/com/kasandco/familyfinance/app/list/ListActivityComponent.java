@@ -5,7 +5,7 @@ import com.kasandco.familyfinance.app.icon.AdapterIcon;
 
 import dagger.Subcomponent;
 
-@Subcomponent(modules = {ListActivityModule.class})
+@Subcomponent(modules = {ListModule.class})
 @ListActivityScope
 public interface ListActivityComponent {
     void inject(ListActivity activity);

@@ -6,6 +6,7 @@ import com.kasandco.familyfinance.app.expenseHistory.FinanceRepository;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateCategoryContract;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.PresenterCreateFinanceCategory;
 import com.kasandco.familyfinance.app.list.ListDao;
+import com.kasandco.familyfinance.core.AppDataBase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,6 +17,12 @@ public class FragmentCreateModule {
     @Provides
     PresenterCreateFinanceCategory providesPresenter(FinanceRepository repository, ListDao listDao){
         return new PresenterCreateFinanceCategory(repository, listDao);
+    }
+
+    @Provides
+    @CreateCategoryScope
+    ListDao providesListDao(AppDataBase appDataBase){
+        return appDataBase.getListDao();
     }
 
 }

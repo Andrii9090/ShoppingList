@@ -11,10 +11,12 @@ import com.kasandco.familyfinance.app.expenseHistory.models.FinanceDao;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateHistoryItemPresenter;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.FinanceActivityPresenter;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.PresenterFinanceHistory;
+import com.kasandco.familyfinance.app.icon.IconDao;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.core.Constants;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -105,5 +107,11 @@ public class FinanceModule {
     @Provides
     FragmentCreateItemHistory providesCreateItemHistoryIncome(CreateHistoryItemPresenter presenter){
         return new FragmentCreateItemHistory(Constants.TYPE_INCOME, presenter);
+    }
+
+    @Provides
+    @FinanceActivityScope
+    IconDao provideIconDao(AppDataBase appDataBase){
+        return appDataBase.getIconDao();
     }
 }

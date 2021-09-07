@@ -33,15 +33,4 @@ public class RoomModule{
                 .build();
         return db;
     }
-    @Provides
-    @Singleton
-    IconDao provideIconDao(AppDataBase appDataBase){
-        return appDataBase.getIconDao();
-    }
-
-    @Provides
-    @Singleton
-    ListDao providesListDao(AppDataBase dataBase){
-        return dataBase.getListDao();
-    }
 }

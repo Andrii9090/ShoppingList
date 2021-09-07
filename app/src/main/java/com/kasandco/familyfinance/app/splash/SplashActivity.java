@@ -1,15 +1,19 @@
-package com.kasandco.familyfinance;
+package com.kasandco.familyfinance.app.splash;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.kasandco.familyfinance.App;
+import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.expenseHistory.FinanceActivity;
 import com.kasandco.familyfinance.app.icon.IconDao;
 import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.app.statistic.StatisticActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -19,7 +23,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements Constants {
+@SuppressLint("CustomSplashScreen")
+public class SplashActivity extends AppCompatActivity implements Constants {
     @Inject
     IconDao iconDao;
 
@@ -27,10 +32,10 @@ public class MainActivity extends AppCompatActivity implements Constants {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, FinanceActivity.class);
+        Intent intent = new Intent(this, StatisticActivity.class);
         startActivity(intent);
         SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil(this);
-        App.appComponent.inject(this);
+        App.appComponent.plus(new SplashModule()).inject(this);
         if(sharedPreferenceUtil.getSharedPreferences().getInt(IS_ADDED_ICONS, 0)==0){
             List<String> iconsPath = listAssetFiles(this, "icons");
             for (String path : iconsPath) {

@@ -60,4 +60,16 @@
     <string name="menu_pro">Версия PRO</string>
     <string name="menu_mail_to_dev">Написать разработчикам</string>
     <string name="text_no_selected_finance_category">Не учитывать</string>
+    <string name="text_sound">Говорите…</string>
+    <string name="text_other_cat_statistic">Другое</string>
+    <string name="text_empty_pie_chart">Нет данных для отображения</string>
+    <string name="format_category_stat">%s %s</string>
+    <string name="text_currency_format">%.2f %s</string>
+    <string name="text_currency_stat_total_format">%s %s</string>
+    <string name="text_currency_stat_total">Всего</string>
+    <string name="text_date_period">%s - %s</string>
+    <string name="text_ok">Ок</string>
+    <string name="format_detail_stat_item">%s %s %.1f%%</string>
+    <string name="menu_stat_cost">График расходов</string>
+    <string name="menu_stat_income">График доходов</string>
 </resources>

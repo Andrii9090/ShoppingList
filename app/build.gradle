@@ -62,9 +62,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
-    // optional - RxJava2 support for Room
-//    implementation "androidx.room:room-rxjava2:$room_version"
-
     // optional - RxJava3 support for Room
     implementation "androidx.room:room-rxjava3:$room_version"
 
@@ -81,5 +78,8 @@ dependencies {
     //Butterknife
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+
+    //Stat
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }

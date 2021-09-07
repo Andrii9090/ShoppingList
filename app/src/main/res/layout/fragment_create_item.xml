@@ -32,8 +32,6 @@
                         android:layout_height="wrap_content"
                         android:inputType="textCapSentences"
                         android:hint="@string/name_quantity_item"/>
-
-
                 <ImageButton
                     android:id="@+id/create_item_enter"
                     android:layout_width="0dp"

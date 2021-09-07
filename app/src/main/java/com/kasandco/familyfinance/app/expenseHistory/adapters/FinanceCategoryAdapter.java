@@ -1,6 +1,6 @@
 package com.kasandco.familyfinance.app.expenseHistory.adapters;
 
-import static com.kasandco.familyfinance.core.Constants.DEFAULT_CURRENCY;
+import static com.kasandco.familyfinance.core.Constants.SHP_DEFAULT_CURRENCY;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
@@ -9,8 +9,6 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -26,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.expenseHistory.DiffUtilFinanceAdapter;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryModel;
 import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryWithTotal;
 import com.kasandco.familyfinance.utils.ImageBackgroundUtil;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
@@ -175,7 +172,7 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
             }
 
             name.setText(items.get(position).getCategory().getName());
-            total.setText(String.format("%.2f %s", items.get(position).getTotal(), new SharedPreferenceUtil(total.getContext()).getSharedPreferences().getString(DEFAULT_CURRENCY, "USD")));
+            total.setText(String.format("%.2f %s", items.get(position).getTotal(), new SharedPreferenceUtil(total.getContext()).getSharedPreferences().getString(SHP_DEFAULT_CURRENCY, "USD")));
         }
 
         @Override

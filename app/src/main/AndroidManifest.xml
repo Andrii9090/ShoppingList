@@ -22,9 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FamilyFinance">
         <activity
+            android:name=".app.statistic.StatisticActivity"
+            android:exported="true" />
+        <activity
             android:name=".app.expenseHistory.FinanceActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".app.item.ItemActivity"
             android:exported="true" />
@@ -32,7 +35,7 @@
             android:name=".app.list.ListActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".app.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

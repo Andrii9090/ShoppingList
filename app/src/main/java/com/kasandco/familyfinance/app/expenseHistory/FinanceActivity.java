@@ -251,7 +251,7 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
         animator.setDuration(300);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
-                textTotal.setText(String.format("%.2f %s", animation.getAnimatedValue(), new SharedPreferenceUtil(FinanceActivity.this).getSharedPreferences().getString(Constants.DEFAULT_CURRENCY, "USD")));
+                textTotal.setText(String.format("%.2f %s", animation.getAnimatedValue(), new SharedPreferenceUtil(FinanceActivity.this).getSharedPreferences().getString(Constants.SHP_DEFAULT_CURRENCY, "USD")));
             }
         });
         animator.start();
