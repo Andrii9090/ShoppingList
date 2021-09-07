@@ -31,7 +31,7 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <EditText
                 android:id="@+id/fragment_create_finance_cat_input_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

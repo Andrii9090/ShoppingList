@@ -44,13 +44,8 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     @Inject
     ItemPresenter presenter;
 
-    @Inject
     FragmentItemCreate createFragment;
 
-    @Inject
-    ItemRepository repository;
-
-    @Inject
     FragmentZoomImage fragmentZoomImage;
 
     long listId;
@@ -95,6 +90,15 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
                 drawerLayout.openDrawer(Gravity.LEFT);
             }
         });
+    }
+
+    @Inject
+    public void getFragmentZoomImage(FragmentZoomImage fragmentZoomImage){
+        this.fragmentZoomImage = fragmentZoomImage;
+    }
+    @Inject
+    public void getFragmentZoomImage(FragmentItemCreate fragmentItemCreate){
+        this.createFragment = fragmentItemCreate;
     }
 
     @Override
@@ -346,5 +350,11 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     @Override
     public void onClickItem() {
         presenter.clickToItem();
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.destroy();
+        super.onDestroy();
     }
 }

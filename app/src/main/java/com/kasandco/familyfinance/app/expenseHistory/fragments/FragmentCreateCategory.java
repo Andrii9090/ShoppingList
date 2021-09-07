@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,7 +46,7 @@ import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FragmentCreateCategory extends Fragment implements CreateCategoryContract, AdapterIcon.OnClickIconListener {
-    private TextInputEditText name;
+    private EditText name;
     private CheckBox checkBox;
     private Button btnCreate;
     private RecyclerView recyclerView;
@@ -90,6 +91,7 @@ public class FragmentCreateCategory extends Fragment implements CreateCategoryCo
             @Override
             public void onClick(View view) {
                 KeyboardUtil.hideKeyboard(getActivity());
+                nullingView();
                 callback.closeCreateFragment();
             }
         });
@@ -169,6 +171,13 @@ public class FragmentCreateCategory extends Fragment implements CreateCategoryCo
     }
 
     @Override
+    public void nullingView() {
+        name.setText("");
+        checkBox.setChecked(false);
+        adapterIcon.setDefaultBackground();
+    }
+
+    @Override
     public void showLoading() {
 
     }
@@ -195,5 +204,11 @@ public class FragmentCreateCategory extends Fragment implements CreateCategoryCo
 
     public interface CreateFinanceCategoryListener{
         void closeCreateFragment();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        presenter.destroyView();
     }
 }

@@ -237,4 +237,10 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     public void closeCreateItemHistory() {
         getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).remove(fragmentCreateItemHistory).commitNow();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDetach();
+    }
 }

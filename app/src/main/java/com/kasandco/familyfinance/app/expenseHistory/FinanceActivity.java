@@ -125,7 +125,7 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()){
+                switch (tab.getPosition()) {
                     case 0:
                         presenter.selectCostFragment();
                         break;
@@ -154,25 +154,25 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
 
     @Override
     public void onClickAddCosts(long categoryId, int type) {
-        if(type==1) {
+        if (type == 1) {
             costCreateItemFragment.setCategory(categoryId);
             costCreateItemFragment.setCallback(this);
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen, costCreateItemFragment).commitNow();
-        }else{
+        } else {
             incomeCreateItemFragment.setCategory(categoryId);
             incomeCreateItemFragment.setCallback(this);
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen, incomeCreateItemFragment).commitNow();
         }
-        }
+    }
 
     @Override
     public void onClickEdit(int type, FinanceCategoryModel financeCategoryModel) {
-        if(type==TYPE_COSTS){
+        if (type == TYPE_COSTS) {
             fragmentCreateCostCategory.setEditItem(financeCategoryModel);
-            getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen,fragmentCreateCostCategory).commitNow();
-        }else{
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen, fragmentCreateCostCategory).commitNow();
+        } else {
             fragmentCreateIncomeCategory.setEditItem(financeCategoryModel);
-            getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen,fragmentCreateIncomeCategory).commitNow();
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen, fragmentCreateIncomeCategory).commitNow();
         }
     }
 
@@ -180,12 +180,12 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
     public void showCreateCategoryFragment(int type) {
         if (type == TYPE_COSTS) {
             showFragment(fragmentCreateCostCategory);
-        }else {
+        } else {
             showFragment(fragmentCreateIncomeCategory);
         }
     }
 
-    private void showFragment(Fragment fragment){
+    private void showFragment(Fragment fragment) {
         if (getSupportFragmentManager().findFragmentById(R.id.frameLayout_full_screen) != null && getSupportFragmentManager().findFragmentById(R.id.frameLayout_full_screen).isAdded()) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).replace(R.id.frameLayout_full_screen, fragment).commitNow();
         } else {
@@ -231,7 +231,8 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
                         .setTitleText(getString(R.string.text_select_date))
                         .build();
         dateRangePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
-            @Override public void onPositiveButtonClick(Pair<Long,Long> selection) {
+            @Override
+            public void onPositiveButtonClick(Pair<Long, Long> selection) {
                 Date startDate = new Date(selection.first);
                 Date startEnd = new Date(selection.second);
                 Calendar end = Calendar.getInstance();
@@ -240,14 +241,14 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
                 presenter.setDateRangePeriod(String.valueOf(startDate.getTime()), String.valueOf(end.getTime().getTime()));
             }
         });
-        dateRangePicker.show(getSupportFragmentManager(),"DatePicker");
+        dateRangePicker.show(getSupportFragmentManager(), "DatePicker");
         hideLoading();
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public void setTotal(double total) {
-        ValueAnimator animator = ValueAnimator.ofFloat(Float.parseFloat(textTotal.getText().toString().isEmpty()?"0":textTotal.getText().toString().replace(",",".").split(" ")[0]), (float) total);
+        ValueAnimator animator = ValueAnimator.ofFloat(Float.parseFloat(textTotal.getText().toString().isEmpty() ? "0" : textTotal.getText().toString().replace(",", ".").split(" ")[0]), (float) total);
         animator.setDuration(300);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -259,26 +260,27 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
 
     @Override
     public void getTabPositionSelected() {
-        if(tabLayout.getSelectedTabPosition()==1){
+        if (tabLayout.getSelectedTabPosition() == 1) {
             presenter.selectIncomeFragment();
-        }else {
+        } else {
             presenter.selectCostFragment();
         }
     }
 
     @Override
     public void closeCreateItemHistory() {
-        if(costCreateItemFragment.isAdded()) {
+        if (costCreateItemFragment.isAdded()) {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).remove(costCreateItemFragment).commitNow();
-        }else{
+        } else {
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).remove(incomeCreateItemFragment).commitNow();
         }
-        }
+        costCreateItemFragment.onDestroyView();
+    }
 
     private TabLayout.OnTabSelectedListener dateTabLayoutListener = new TabLayout.OnTabSelectedListener() {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
-            switch (tab.getPosition()){
+            switch (tab.getPosition()) {
                 case 0:
                     presenter.setStatPeriod(Calendar.MONTH);
                     break;
@@ -288,7 +290,7 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
                 case 2:
                     presenter.setStatPeriod(Calendar.DAY_OF_WEEK);
                     break;
-                    case 3:
+                case 3:
                     presenter.clickSetPeriod();
                     break;
             }
@@ -300,7 +302,7 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
 
         @Override
         public void onTabReselected(TabLayout.Tab tab) {
-            if(tab.getPosition()==3){
+            if (tab.getPosition() == 3) {
                 presenter.clickSetPeriod();
             }
         }
@@ -309,10 +311,10 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
 
     @Override
     protected void startNewActivity(Class activityClass) {
-        if(activityClass!=getClass()) {
+        if (activityClass != getClass()) {
             Intent intent = new Intent(this, activityClass);
             startActivity(intent);
-        }else{
+        } else {
             drawerLayout.closeDrawer(Gravity.LEFT);
         }
     }

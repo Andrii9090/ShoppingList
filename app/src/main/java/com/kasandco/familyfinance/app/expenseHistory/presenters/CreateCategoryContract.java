@@ -8,4 +8,6 @@ public interface CreateCategoryContract extends BaseContract {
     void showToast(int resource);
 
     void close();
+
+    void nullingView();
 }

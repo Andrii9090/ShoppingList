@@ -52,6 +52,12 @@ public class ListRepository {
         this.callback = callback;
         disposable = listDao.getAllActiveList().subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        callback.setListItems(null);
+                    }
+                })
                 .subscribe(new Consumer<List<ListModel>>() {
                     @Override
                     public void accept(List<ListModel> listModels) throws Exception {
@@ -110,7 +116,7 @@ public class ListRepository {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                listDao.deleteActiveListItem(listId);
+                listDao.deleteInactiveListItem(listId);
             }
         }).start();
     }

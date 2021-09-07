@@ -107,9 +107,8 @@ public class ItemRepository {
         }).start();
     }
 
-    public void unSubscribeData() {
+    public void unSubscribe() {
         disposable.dispose();
-        disposable = null;
     }
 
     public void changeStatus(ItemModel item) {

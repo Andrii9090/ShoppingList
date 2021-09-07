@@ -136,7 +136,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
 
     public void refreshData() {
         items.clear();
-        repository.unSubscribeData();
+        repository.unSubscribe();
         repository.getAll(listId);
     }
 
@@ -154,5 +154,9 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
 
     public void createNewItem(String textEntered) {
         repository.create(new String[]{textEntered});
+    }
+
+    public void destroy() {
+        repository.unSubscribe();
     }
 }

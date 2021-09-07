@@ -45,6 +45,7 @@ public class PresenterCreateFinanceCategory extends BasePresenter<CreateCategory
                     }
                 }
             }
+            view.nullingView();
         } else {
             view.showToast(R.string.text_name_or_icon_error);
         }
@@ -77,5 +78,9 @@ public class PresenterCreateFinanceCategory extends BasePresenter<CreateCategory
             }).start();
         }
         view.close();
+    }
+
+    public void destroyView() {
+        view.nullingView();
     }
 }

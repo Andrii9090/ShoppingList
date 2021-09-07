@@ -87,4 +87,9 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
             view.setCategoryId(adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId());
         }
     }
+
+    public void onDetach() {
+        repository.unsubscribe();
+        view = null;
+    }
 }

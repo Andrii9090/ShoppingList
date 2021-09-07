@@ -98,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:visibility="invisible"
+                android:indeterminateOnly="true"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
