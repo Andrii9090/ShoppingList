@@ -2,18 +2,19 @@ package com.kasandco.familyfinance.app.splash;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.widget.ImageView;
 
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.icon.IconDao;
-import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.core.icon.IconDao;
+import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.list.ListActivity;
-import com.kasandco.familyfinance.app.statistic.StatisticActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -27,50 +28,87 @@ import javax.inject.Inject;
 public class SplashActivity extends AppCompatActivity implements Constants {
     @Inject
     IconDao iconDao;
+    SharedPreferenceUtil sharedPreferenceUtil;
+    ImageView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        setTheme(R.style.Theme_FamilyFinance);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Intent intent = new Intent(this, ListActivity.class);
-        SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil(this);
+        sharedPreferenceUtil = new SharedPreferenceUtil(this);
         App.appComponent.plus(new SplashModule()).inject(this);
-        Handler handler =new Handler();
+        logo = findViewById(R.id.splash_logo);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(sharedPreferenceUtil.getSharedPreferences().getInt(IS_ADDED_ICONS, 0)==0){
+                if (sharedPreferenceUtil.getSharedPreferences().getInt(IS_ADDED_ICONS, 0) == 0) {
                     List<String> iconsPath = listAssetFiles(SplashActivity.this, "icons");
                     for (String path : iconsPath) {
-                                iconDao.insert(new IconModel(path, null));
+                        iconDao.insert(new IconModel(path, null));
                     }
                     if (iconsPath.size() > 0) {
                         sharedPreferenceUtil.getEditor().putInt(IS_ADDED_ICONS, 1).apply();
                     }
                 }
-                try {
-                    Thread.sleep(1200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(intent);
-                    }
-                });
             }
         }).start();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(this, ListActivity.class);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, 1f)
+                .setDuration(1000);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                logo.setAlpha((float) valueAnimator.getAnimatedValue());
+            }
+        });
+        valueAnimator.start();
+
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                try {
+                    Thread.sleep(500);
+                    startActivity(intent);
+                    finish();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+    }
+
     List<String> listAssetFiles(Context appContext, String path) {
-        String [] list;
-        List<String> pathList =  new ArrayList<>();
+        String[] list;
+        List<String> pathList = new ArrayList<>();
         try {
             list = appContext.getAssets().list(path);
             if (list.length > 0) {
                 for (String file : list) {
-                    if (listAssetFiles(appContext, path + "/" + file)==null)
+                    if (listAssetFiles(appContext, path + "/" + file) == null)
                         return null;
                     else {
                         pathList.add(path + "/" + file);

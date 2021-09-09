@@ -3,13 +3,11 @@ package com.kasandco.familyfinance.app.list;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -20,13 +18,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.icon.AdapterIcon;
-import com.kasandco.familyfinance.app.icon.IconDao;
 import com.kasandco.familyfinance.utils.ImageBackgroundUtil;
 
 import java.io.IOException;
@@ -54,7 +49,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         onClickListener = (ListAdapterListener) context;
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_list_element, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_list_cell, parent, false);
         return new ViewHolder(view);
     }
 
@@ -152,7 +147,11 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
                     protected void onPostExecute(Void unused) {
                         super.onPostExecute(unused);
                         icon.setImageBitmap(bitmap[0]);
-                        ImageBackgroundUtil.setBackgroundColor(icon, R.attr.colorPrimary);
+                        TypedValue typedValue = new TypedValue();
+                        Resources.Theme theme = icon.getContext().getTheme();
+                        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                        int color = typedValue.data;
+                        ImageBackgroundUtil.setBackgroundColor(icon, color);
 
                     }
                 }
@@ -160,7 +159,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
                 async.execute();
             }
             name.setText(listItems.get(position).getName());
-            quantity.setText(String.format("%d/%d", listItems.get(position).getQuantityInactive(), listItems.get(position).getQuantityActive()));
+            quantity.setText(String.format("%d / %d", listItems.get(position).getQuantityActive(), listItems.get(position).getQuantityActive()+listItems.get(position).getQuantityInactive()));
             View.OnClickListener menuListener;
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
             menuListener = new View.OnClickListener() {

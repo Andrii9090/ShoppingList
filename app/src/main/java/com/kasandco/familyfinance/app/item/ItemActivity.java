@@ -30,7 +30,7 @@ import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.FragmentZoomImage;
-import com.kasandco.familyfinance.app.item.fragmentCreate.FragmentItemCreate;
+import com.kasandco.familyfinance.app.item.create.FragmentItemCreate;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;

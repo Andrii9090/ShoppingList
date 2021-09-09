@@ -8,8 +8,7 @@
     android:background="@color/background_main">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_main">
+        android:layout_height="match_parent">
 
         <include
             android:id="@+id/activity_list_toolbar"
@@ -46,7 +45,7 @@
                 android:scrollbars="vertical"
                 app:layout_constraintTop_toBottomOf="@id/activity_list_toolbar"
                 tools:itemCount="50"
-                tools:listitem="@layout/rv_list_element" />
+                tools:listitem="@layout/rv_list_cell" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <FrameLayout

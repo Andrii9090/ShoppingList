@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
@@ -61,6 +62,8 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
+        MaterialTextView title = toolbar.findViewById(R.id.toolbar_title);
+        title.setText(R.string.title_list);
         toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,6 +176,19 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     }
 
     @Override
+    public void runSendIntent(String text) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        intent.setType("text/plain");
+        startActivity(intent);
+    }
+
+    @Override
+    public String getStringResource(int resource) {
+        return getString(resource);
+    }
+
+    @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.context_menu_list_item_remove:
@@ -189,6 +205,9 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
                 break;
             case R.id.context_menu_list_item_add_cost:
                 presenter.selectAddCost();
+                break;
+            case R.id.context_menu_list_item_send_list:
+                presenter.selectShareList();
                 break;
         }
         return true;

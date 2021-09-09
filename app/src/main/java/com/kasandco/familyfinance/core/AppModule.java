@@ -2,7 +2,6 @@ package com.kasandco.familyfinance.core;
 
 import android.content.Context;
 
-import com.kasandco.familyfinance.app.ViewModelCreateFactory;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Named;

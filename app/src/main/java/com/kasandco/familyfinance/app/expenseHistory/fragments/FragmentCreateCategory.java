@@ -1,7 +1,6 @@
 package com.kasandco.familyfinance.app.expenseHistory.fragments;
 
 import android.content.Context;
-import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,27 +10,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.expenseHistory.FinanceActivity;
 import com.kasandco.familyfinance.app.expenseHistory.FinanceModule;
 import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryModel;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryWithTotal;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateCategoryContract;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.PresenterCreateFinanceCategory;
-import com.kasandco.familyfinance.app.icon.AdapterIcon;
-import com.kasandco.familyfinance.app.icon.IconDao;
-import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.core.icon.AdapterIcon;
+import com.kasandco.familyfinance.core.icon.IconDao;
+import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
@@ -41,7 +35,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 

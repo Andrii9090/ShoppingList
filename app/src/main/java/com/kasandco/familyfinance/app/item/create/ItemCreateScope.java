@@ -1,4 +1,4 @@
-package com.kasandco.familyfinance.app.item.fragmentCreate;
+package com.kasandco.familyfinance.app.item.create;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

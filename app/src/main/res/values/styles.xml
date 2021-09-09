@@ -8,7 +8,7 @@
     </style>
 
     <style name="Toolbar">
-        <item name="android:background">@color/toolbar</item>
+        <item name="android:background">?attr/colorPrimary</item>
     </style>
 
     <style name="ExpensiveFragmentButtonLeft" parent="Widget.AppCompat.ImageButton">
@@ -20,6 +20,9 @@
 
     <style name="PeriodButton" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">?attr/colorSecondary</item>
+    </style>
+    <style name="BtnNormal" parent="Widget.MaterialComponents.Button">
+        <item name="background">?attr/colorPrimary</item>
     </style>
 
     <style name="OutLineButton" parent="Widget.MaterialComponents.Button.OutlinedButton">

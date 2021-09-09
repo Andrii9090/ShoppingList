@@ -1,7 +1,7 @@
 package com.kasandco.familyfinance.app.item;
 
-import com.kasandco.familyfinance.app.item.fragmentCreate.CreateItemComponent;
-import com.kasandco.familyfinance.app.item.fragmentCreate.CreateItemModule;
+import com.kasandco.familyfinance.app.item.create.CreateItemComponent;
+import com.kasandco.familyfinance.app.item.create.CreateItemModule;
 
 import dagger.Subcomponent;
 

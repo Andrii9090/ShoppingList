@@ -10,6 +10,8 @@ import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryModel
 import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryWithTotal;
 import com.kasandco.familyfinance.app.expenseHistory.models.FinanceDao;
 import com.kasandco.familyfinance.app.expenseHistory.models.FinanceModel;
+import com.kasandco.familyfinance.app.list.ListDao;
+import com.kasandco.familyfinance.app.list.ListModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,71 +23,52 @@ import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FinanceRepository {
+    private ListDao listDao;
     FinanceCategoryDao financeCategoryDao;
 
     FinanceDao financeHistoryDao;
     private CompositeDisposable disposable;
 
 
-    public FinanceRepository(FinanceCategoryDao financeCategoryDao, FinanceDao financeHistoryDao){
+    public FinanceRepository(FinanceCategoryDao financeCategoryDao, FinanceDao financeHistoryDao, ListDao listDao){
         this.financeHistoryDao = financeHistoryDao;
         this.financeCategoryDao = financeCategoryDao;
+        this.listDao = listDao;
         disposable = new CompositeDisposable();
     }
 
     public void createNewCategory(FinanceCategoryModel category, FinanceRepositoryCallback callback, boolean checked) {
         Handler handler = new Handler(Looper.getMainLooper());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    long id = financeCategoryDao.insert(category);
-                    @Override
-                    public void run() {
-                        try{
-                            callback.added(id);
-                        }catch (SQLiteConstraintException e){
-                            callback.notUnique();
-                        }
-                    }
-                });
+        new Thread(() -> {
+            try {
+                long id = financeCategoryDao.insert(category);
+                handler.post(() -> callback.added(id));
+            }catch (SQLiteConstraintException e) {
+                handler.post(callback::notUnique);
             }
         }).start();
+    }
+
+    public void createNewList(long categoryId, FinanceCategoryModel category){
+        ListModel list = new ListModel(category.getName(), String.valueOf(System.currentTimeMillis()), category.getIconPath(), categoryId);
+        new Thread(() -> listDao.insert(list)).start();
     }
 
     public void getAllData(int type, String dateStart, String dateEnd, FinanceHistoryCallback callback) {
         disposable.add(financeCategoryDao.getAll(type, dateStart, dateEnd)
                 .observeOn(io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.newThread())
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Throwable {
-                    }
+                .doOnError(throwable -> {
                 })
-                .subscribe(new Consumer<List<FinanceCategoryWithTotal>>() {
-                    @Override
-                    public void accept(List<FinanceCategoryWithTotal> financeCategoryModels) throws Throwable {
-                        callback.setAllItems(financeCategoryModels);
-                    }
-                }));
+                .subscribe(callback::setAllItems));
     }
 
     public void getAllCostCategory(AllCostCategoryCallback callback){
         financeCategoryDao.getAllCostCategory()
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Throwable {
-                        callback.setAllCostCategory(new ArrayList<>());
-                    }
-                })
+                .doOnError(throwable -> callback.setAllCostCategory(new ArrayList<>()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Consumer<List<FinanceCategoryModel>>() {
-                    @Override
-                    public void accept(List<FinanceCategoryModel> financeCategoryModels) throws Throwable {
-                        callback.setAllCostCategory(financeCategoryModels);
-                    }
-                });
+                .subscribe(callback::setAllCostCategory);
     }
 
     public void clearDisposable(){
@@ -93,69 +76,35 @@ public class FinanceRepository {
     }
 
     public void edit(FinanceCategoryModel editItem, FinanceRepositoryCallback callback) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                financeCategoryDao.update(editItem);
-                callback.added(0);
-            }
+        new Thread(() -> {
+            financeCategoryDao.update(editItem);
+            callback.added(0);
         }).start();
     }
 
     public void remove(FinanceCategoryModel financeCategoryModel) {
-        new  Thread(new Runnable() {
-            @Override
-            public void run() {
-                financeCategoryDao.delete(financeCategoryModel);
-            }
-        }).start();
+        new  Thread(() -> financeCategoryDao.delete(financeCategoryModel)).start();
     }
 
     public void createNewHistoryItem(FinanceModel item) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                financeHistoryDao.insert(item);
-            }
-        }).start();
+        new Thread(() -> financeHistoryDao.insert(item)).start();
     }
 
     public void getTotalToPeriod(String startDate, String endDate, FinanceTotalResult callback) {
         financeHistoryDao.getTotalToPeriod(1, startDate, endDate)
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Throwable {
-                        callback.setTotal(1,0.0);
-                    }
-                })
+                .doOnError(throwable -> callback.setTotal(1,0.0))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Consumer<Double>() {
-                    @Override
-                    public void accept(Double aDouble) throws Throwable {
-                        callback.setTotal(1, aDouble);
-                    }
-                });
+                .subscribe(aDouble -> callback.setTotal(1, aDouble));
         financeHistoryDao.getTotalToPeriod(2, startDate, endDate)
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Throwable {
-                        callback.setTotal(2,0.0);
-                    }
-                })
+                .doOnError(throwable -> callback.setTotal(2,0.0))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Consumer<Double>() {
-                    @Override
-                    public void accept(Double aDouble) throws Throwable {
-                        callback.setTotal(2, aDouble);
-                    }
-                });
+                .subscribe(aDouble -> callback.setTotal(2, aDouble));
     }
 
     public interface FinanceRepositoryCallback{
         void notUnique();
-
         void added(long id);
 
     }

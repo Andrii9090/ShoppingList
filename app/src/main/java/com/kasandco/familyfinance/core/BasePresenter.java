@@ -14,4 +14,8 @@ public abstract class BasePresenter<V> implements Constants {
     }
 
     public abstract void viewReady(V view);
+
+    public void destroy(){
+        view = null;
+    };
 }

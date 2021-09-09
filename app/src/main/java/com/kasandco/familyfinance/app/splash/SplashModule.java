@@ -1,6 +1,6 @@
 package com.kasandco.familyfinance.app.splash;
 
-import com.kasandco.familyfinance.app.icon.IconDao;
+import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.AppDataBase;
 
 import dagger.Module;

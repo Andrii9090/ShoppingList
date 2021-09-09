@@ -1,4 +1,4 @@
-package com.kasandco.familyfinance.app.item.fragmentCreate;
+package com.kasandco.familyfinance.app.item.create;
 
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.item.ItemModel;
@@ -54,7 +54,7 @@ public class FragmentItemCreatePresenter extends BasePresenter<FragmentItemCreat
         if (name.contains(":")) {
             return name.split(":");
         } else {
-            Pattern pattern = Pattern.compile("([a-zA-Zа-яА-Я]+)\\\\s(\\\\d+\\\\s?[a-zA-Zа-яА-Я]+)$");
+            Pattern pattern = Pattern.compile("([a-zA-Zа-яА-Я]+)\\s(\\d+\\s?[a-zA-Zа-яА-Я]+)$");
             Matcher matcher = pattern.matcher(name);
             if (matcher.matches()) {
                 if (matcher.groupCount() == 2) {

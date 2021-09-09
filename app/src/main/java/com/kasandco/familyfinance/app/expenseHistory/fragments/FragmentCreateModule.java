@@ -15,13 +15,13 @@ import dagger.Provides;
 public class FragmentCreateModule {
     @CreateCategoryScope
     @Provides
-    PresenterCreateFinanceCategory providesPresenter(FinanceRepository repository, ListDao listDao){
-        return new PresenterCreateFinanceCategory(repository, listDao);
+    PresenterCreateFinanceCategory providesPresenter(FinanceRepository repository) {
+        return new PresenterCreateFinanceCategory(repository);
     }
 
     @Provides
     @CreateCategoryScope
-    ListDao providesListDao(AppDataBase appDataBase){
+    ListDao providesListDao(AppDataBase appDataBase) {
         return appDataBase.getListDao();
     }
 

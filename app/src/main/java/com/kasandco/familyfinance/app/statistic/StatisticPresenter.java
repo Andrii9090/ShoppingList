@@ -10,7 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
-
+@StatisticScope
 public class StatisticPresenter extends BasePresenter<StatisticContract> implements StatisticRepository.RepositoryCallback {
     private StatisticRepository repository;
     private List<FinanceStatModel> statDb;
@@ -121,5 +121,11 @@ public class StatisticPresenter extends BasePresenter<StatisticContract> impleme
     public void selectPieChartItem(int dataIndex) {
         List<FinanceStatModel> clickItem = statResult.get(dataIndex).getItems();
         view.showDetailDialog(clickItem);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        repository = null;
     }
 }

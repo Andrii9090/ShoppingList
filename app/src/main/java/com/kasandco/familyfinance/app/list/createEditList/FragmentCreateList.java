@@ -5,7 +5,7 @@ import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 
-import com.kasandco.familyfinance.app.icon.AdapterIcon.OnClickIconListener;
+import com.kasandco.familyfinance.core.icon.AdapterIcon.OnClickIconListener;
 
 public class FragmentCreateList extends BaseFragmentCreateEdit implements AdapterView.OnItemSelectedListener, CreateListContract.View, OnClickIconListener {
 

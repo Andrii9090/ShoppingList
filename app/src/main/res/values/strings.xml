@@ -72,4 +72,12 @@
     <string name="format_detail_stat_item">%s %s %.1f%%</string>
     <string name="menu_stat_cost">График расходов</string>
     <string name="menu_stat_income">График доходов</string>
+    <string name="text_selected_currency">Валюта</string>
+    <string name="text_color_theme">Цветовая схема</string>
+    <string name="text_selected_language">Язык</string>
+    <string name="text_save">Сохранить</string>
+    <string name="title_list">Мои списки</string>
+    <string name="text_send_list">Отправить список...</string>
+    <string name="text_header_msg">Список покупок:</string>
+    <string name="text_footer_msg">Создано с помощью приложения %s</string>
 </resources>

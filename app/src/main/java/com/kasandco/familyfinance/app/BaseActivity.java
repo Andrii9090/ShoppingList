@@ -2,7 +2,9 @@ package com.kasandco.familyfinance.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.expenseHistory.FinanceActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
+import com.kasandco.familyfinance.app.settings.SettingsActivity;
 import com.kasandco.familyfinance.app.statistic.StatisticActivity;
 import com.kasandco.familyfinance.core.Constants;
 
@@ -21,11 +24,23 @@ import javax.inject.Inject;
 public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     protected NavigationView navigationView;
     protected DrawerLayout drawerLayout;
+    protected ImageButton btnUserSetting;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        setTheme(R.style.Theme_FamilyFinance);
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         navigationView.setNavigationItemSelectedListener(this);
+        btnUserSetting = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_btn_settings);
+        btnUserSetting.setOnClickListener((view -> {
+            Log.e("Test", "Tes");
+        }));
     }
 
     @Override
@@ -42,6 +57,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 break;
             case R.id.menu_drawer_stat_income:
                 startStatActivity(Constants.TYPE_INCOME);
+                break;
+            case R.id.menu_drawer_setting:
+                startNewActivity(SettingsActivity.class);
                 break;
         }
         return true;

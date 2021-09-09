@@ -1,6 +1,6 @@
 package com.kasandco.familyfinance.app.list.createEditList;
 
-import com.kasandco.familyfinance.app.icon.AdapterIcon;
+import com.kasandco.familyfinance.core.icon.AdapterIcon;
 import com.kasandco.familyfinance.core.BaseContract;
 
 import java.util.List;

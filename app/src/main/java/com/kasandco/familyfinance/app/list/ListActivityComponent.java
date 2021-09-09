@@ -1,7 +1,7 @@
 package com.kasandco.familyfinance.app.list;
 
 
-import com.kasandco.familyfinance.app.icon.AdapterIcon;
+import com.kasandco.familyfinance.core.icon.AdapterIcon;
 
 import dagger.Subcomponent;
 

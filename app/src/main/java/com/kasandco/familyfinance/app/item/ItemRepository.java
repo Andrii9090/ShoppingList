@@ -1,10 +1,6 @@
 package com.kasandco.familyfinance.app.item;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.kasandco.familyfinance.App;
-import com.kasandco.familyfinance.app.list.ListDao;
 
 import java.util.List;
 
@@ -38,7 +34,7 @@ public class ItemRepository {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                itemDao.insert(new ItemModel(arrayText[0], "", listId));
+                itemDao.insert(new ItemModel(arrayText[0], arrayText[1], listId));
                 plusActiveItem(listId);
             }
         }).start();
@@ -86,7 +82,7 @@ public class ItemRepository {
 
     public void getAll(long listId) {
         this.listId = listId;
-        disposable = itemDao.getAllActiveItems(listId)
+        disposable = itemDao.getAllItems(listId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<ItemModel>>() {

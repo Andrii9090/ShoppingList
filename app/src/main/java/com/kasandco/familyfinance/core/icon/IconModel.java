@@ -1,4 +1,4 @@
-package com.kasandco.familyfinance.app.icon;
+package com.kasandco.familyfinance.core.icon;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

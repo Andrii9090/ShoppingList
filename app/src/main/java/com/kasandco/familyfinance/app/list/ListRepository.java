@@ -1,16 +1,15 @@
 package com.kasandco.familyfinance.app.list;
 
 import android.os.Handler;
-import android.os.Looper;
 
 
-import com.kasandco.familyfinance.app.icon.IconDao;
-import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.core.icon.IconDao;
+import com.kasandco.familyfinance.core.icon.IconModel;
+import com.kasandco.familyfinance.app.item.ItemDao;
+import com.kasandco.familyfinance.app.item.ItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -19,15 +18,17 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ListRepository {
     ListDao listDao;
+    ItemDao itemDao;
     ListRepositoryInterface callback;
 
     IconDao iconDao;
 
     private Disposable disposable;
 
-    public ListRepository(ListDao listDao, IconDao _iconDao){
-        this.listDao = listDao;
+    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao){
+        listDao = _listDao;
         iconDao=_iconDao;
+        itemDao=_itemDao;
     }
 
     public void create(ListModel listModel){
@@ -157,8 +158,23 @@ public class ListRepository {
                     }
                 });
     }
+
+    public void getAllListActiveItem(long listId, ListRepositoryInterface callback) {
+        Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<ItemModel> items = itemDao.getActiveItems(listId);
+                handler.post(()->{
+                    callback.getAllActiveListItems(items);
+                });
+            }
+        }).start();
+    }
+
     public interface ListRepositoryInterface {
         void setListItems(List<ListModel> listModel);
+        void getAllActiveListItems(List<ItemModel> items);
     }
 
     public interface IconCallback {

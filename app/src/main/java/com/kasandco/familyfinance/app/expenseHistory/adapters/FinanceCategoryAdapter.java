@@ -6,9 +6,11 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -131,7 +133,7 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
             });
         }
 
-        @SuppressLint("DefaultLocale")
+        @SuppressLint({"DefaultLocale", "ResourceType"})
         public void bind(int position) {
             //TODO Сделать с Handler  и также в лист адаптере
             AssetManager am = icon.getContext().getAssets();
@@ -166,7 +168,11 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
                 is = am.open(items.get(position).getCategory().getIconPath());
                 bitmap= BitmapFactory.decodeStream(is);
                 icon.setImageBitmap(bitmap);
-                ImageBackgroundUtil.setBackgroundColor(icon, R.attr.colorPrimary);
+                TypedValue typedValue = new TypedValue();
+                Resources.Theme theme = icon.getContext().getTheme();
+                theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                int color = typedValue.data;
+                ImageBackgroundUtil.setBackgroundColor(icon, color);
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }

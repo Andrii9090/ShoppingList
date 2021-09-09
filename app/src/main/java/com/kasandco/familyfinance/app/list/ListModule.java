@@ -6,7 +6,7 @@ import com.kasandco.familyfinance.app.expenseHistory.FinanceRepository;
 import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
 import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryDao;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateHistoryItemPresenter;
-import com.kasandco.familyfinance.app.icon.IconDao;
+import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.app.list.createEditList.EditListPresenter;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentCreatePresenter;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
@@ -14,7 +14,6 @@ import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;
 import com.kasandco.familyfinance.core.AppDataBase;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,7 +35,7 @@ public class ListModule {
     @Provides
     @ListActivityScope
     ListRepository providesListRepository(ListDao listDao, AppDataBase appDataBase){
-        return new ListRepository(listDao, appDataBase.getIconDao());
+        return new ListRepository(listDao, appDataBase.getIconDao(), appDataBase.getItemDao());
     }
 
     @Provides
@@ -73,7 +72,7 @@ public class ListModule {
     @Provides
     @ListActivityScope
     FinanceRepository providesFinanceRepository(AppDataBase appDataBase){
-        return new FinanceRepository(appDataBase.getFinanceCategoryDao(), appDataBase.getFinanceDoa());
+        return new FinanceRepository(appDataBase.getFinanceCategoryDao(), appDataBase.getFinanceDoa(), appDataBase.getListDao());
     }
 
     @Provides

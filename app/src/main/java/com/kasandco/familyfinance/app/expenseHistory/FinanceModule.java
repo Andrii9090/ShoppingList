@@ -11,12 +11,11 @@ import com.kasandco.familyfinance.app.expenseHistory.models.FinanceDao;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateHistoryItemPresenter;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.FinanceActivityPresenter;
 import com.kasandco.familyfinance.app.expenseHistory.presenters.PresenterFinanceHistory;
-import com.kasandco.familyfinance.app.icon.IconDao;
+import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.core.Constants;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -64,8 +63,8 @@ public class FinanceModule {
 
     @FinanceActivityScope
     @Provides
-    FinanceRepository providesFinanceRepository(FinanceCategoryDao dao, FinanceDao financeDao){
-        return new FinanceRepository(dao, financeDao);
+    FinanceRepository providesFinanceRepository(FinanceCategoryDao dao, FinanceDao financeDao, AppDataBase appDataBase){
+        return new FinanceRepository(dao, financeDao, appDataBase.getListDao());
     }
 
     @Named("cost_history_fragment")

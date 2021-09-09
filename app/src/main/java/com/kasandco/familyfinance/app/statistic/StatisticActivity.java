@@ -245,4 +245,11 @@ public class StatisticActivity extends BaseActivity implements StatisticContract
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        presenter.destroy();
+        presenter = null;
+        super.onDestroy();
+    }
 }

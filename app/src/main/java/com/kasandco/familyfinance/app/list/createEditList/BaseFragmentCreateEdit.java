@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.icon.AdapterIcon;
-import com.kasandco.familyfinance.app.icon.AdapterIcon.OnClickIconListener;
-import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.core.icon.AdapterIcon;
+import com.kasandco.familyfinance.core.icon.AdapterIcon.OnClickIconListener;
+import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
@@ -105,6 +105,7 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
     @Override
     public void close() {
         name.getText().clear();
+        iconPath = null;
         createListener.closeFragmentCreate();
     }
 

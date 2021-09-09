@@ -2,7 +2,7 @@ package com.kasandco.familyfinance.app.list.createEditList;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryModel;
-import com.kasandco.familyfinance.app.icon.IconModel;
+import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.list.ListActivityScope;
 import com.kasandco.familyfinance.app.list.ListModel;
 

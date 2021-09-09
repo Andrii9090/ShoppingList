@@ -6,10 +6,14 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.41875" />
         <entry key="../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/drawable/ic_calculator.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/ic_finance_icon.xml" value="0.35572916666666665" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.20625" />
+        <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.20625" />
         <entry key="app/src/main/res/drawable/ic_menu_bar.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/drawable/ic_menu_black.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/drawable/ic_paper_plane.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/ic_plus_white.xml" value="0.23385416666666667" />
+        <entry key="app/src/main/res/drawable/ic_settings_small.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/drawable/shape_background.xml" value="0.24375" />
         <entry key="app/src/main/res/drawable/shape_background_btn.xml" value="0.38425925925925924" />
         <entry key="app/src/main/res/drawable/shape_background_btn_left.xml" value="0.38425925925925924" />
@@ -22,7 +26,8 @@
         <entry key="app/src/main/res/layout/activity_item.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/activity_list.xml" value="0.14527399779330635" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3890625" />
-        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.33958333333333335" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.33958333333333335" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.10409861214057357" />
         <entry key="app/src/main/res/layout/activity_statistic.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_test.xml" value="0.33958333333333335" />
         <entry key="app/src/main/res/layout/calculator.xml" value="0.4036458333333333" />
@@ -41,7 +46,7 @@
         <entry key="app/src/main/res/layout/fragment_zoom_image.xml" value="0.22447916666666667" />
         <entry key="app/src/main/res/layout/list_element.xml" value="0.542343883661249" />
         <entry key="app/src/main/res/layout/navigation.xml" value="0.3609375" />
-        <entry key="app/src/main/res/layout/navigation_header.xml" value="0.3609375" />
+        <entry key="app/src/main/res/layout/navigation_header.xml" value="0.1" />
         <entry key="app/src/main/res/layout/rv_icon_element.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/rv_irem_expensive_category.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/rv_item.xml" value="0.4036458333333333" />
@@ -55,6 +60,7 @@
         <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.203125" />
         <entry key="app/src/main/res/menu/menu_item_activity.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/menu_list_activity.xml" value="0.23020833333333332" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.20625" />
         <entry key="app/src/main/res/xml/file_paths.xml" value="0.23072916666666668" />
       </map>
     </option>

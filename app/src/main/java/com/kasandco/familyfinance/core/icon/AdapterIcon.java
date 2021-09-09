@@ -1,9 +1,11 @@
-package com.kasandco.familyfinance.app.icon;
+package com.kasandco.familyfinance.core.icon;
 
 import android.annotation.SuppressLint;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +55,11 @@ public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
             is = am.open(icons.get(position).path);
             bitmap = BitmapFactory.decodeStream(is);
             holder.btnIcon.setImageBitmap(bitmap);
-            ImageBackgroundUtil.setBackgroundColor(holder.btnIcon, R.attr.colorPrimary);
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = holder.btnIcon.getContext().getTheme();
+            theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            int color = typedValue.data;
+            ImageBackgroundUtil.setBackgroundColor(holder.btnIcon, color);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,7 +1,10 @@
 package com.kasandco.familyfinance.app.list;
 
+import android.annotation.SuppressLint;
+
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
+import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.core.BasePresenter;
 
 import java.util.ArrayList;
@@ -37,13 +40,28 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
 
     @Override
     public void viewReady(ListActivity view) {
-        this.view = (ListContract) view;
+        this.view = view;
         getListItems();
     }
 
     public void setListItems(List<ListModel> listModels) {
+        listItems = listModels;
         adapter.updateItems(listModels);
         view.hideLoading();
+    }
+
+    @SuppressLint("DefaultLocale")
+    @Override
+    public void getAllActiveListItems(List<ItemModel> items) {
+        int count = 0;
+        StringBuilder text = new StringBuilder();
+        text.append(view.getStringResource(R.string.text_header_msg)).append(System.lineSeparator());
+        for (ItemModel item:items) {
+            count++;
+            text.append(String.format("%d. %s"+ System.lineSeparator(), count, item.getName()));
+        }
+        text.append(String.format(view.getStringResource(R.string.text_footer_msg), view.getStringResource(R.string.app_name))).append(System.lineSeparator());
+        view.runSendIntent(text.toString());
     }
 
     public void clickShowCreateFragment() {
@@ -91,5 +109,13 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     public void onDetach() {
         repository.unsubscribe();
         view = null;
+    }
+
+    public void selectShareList() {
+        copyActiveListItem();
+    }
+
+    private void copyActiveListItem() {
+        repository.getAllListActiveItem(listItems.get(adapter.getPosition()).getId(),this);
     }
 }

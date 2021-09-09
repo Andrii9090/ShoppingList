@@ -1,22 +1,8 @@
 package com.kasandco.familyfinance.core;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-
-import com.kasandco.familyfinance.app.icon.IconDao;
-import com.kasandco.familyfinance.app.icon.IconModel;
-import com.kasandco.familyfinance.app.item.ItemDao;
-import com.kasandco.familyfinance.app.list.ListActivity;
-import com.kasandco.familyfinance.app.list.ListActivityScope;
-import com.kasandco.familyfinance.app.list.ListDao;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Named;
 import javax.inject.Singleton;

@@ -39,12 +39,12 @@
             style="@style/StyleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="99/100"
+            android:text="0/90"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/list_item_menu"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent=".18" />
+            app:layout_constraintWidth_percent=".1" />
 
         <ImageButton
             android:id="@+id/list_item_menu"

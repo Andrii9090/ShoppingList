@@ -26,12 +26,13 @@
             android:id="@+id/rv_item_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/text_remove"
             android:layout_marginHorizontal="10dp"
+            android:text="@string/text_remove"
             android:textSize="@dimen/ItemListSize"
-            app:layout_constraintWidth_percent=".6"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/rv_item_image"
-             />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent=".6" />
 
         <TextView
             android:id="@+id/rv_item_quantity"
