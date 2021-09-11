@@ -64,12 +64,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         setSupportActionBar(toolbar);
         MaterialTextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(R.string.title_list);
-        toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
+        toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
         refreshLayout.setOnRefreshListener(refreshListener);
     }
 
@@ -238,11 +233,10 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     public void closeFragmentCreate() {
         if (fragmentCreateList.isAdded()) {
             getSupportFragmentManager().beginTransaction().remove(fragmentCreateList).commitNow();
-            KeyboardUtil.hideKeyboard(this);
         }else {
             getSupportFragmentManager().beginTransaction().remove(fragmentEditList).commitNow();
-            KeyboardUtil.hideKeyboard(this);
         }
+        KeyboardUtil.hideKeyboard(this);
     }
 
     private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {

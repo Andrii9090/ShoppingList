@@ -18,6 +18,7 @@ import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.app.settings.SettingsActivity;
 import com.kasandco.familyfinance.app.statistic.StatisticActivity;
 import com.kasandco.familyfinance.core.Constants;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Inject;
 
@@ -28,20 +29,22 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-        setTheme(R.style.Theme_FamilyFinance);
+        SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil(this);
+        int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, R.style.Theme_FamilyFinance);
+        setTheme(themeResource);
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         navigationView.setNavigationItemSelectedListener(this);
         btnUserSetting = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_btn_settings);
         btnUserSetting.setOnClickListener((view -> {
             Log.e("Test", "Tes");
         }));
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

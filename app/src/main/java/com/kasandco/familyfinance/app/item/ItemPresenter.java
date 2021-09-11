@@ -103,18 +103,15 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     }
 
     public void activityResult(int requestCode, int resultCode, Intent data) throws IOException {
+        String dateMod = String.valueOf(System.currentTimeMillis());
         if(requestCode== Constants.REQUEST_TAKE_GALLERY){
             Uri uri = data.getData();
-            repository.saveImagePath(imageUtils.getRealPathFromURI(uri), adapter.items.get(adapter.getPosition()).getId());
+            repository.saveImagePath(imageUtils.getRealPathFromURI(uri), adapter.items.get(adapter.getPosition()).getId(),dateMod);
         }
         if(requestCode==Constants.REQUEST_TAKE_PHOTO){
             Uri imageUri = imageUtils.copyImageToGallery(imageUtils.getCurrentFilePath());
-            repository.saveImagePath(imageUri.getPath(), adapter.items.get(adapter.getPosition()).getId());
+            repository.saveImagePath(imageUri.getPath(), adapter.items.get(adapter.getPosition()).getId(),dateMod);
         }
-    }
-
-    private String getRealPathFromURI(Uri contentUri) {
-        return imageUtils.getRealPathFromURI(contentUri);
     }
 
     public void clickShowZoomImage() {
@@ -126,7 +123,8 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     }
 
     public void clickRemoveImage() {
-        repository.saveImagePath("", adapter.items.get(adapter.getPosition()).getId());
+        String dateMod = String.valueOf(System.currentTimeMillis());
+        repository.saveImagePath("", adapter.items.get(adapter.getPosition()).getId(),dateMod);
         adapter.setPosition(-1);
     }
 

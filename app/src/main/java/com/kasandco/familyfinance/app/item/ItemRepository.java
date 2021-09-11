@@ -94,13 +94,8 @@ public class ItemRepository {
     }
 
 
-    public void saveImagePath(String imagePath, long id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                itemDao.saveImagePath(imagePath, id);
-            }
-        }).start();
+    public void saveImagePath(String imagePath, long id, String dateMod) {
+        new Thread(() -> itemDao.saveImagePath(imagePath, id, dateMod)).start();
     }
 
     public void unSubscribe() {

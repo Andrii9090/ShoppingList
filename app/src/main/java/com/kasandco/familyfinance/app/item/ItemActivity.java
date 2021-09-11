@@ -162,6 +162,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            //TODO пересмотреть deprecated startActivityForResult
         } else {
             presenter.noCamara();
         }
@@ -310,13 +311,12 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == Constants.CODE_VOICE_RESULT && resultCode == RESULT_OK) {
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String textEntered = Character.toString(matches.get(0).charAt(0)).toUpperCase() + matches.get(0).substring(1);
             presenter.createNewItem(textEntered);
-        } else {
+        } else if(requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_TAKE_GALLERY && resultCode == RESULT_OK) {
             try {
                 presenter.activityResult(requestCode, resultCode, data);
             } catch (IOException e) {

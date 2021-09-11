@@ -70,7 +70,6 @@ public class StatisticActivity extends BaseActivity implements StatisticContract
 
         btnMenu.setOnClickListener(clickListener);
         btnPeriod.setOnClickListener(clickListener);
-        //TODO Сделать навигацию меню DRAW
     }
 
     @Override
@@ -81,8 +80,12 @@ public class StatisticActivity extends BaseActivity implements StatisticContract
 
     @Override
     protected void startNewActivity(Class<?> activityClass) {
-        Intent intent = new Intent(this, activityClass);
-        startActivity(intent);
+        if(activityClass!=getClass()) {
+            Intent intent = new Intent(this, activityClass);
+            startActivity(intent);
+        }else{
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }
     }
 
     @Override
