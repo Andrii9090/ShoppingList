@@ -36,7 +36,7 @@ public class DiffUtilFinanceAdapter extends DiffUtil.Callback{
         FinanceCategoryWithTotal oldItem = oldItems.get(oldItemPosition);
         FinanceCategoryWithTotal newItem = newItems.get(newItemPosition);
 
-        return oldItem.getCategory().getName().equals(newItem.getCategory().getName()) && oldItem.getCategory().getDateMod().equals(newItem.getCategory().getDateMod());
+        return oldItem.getCategory().getName().equals(newItem.getCategory().getName()) && !oldItem.getCategory().getDateMod().equals(newItem.getCategory().getDateMod());
     }
 
     @Nullable
@@ -44,6 +44,6 @@ public class DiffUtilFinanceAdapter extends DiffUtil.Callback{
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
         FinanceCategoryWithTotal oldItem = oldItems.get(oldItemPosition);
         FinanceCategoryWithTotal newItem = newItems.get(newItemPosition);
-        return oldItem.getCategory().getIconPath().equals(newItem.getCategory().getIconPath());
+        return !oldItem.getCategory().getIconPath().equals(newItem.getCategory().getIconPath());
     }
 }

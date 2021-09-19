@@ -45,7 +45,6 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
         getData();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void setAllItems(List<FinanceCategoryWithTotal> historyList) {
         adapter = new FinanceCategoryAdapter();

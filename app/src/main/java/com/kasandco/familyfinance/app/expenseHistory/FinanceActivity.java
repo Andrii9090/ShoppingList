@@ -92,12 +92,7 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
         navigationView = findViewById(R.id.nav_view);
         textTotal = findViewById(R.id.activity_extensive_total);
         btnOpenNavigation = findViewById(R.id.activity_finance_btn_open_navigation);
-        btnOpenNavigation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
+        btnOpenNavigation.setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
         dateTabLayout.addOnTabSelectedListener(dateTabLayoutListener);
     }
 
@@ -250,11 +245,7 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
     public void setTotal(double total) {
         ValueAnimator animator = ValueAnimator.ofFloat(Float.parseFloat(textTotal.getText().toString().isEmpty() ? "0" : textTotal.getText().toString().replace(",", ".").split(" ")[0]), (float) total);
         animator.setDuration(300);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                textTotal.setText(String.format("%.2f %s", animation.getAnimatedValue(), new SharedPreferenceUtil(FinanceActivity.this).getSharedPreferences().getString(Constants.SHP_DEFAULT_CURRENCY, "USD")));
-            }
-        });
+        animator.addUpdateListener(animation -> textTotal.setText(String.format("%.2f %s", animation.getAnimatedValue(), new SharedPreferenceUtil(FinanceActivity.this).getSharedPreferences().getString(Constants.SHP_DEFAULT_CURRENCY, "USD"))));
         animator.start();
     }
 

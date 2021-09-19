@@ -15,7 +15,6 @@ public class ItemModel implements Cloneable{
     private String name;
     @ColumnInfo(name = "date_mod")
     private String dateMod;
-    private String quantity;
     @ColumnInfo(name = "image_path")
     private String imagePath;
     private int status;
@@ -29,9 +28,8 @@ public class ItemModel implements Cloneable{
     public ItemModel(){}
 
     @Ignore
-    public ItemModel(String name, String quantity, long listId){
+    public ItemModel(String name, long listId){
         this.name = name;
-        this.quantity = quantity;
         this.status=1;
         this.localListId=listId;
         this.dateMod = String.valueOf(System.currentTimeMillis());
@@ -77,14 +75,6 @@ public class ItemModel implements Cloneable{
         this.dateMod = time;
     }
 
-    public String getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
     public String getImagePath() {
         return imagePath;
     }
@@ -98,7 +88,6 @@ public class ItemModel implements Cloneable{
         ItemModel newModel = new ItemModel();
         newModel.setDateMod(dateMod);
         newModel.setName(name);
-        newModel.setQuantity(quantity);
         newModel.setImagePath(imagePath);
         newModel.setStatus(status);
         newModel.setIsDelete(isDelete);

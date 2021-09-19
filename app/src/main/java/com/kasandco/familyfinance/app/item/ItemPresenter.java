@@ -63,11 +63,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     }
 
     private void setEmptyText() {
-        if(adapter.getItemCount()>0){
-            view.showEmptyText(false);
-        }else {
-            view.showEmptyText(true);
-        }
+        view.showEmptyText(adapter.getItemCount() <= 0);
     }
 
     public void clickCamera() {
@@ -106,11 +102,11 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
         String dateMod = String.valueOf(System.currentTimeMillis());
         if(requestCode== Constants.REQUEST_TAKE_GALLERY){
             Uri uri = data.getData();
-            repository.saveImagePath(imageUtils.getRealPathFromURI(uri), adapter.items.get(adapter.getPosition()).getId(),dateMod);
+            repository.saveImagePath(imageUtils.getRealPathFromURI(uri), adapter.items.get(adapter.getPosition()).getId(), dateMod);
         }
         if(requestCode==Constants.REQUEST_TAKE_PHOTO){
             Uri imageUri = imageUtils.copyImageToGallery(imageUtils.getCurrentFilePath());
-            repository.saveImagePath(imageUri.getPath(), adapter.items.get(adapter.getPosition()).getId(),dateMod);
+            repository.saveImagePath(imageUri.getPath(), adapter.items.get(adapter.getPosition()).getId(), dateMod);
         }
     }
 

@@ -83,7 +83,7 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
     }
 
     public void edit(ItemModel item){
-        String text = String.format("%s:%s", item.getName(), item.getQuantity()!=null?item.getQuantity():"");
+        String text = String.format("%s", item.getName());
         name.setText(text);
         name.setSelection(text.length());
         itemEdit = item;

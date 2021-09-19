@@ -38,7 +38,7 @@ public class ItemDiffUtil extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         ItemModel oldItem = oldData.get(oldItemPosition);
         ItemModel newItem = newData.get(newItemPosition);
-        return oldItem.getName().equals(newItem.getName()) && oldItem.getDateMod().equals(newItem.getDateMod());
+        return !oldItem.getName().equals(newItem.getName()) || !oldItem.getDateMod().equals(newItem.getDateMod());
     }
 
     @Nullable
@@ -46,6 +46,6 @@ public class ItemDiffUtil extends DiffUtil.Callback {
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
         ItemModel oldItem = oldData.get(oldItemPosition);
         ItemModel newItem = newData.get(newItemPosition);
-        return !oldItem.getQuantity().equals(newItem.getQuantity());
+        return oldItem.getImagePath()==null && newItem.getImagePath()!=null || !oldItem.getImagePath().equals(newItem.getImagePath()) || oldItem.getStatus() != newItem.getStatus();
     }
 }

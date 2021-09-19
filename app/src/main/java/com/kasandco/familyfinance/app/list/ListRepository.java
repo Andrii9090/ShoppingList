@@ -32,21 +32,11 @@ public class ListRepository {
     }
 
     public void create(ListModel listModel){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.insert(listModel);
-            }
-        }).start();
+        new Thread(() -> listDao.insert(listModel)).start();
     }
 
     public void edit(ListModel listModel){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.update(listModel);
-            }
-        }).start();
+        new Thread(() -> listDao.update(listModel)).start();
     }
 
     public void getAll(ListRepositoryInterface callback){
@@ -68,78 +58,32 @@ public class ListRepository {
     }
 
     public void addFinanceCategoryId(long id, long categoryId){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.addFinanceCategoryId(id, categoryId);
-            }
-        }).start();
+        new Thread(() -> listDao.addFinanceCategoryId(id, categoryId)).start();
     }
 
     public void removeList(ListModel listModel) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.delete(listModel);
-            }
-        }).start();
+        new Thread(() -> listDao.delete(listModel)).start();
     }
 
     public void clearInactiveItems(ListModel listModel) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.clearInactiveItems(listModel.getId());
-            }
-        }).start();
+        new Thread(() -> listDao.clearInactiveItems(listModel.getId())).start();
         deleteInactiveListItems(listModel.getId());
     }
 
     public void clearActiveItems(ListModel listModel) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.clearActiveItems(listModel.getId());
-            }
-        }).start();
+        new Thread(() -> listDao.clearActiveItems(listModel.getId())).start();
         deleteActiveListItems(listModel.getId());
     }
 
     private void deleteActiveListItems(long listId){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.deleteActiveListItem(listId);
-            }
-        }).start();
+        new Thread(() -> listDao.deleteActiveListItem(listId)).start();
     }
     private void deleteInactiveListItems(long listId){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listDao.deleteInactiveListItem(listId);
-            }
-        }).start();
+        new Thread(() -> listDao.deleteInactiveListItem(listId)).start();
     }
 
     public void unsubscribe() {
         disposable.dispose();
-    }
-
-    public void getLastId(FinanceCategoryListener callback) {
-        listDao.getLastId()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Throwable {
-                        callback.setLastId(aLong);
-                    }
-                });
-    }
-
-    public void createFinanceHistory(long financeCategoryId) {
-
     }
 
     public void getAllIcons(IconCallback callback){
@@ -161,14 +105,11 @@ public class ListRepository {
 
     public void getAllListActiveItem(long listId, ListRepositoryInterface callback) {
         Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<ItemModel> items = itemDao.getActiveItems(listId);
-                handler.post(()->{
-                    callback.getAllActiveListItems(items);
-                });
-            }
+        new Thread(() -> {
+            List<ItemModel> items = itemDao.getActiveItems(listId);
+            handler.post(()->{
+                callback.getAllActiveListItems(items);
+            });
         }).start();
     }
 

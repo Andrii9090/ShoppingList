@@ -52,12 +52,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.text_color));
             holder.name.setPaintFlags(0);
         }
-        if (items.get(position).getQuantity() == null || items.get(position).getQuantity().isEmpty()) {
-            holder.quantity.setVisibility(View.GONE);
-        } else {
-            holder.quantity.setVisibility(View.VISIBLE);
-            holder.quantity.setText(items.get(position).getQuantity());
-        }
         if (items.get(position).getImagePath() == null || items.get(position).getImagePath().isEmpty()) {
             holder.imageIcon.setVisibility(View.INVISIBLE);
         } else {
@@ -140,7 +134,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             super(itemView);
             imageIcon = itemView.findViewById(R.id.rv_item_image);
             name = itemView.findViewById(R.id.rv_item_name);
-            quantity = itemView.findViewById(R.id.rv_item_quantity);
             btnMenu = itemView.findViewById(R.id.rv_item_menu);
             itemView.setOnCreateContextMenuListener(this);
             itemView.setOnLongClickListener(null);

@@ -88,11 +88,13 @@ public class FinanceModule {
 
     @Named("cost_presenter")
     @Provides
+    @FinanceActivityScope
     PresenterFinanceHistory providesPresenter(FinanceRepository financeRepository){
         return new PresenterFinanceHistory(financeRepository);
     }
     @Named("income_presenter")
     @Provides
+    @FinanceActivityScope
     PresenterFinanceHistory providesPresenterIncome(FinanceRepository financeRepository){
         return new PresenterFinanceHistory(financeRepository);
     }

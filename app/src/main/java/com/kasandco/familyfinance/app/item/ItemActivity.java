@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -283,7 +285,19 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     }
 
     private void removeItem() {
-        presenter.removeItem();
+        DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
+            if(i==DialogInterface.BUTTON_POSITIVE){
+                presenter.removeItem();
+            }else{
+                dialogInterface.cancel();
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.delete_dialog)
+                .setPositiveButton(R.string.text_positive_btn, dialogListener)
+                .setNegativeButton(R.string.text_negative_btn, dialogListener);
+
+        builder.show();
     }
 
     private void editItem() {

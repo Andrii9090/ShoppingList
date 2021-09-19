@@ -33,25 +33,22 @@ public class SplashActivity extends AppCompatActivity implements Constants {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         sharedPreferenceUtil = new SharedPreferenceUtil(this);
         int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, R.style.Theme_FamilyFinance);
         setTheme(themeResource);
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         App.appComponent.plus(new SplashModule()).inject(this);
         logo = findViewById(R.id.splash_logo);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (sharedPreferenceUtil.getSharedPreferences().getInt(IS_ADDED_ICONS, 0) == 0) {
-                    List<String> iconsPath = listAssetFiles(SplashActivity.this, "icons");
-                    for (String path : iconsPath) {
-                        iconDao.insert(new IconModel(path, null));
-                    }
-                    if (iconsPath.size() > 0) {
-                        sharedPreferenceUtil.getEditor().putInt(IS_ADDED_ICONS, 1).apply();
-                    }
+        new Thread(() -> {
+            if (sharedPreferenceUtil.getSharedPreferences().getInt(IS_ADDED_ICONS, 0) == 0) {
+                List<String> iconsPath = listAssetFiles(SplashActivity.this, "icons");
+                for (String path : iconsPath) {
+                    iconDao.insert(new IconModel(path, null));
+                }
+                if (iconsPath.size() > 0) {
+                    sharedPreferenceUtil.getEditor().putInt(IS_ADDED_ICONS, 1).apply();
                 }
             }
         }).start();

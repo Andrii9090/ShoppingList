@@ -34,15 +34,10 @@ public class FragmentItemCreatePresenter extends BasePresenter<FragmentItemCreat
     public void edit(String text, ItemModel itemEdit) {
         String[] arrayTextName = getQuantity(text);
         String name = arrayTextName[0];
-        String quantity = "";
-        if(arrayTextName.length==2) {
-            quantity = arrayTextName[1];
-        }
-        if (!itemEdit.getName().equals(name) || !itemEdit.getQuantity().equals(quantity)) {
+        if (!itemEdit.getName().equals(name)) {
             ItemModel edited = new ItemModel();
             edited = itemEdit.clone();
             edited.setName(name);
-            edited.setQuantity(quantity);
             edited.setDateMod(String.valueOf(System.currentTimeMillis()));
             repository.edit(edited);
             view.setEditedItemNull();

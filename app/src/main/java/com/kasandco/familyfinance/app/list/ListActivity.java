@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -187,7 +189,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.context_menu_list_item_remove:
-                presenter.selectRemoveList();
+                removeList();
                 break;
             case R.id.context_menu_list_item_edit:
                 presenter.selectEditList();
@@ -206,6 +208,23 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
                 break;
         }
         return true;
+    }
+
+    private void removeList() {
+        DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
+            if(i==DialogInterface.BUTTON_POSITIVE){
+                presenter.selectRemoveList();
+
+            }else{
+                dialogInterface.cancel();
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.delete_dialog)
+                .setPositiveButton(R.string.text_positive_btn, dialogListener)
+                .setNegativeButton(R.string.text_negative_btn, dialogListener);
+
+        builder.show();
     }
 
     @Override

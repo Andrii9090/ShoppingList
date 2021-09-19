@@ -62,14 +62,18 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         if(this.items==null) {
             this.items = new ArrayList<>();
             this.items.addAll(items);
+            notifyDataSetChanged();
         }else {
-
-            DiffUtil.DiffResult diffResult =
-                    DiffUtil.calculateDiff(new DiffUtilFinanceAdapter(this.items, items));
-            this.items.clear();
-            this.items.addAll(items);
-            diffResult.dispatchUpdatesTo(this);
+            diff(items);
         }
+    }
+
+    private void diff(List<FinanceCategoryWithTotal> items) {
+        DiffUtil.DiffResult diffResult =
+                DiffUtil.calculateDiff(new DiffUtilFinanceAdapter(this.items, items));
+        this.items.clear();
+        this.items.addAll(items);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public void setPosition(int current){
@@ -83,22 +87,6 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
     @Override
     public void onBindViewHolder(@NonNull FinanceCategoryAdapter.ViewHolder holder, int position) {
         holder.bind(position);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                setPosition(holder.getAbsoluteAdapterPosition());
-                for (FinanceCategoryWithTotal item:items) {
-                    if(item.isSelected()){
-                        item.setSelected(false);
-                        break;
-                    }
-                }
-                items.get(holder.getAbsoluteAdapterPosition()).setSelected(true);
-                listener.clickToItem();
-                notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
@@ -124,42 +112,32 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
             name = itemView.findViewById(R.id.rv_item_category_name);
             total = itemView.findViewById(R.id.rv_item_category_total);
             itemView.setOnCreateContextMenuListener(this);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    setPosition(getAbsoluteAdapterPosition());
-                    return false;
-                }
+            itemView.setOnLongClickListener(view -> {
+                setPosition(getAbsoluteAdapterPosition());
+                return false;
             });
         }
 
         @SuppressLint({"DefaultLocale", "ResourceType"})
         public void bind(int position) {
             //TODO Сделать с Handler  и также в лист адаптере
+            itemView.setOnClickListener(view -> {
+                setPosition(getAbsoluteAdapterPosition());
+                changeSelected();
+                items.get(position).setSelected(true);
+                items.get(position).getCategory().setDateMod(String.valueOf(System.currentTimeMillis()));
+                notifyDataSetChanged();
+                listener.clickToItem();
+            });
+
             AssetManager am = icon.getContext().getAssets();
-            if(items.get(position).isSelected()) {
-                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), Color.WHITE, ContextCompat.getColor(name.getContext(),R.color.selected));
-                colorAnimation.setDuration(250); // milliseconds
-                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animator) {
-                        itemView.setBackgroundColor((int) animator.getAnimatedValue());
-                    }
-
-                });
-                colorAnimation.start();
-            }else {
-                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), ContextCompat.getColor(name.getContext(),R.color.selected), Color.WHITE);
-                colorAnimation.setDuration(250); // milliseconds
-                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animator) {
-                        itemView.setBackgroundColor((int) animator.getAnimatedValue());
-                    }
-
-                });
+            if(!items.get(position).isSelected()) {
+                itemView.setBackgroundColor(Color.TRANSPARENT);
+            }else{
+                ValueAnimator colorAnimation;
+                colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), Color.WHITE, ContextCompat.getColor(name.getContext(), R.color.selected));
+                colorAnimation.setDuration(150);
+                colorAnimation.addUpdateListener(animator -> itemView.setBackgroundColor((int) animator.getAnimatedValue()));
                 colorAnimation.start();
             }
             InputStream is  = null;
@@ -176,7 +154,6 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
-
             name.setText(items.get(position).getCategory().getName());
             total.setText(String.format("%.2f %s", items.get(position).getTotal(), new SharedPreferenceUtil(total.getContext()).getSharedPreferences().getString(SHP_DEFAULT_CURRENCY, "USD")));
         }
@@ -185,6 +162,16 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             MenuInflater menuInflater = new MenuInflater(view.getContext());
             menuInflater.inflate(R.menu.menu_context_finance_category, contextMenu);
+        }
+    }
+
+    private void changeSelected() {
+        for (FinanceCategoryWithTotal item:items) {
+            if(item.isSelected()){
+                item.setSelected(false);
+                item.getCategory().setDateMod(String.valueOf(System.currentTimeMillis()));
+                break;
+            }
         }
     }
 

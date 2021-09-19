@@ -31,12 +31,9 @@ public class ItemRepository {
     }
 
     public void create(String[] arrayText) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                itemDao.insert(new ItemModel(arrayText[0], arrayText[1], listId));
-                plusActiveItem(listId);
-            }
+        new Thread(() -> {
+            itemDao.insert(new ItemModel(arrayText[0], listId));
+            plusActiveItem(listId);
         }).start();
     }
 
@@ -58,26 +55,18 @@ public class ItemRepository {
     }
 
     public void remove(ItemModel item) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                itemDao.delete(item);
-                if (item.getStatus() == 1) {
-                    itemDao.minusActiveItemsInList(listId);
-                } else {
-                    itemDao.minusInactiveItemsInList(listId);
-                }
+        new Thread(() -> {
+            itemDao.delete(item);
+            if (item.getStatus() == 1) {
+                itemDao.minusActiveItemsInList(listId);
+            } else {
+                itemDao.minusInactiveItemsInList(listId);
             }
         }).start();
     }
 
     public void edit(ItemModel item) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                itemDao.update(item);
-            }
-        }).start();
+        new Thread(() -> itemDao.update(item)).start();
     }
 
     public void getAll(long listId) {
@@ -103,18 +92,15 @@ public class ItemRepository {
     }
 
     public void changeStatus(ItemModel item) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if(item.getStatus()==0){
-                    plusInactiveItem(listId);
-                    minusActiveItem(listId);
-                }else {
-                    plusActiveItem(listId);
-                    minusInactiveItem(listId);
-                }
-                itemDao.update(item);
+        new Thread(() -> {
+            if(item.getStatus()==0){
+                plusInactiveItem(listId);
+                minusActiveItem(listId);
+            }else {
+                plusActiveItem(listId);
+                minusInactiveItem(listId);
             }
+            itemDao.update(item);
         }).start();
     }
 }
