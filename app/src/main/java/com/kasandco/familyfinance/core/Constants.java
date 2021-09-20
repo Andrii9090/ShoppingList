@@ -20,4 +20,5 @@ public interface Constants {
     int CODE_VOICE_RESULT = 12345;
     String STAT_TYPE = "statistic_type";
     String COLOR_THEME = "color_theme";
+    String USER_NAME = "user_name";
 }

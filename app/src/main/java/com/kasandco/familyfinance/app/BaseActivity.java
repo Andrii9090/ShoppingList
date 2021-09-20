@@ -2,9 +2,11 @@ package com.kasandco.familyfinance.app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,19 +19,21 @@ import com.kasandco.familyfinance.app.expenseHistory.FinanceActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.app.settings.SettingsActivity;
 import com.kasandco.familyfinance.app.statistic.StatisticActivity;
+import com.kasandco.familyfinance.app.user.login.LoginActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
-
-import javax.inject.Inject;
 
 public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     protected NavigationView navigationView;
     protected DrawerLayout drawerLayout;
     protected ImageButton btnUserSetting;
+    protected Button btnLogin;
+    protected TextView userEmail;
+    protected SharedPreferenceUtil sharedPreferenceUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil(this);
+        sharedPreferenceUtil = new SharedPreferenceUtil(this);
         int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, R.style.Theme_FamilyFinance);
         setTheme(themeResource);
         super.onCreate(savedInstanceState);
@@ -40,9 +44,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         super.onStart();
         navigationView.setNavigationItemSelectedListener(this);
         btnUserSetting = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_btn_settings);
-        btnUserSetting.setOnClickListener((view -> {
-            Log.e("Test", "Tes");
-        }));
+        btnLogin = navigationView.getHeaderView(0).findViewById(R.id.nav_header_login);
+        userEmail = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_email);
+
+        if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.USER_NAME,"").isEmpty()){
+            btnUserSetting.setVisibility(View.GONE);
+            userEmail.setVisibility(View.GONE);
+            btnLogin.setVisibility(View.VISIBLE);
+            btnLogin.setOnClickListener(clickListener);
+        }else{
+            btnUserSetting.setVisibility(View.VISIBLE);
+            userEmail.setVisibility(View.VISIBLE);
+            btnLogin.setVisibility(View.GONE);
+        }
     }
 
 
@@ -75,4 +89,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     protected abstract void startNewActivity(Class<?> activityClass);
+
+    private View.OnClickListener clickListener = (view -> {
+        switch (view.getId()){
+            case R.id.nav_header_login:
+                startNewActivity(LoginActivity.class);
+                break;
+            case R.id.navigation_drawer_btn_settings:
+                break;
+        }
+    });
+
 }

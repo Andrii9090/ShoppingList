@@ -99,4 +99,21 @@
     <string name="delete_dialog">Удалить?</string>
     <string name="text_positive_btn">Да</string>
     <string name="text_negative_btn">Нет</string>
+    <string name="login_registrations">Логин</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="text_email">Email</string>
+    <string name="text_password">Пароль</string>
+    <string name="text_password2">Пароль еще раз</string>
+    <string name="login_btn">Вход</string>
+    <string name="text_registration_layout">Нет аккаунта?</string>
+    <string name="text_registration">Регистрация</string>
+    <string name="error_email_or_password">Email и/или пароль не могут быть пустыми</string>
 </resources>
