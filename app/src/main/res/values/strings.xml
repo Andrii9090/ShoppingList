@@ -116,4 +116,10 @@
     <string name="text_registration_layout">Нет аккаунта?</string>
     <string name="text_registration">Регистрация</string>
     <string name="error_email_or_password">Email и/или пароль не могут быть пустыми</string>
+    <string name="confirmation_code_dialog_title">Подтверждение email</string>
+    <string name="confirmation_code_dialog_msg">Для того, чтоб ввойти и синхронизировать данные введите код подтверждения, который пришел вам по email</string>
+    <string name="confirmation_code_dialog_btn_enter_code">Ввести код</string>
+    <string name="confirmation_code_dialog_btn_cancel">Отмена</string>
+    <string name="text_error_password_or_email">Пароли не совпадают или некоректно указан email</string>
+    <string name="interner_conection_error">Проверьте соединение с Интернет</string>
 </resources>

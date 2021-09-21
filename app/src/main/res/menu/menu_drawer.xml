@@ -8,10 +8,10 @@
             android:icon="@drawable/ic_finance_icon"
             android:title="@string/menu_finance"/>
         <item android:id="@+id/menu_drawer_stat_cost"
-            android:icon="@drawable/ic_cost"
+            android:icon="@drawable/ic_income"
             android:title="@string/menu_stat_cost"/>
         <item android:id="@+id/menu_drawer_stat_income"
-            android:icon="@drawable/ic_income"
+            android:icon="@drawable/ic_cost"
             android:title="@string/menu_stat_income"/>
         <item android:id="@+id/menu_drawer_setting"
             android:icon="@drawable/ic_settings"

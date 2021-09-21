@@ -1,41 +1,45 @@
 package com.kasandco.familyfinance.app.user.login;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
-import com.kasandco.familyfinance.core.Constants;
-import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
+import com.kasandco.familyfinance.app.user.registration.RegistrationActivity;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity implements LoginContract.View {
+import javax.inject.Inject;
+
+public class LoginActivity extends BaseActivity implements LoginContract.View {
 
     private CircularProgressIndicator loader;
     private TextInputEditText email, password, password2;
     private Button btnEnter, btnStartRegister;
     private FrameLayout frameLayout;
-    private LoginContract.Presenter presenter;
-    private SharedPreferenceUtil sharedPreferenceUtil;
+
+    @Inject
+    public LoginPresenter presenter;
     private TextInputLayout password2Layout;
+    private ImageButton btnNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sharedPreferenceUtil = new SharedPreferenceUtil(this);
-        int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, R.style.Theme_FamilyFinance);
-        setTheme(themeResource);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        App.getAppComponent().plus(new LoginModule()).inject(this);
         loader = findViewById(R.id.login_loader);
         email = findViewById(R.id.login_input_email);
         password = findViewById(R.id.login_input_password);
@@ -49,6 +53,20 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         presenter = new LoginPresenter();
         password2.setVisibility(View.GONE);
         password2Layout.setVisibility(View.GONE);
+        navigationView = findViewById(R.id.nav_view);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        btnNav = findViewById(R.id.login_nav_menu_btn);
+        btnNav.setOnClickListener(btnClickListener);
+    }
+
+    @Override
+    protected void startNewActivity(Class<?> activityClass) {
+        if(activityClass!=getClass()) {
+            Intent intent = new Intent(this, activityClass);
+            startActivity(intent);
+        }else{
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }
     }
 
     @Override
@@ -56,17 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         super.onResume();
         presenter.viewReady(this);
     }
-
-    private View.OnClickListener btnClickListener = view -> {
-        switch (view.getId()) {
-            case R.id.login_btn_registration:
-                //@TODO Реализовать старт активити регистрации
-                break;
-            case R.id.login_btn_enter:
-                presenter.clickEnterBtn();
-                break;
-        }
-    };
 
     @Override
     public void showLoading() {
@@ -102,6 +109,19 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     public void startListActivity() {
         Intent intent = new Intent(this, ListActivity.class);
         startActivity(intent);
-
     }
+
+
+    private View.OnClickListener btnClickListener = view -> {
+        switch (view.getId()) {
+            case R.id.login_btn_registration:
+                startNewActivity(RegistrationActivity.class);
+                break;
+            case R.id.login_btn_enter:
+                presenter.clickEnterBtn();
+                break;
+            case R.id.login_nav_menu_btn:
+                drawerLayout.openDrawer(Gravity.LEFT);
+        }
+    };
 }

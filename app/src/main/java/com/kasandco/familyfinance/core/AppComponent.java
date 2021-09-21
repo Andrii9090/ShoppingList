@@ -13,6 +13,11 @@ import com.kasandco.familyfinance.app.splash.SplashComponent;
 import com.kasandco.familyfinance.app.splash.SplashModule;
 import com.kasandco.familyfinance.app.statistic.StatisticComponent;
 import com.kasandco.familyfinance.app.statistic.StatisticModule;
+import com.kasandco.familyfinance.app.user.login.LoginComponent;
+import com.kasandco.familyfinance.app.user.login.LoginModule;
+import com.kasandco.familyfinance.app.user.registration.RegistrationComponent;
+import com.kasandco.familyfinance.app.user.registration.RegistrationContract;
+import com.kasandco.familyfinance.app.user.registration.RegistrationModule;
 
 import javax.inject.Singleton;
 
@@ -27,4 +32,6 @@ public interface AppComponent {
     FinanceComponent plus(FinanceModule module);
     SplashComponent plus(SplashModule module);
     StatisticComponent plus(StatisticModule module);
+    RegistrationComponent plus(RegistrationModule module);
+    LoginComponent plus(LoginModule module);
 }
