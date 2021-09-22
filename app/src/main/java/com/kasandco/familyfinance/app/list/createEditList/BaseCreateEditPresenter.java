@@ -1,8 +1,8 @@
 package com.kasandco.familyfinance.app.list.createEditList;
 
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.expenseHistory.FinanceRepository;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryModel;
+import com.kasandco.familyfinance.app.finance.FinanceRepository;
+import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
 import com.kasandco.familyfinance.core.icon.AdapterIcon;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.list.ListModel;
@@ -14,7 +14,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> extends BasePresenter<T> implements CreateEditListBasePresenter, ListRepository.FinanceCategoryListener, FinanceRepository.AllCostCategoryCallback, ListRepository.IconCallback, FinanceRepository.FinanceRepositoryCallback {
+public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> extends BasePresenter<T> implements CreateEditListBasePresenter, FinanceRepository.AllCostCategoryCallback, ListRepository.IconCallback, FinanceRepository.FinanceRepositoryCallback {
     @Inject
     ListRepository listRepository;
 
@@ -64,11 +64,6 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
         if (name == null && name.length() < 2) {
             return false;
         } else return !textSpinnerSelected.isEmpty();
-    }
-
-    @Override
-    public void setLastId(long id) {
-        listRepository.addFinanceCategoryId(id, statId);
     }
 
     public void clickCreateBtn() {

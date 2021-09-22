@@ -1,8 +1,8 @@
 package com.kasandco.familyfinance.app.list.createEditList;
 
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.expenseHistory.FinanceRepository;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryModel;
+import com.kasandco.familyfinance.app.finance.FinanceRepository;
+import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
 import com.kasandco.familyfinance.app.list.ListActivityScope;
 import com.kasandco.familyfinance.app.list.ListRepository;
 import com.kasandco.familyfinance.core.Constants;
@@ -10,7 +10,7 @@ import com.kasandco.familyfinance.core.Constants;
 import javax.inject.Inject;
 
 @ListActivityScope
-public class FragmentCreatePresenter extends BaseCreateEditPresenter<CreateListContract.View> implements CreateListContract.Presenter, ListRepository.FinanceCategoryListener, FinanceRepository.AllCostCategoryCallback, ListRepository.IconCallback, FinanceRepository.FinanceRepositoryCallback {
+public class FragmentCreatePresenter extends BaseCreateEditPresenter<CreateListContract.View> implements CreateListContract.Presenter, FinanceRepository.AllCostCategoryCallback, ListRepository.IconCallback, FinanceRepository.FinanceRepositoryCallback {
     @Inject
     public FragmentCreatePresenter() {
 

@@ -1,8 +1,7 @@
 package com.kasandco.familyfinance.core;
 
-import com.kasandco.familyfinance.app.splash.SplashActivity;
-import com.kasandco.familyfinance.app.expenseHistory.FinanceComponent;
-import com.kasandco.familyfinance.app.expenseHistory.FinanceModule;
+import com.kasandco.familyfinance.app.finance.FinanceComponent;
+import com.kasandco.familyfinance.app.finance.FinanceModule;
 import com.kasandco.familyfinance.app.item.DataComponent;
 import com.kasandco.familyfinance.app.item.DataModule;
 import com.kasandco.familyfinance.app.item.ItemComponent;
@@ -16,7 +15,6 @@ import com.kasandco.familyfinance.app.statistic.StatisticModule;
 import com.kasandco.familyfinance.app.user.login.LoginComponent;
 import com.kasandco.familyfinance.app.user.login.LoginModule;
 import com.kasandco.familyfinance.app.user.registration.RegistrationComponent;
-import com.kasandco.familyfinance.app.user.registration.RegistrationContract;
 import com.kasandco.familyfinance.app.user.registration.RegistrationModule;
 
 import javax.inject.Singleton;

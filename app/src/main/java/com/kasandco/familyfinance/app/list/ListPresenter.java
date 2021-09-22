@@ -3,7 +3,6 @@ package com.kasandco.familyfinance.app.list;
 import android.annotation.SuppressLint;
 
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
 import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.core.BasePresenter;
 

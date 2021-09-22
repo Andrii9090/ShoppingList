@@ -21,7 +21,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
-import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
+import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateItemHistory;
 import com.kasandco.familyfinance.app.item.ItemActivity;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;

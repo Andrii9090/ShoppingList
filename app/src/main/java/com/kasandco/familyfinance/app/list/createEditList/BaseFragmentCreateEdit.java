@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,7 +52,7 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
         createListener = (CreateListListener) view.getContext();
         initElement(view);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 7));
 
         name.setFocusable(true);
         name.requestFocus();
@@ -71,20 +72,12 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
         super.onViewCreated(view, savedInstanceState);
         presenter.viewReady(this);
         KeyboardUtil.showKeyboard(getActivity());
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.clickClose();
-                createListener.closeFragmentCreate();
-            }
+        view.setOnClickListener(view1 -> {
+            presenter.clickClose();
+            createListener.closeFragmentCreate();
         });
 
-        btnCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.clickCreateBtn();
-            }
-        });
+        btnCreate.setOnClickListener(view12 -> presenter.clickCreateBtn());
     }
 
     @Override

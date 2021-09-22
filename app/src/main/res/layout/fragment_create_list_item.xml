@@ -9,13 +9,13 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:background="@color/white"
         android:layout_margin="10dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/white"
+        android:padding="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,14 +34,14 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/fragment_create_list_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:orientation="horizontal"
+                android:layout_height="0dp"
+                android:layout_margin="3dp"
+                android:scrollbars="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent="0.25"
+                app:layout_constraintHeight_percent=".45"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fragment_create_list_input"
-                tools:itemCount="20"
+                tools:itemCount="6"
                 tools:listitem="@layout/rv_icon_element" />
 
             <TextView
@@ -57,11 +57,11 @@
             <Spinner
                 android:id="@+id/fragment_create_list_statistic"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_percent=".2"
+                app:layout_constraintHeight_percent=".1"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/fragment_create_list_text_stat"
                 app:layout_constraintTop_toBottomOf="@id/fragment_create_list_recycler_view" />

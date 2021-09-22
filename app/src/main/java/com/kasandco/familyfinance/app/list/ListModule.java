@@ -2,10 +2,10 @@ package com.kasandco.familyfinance.app.list;
 
 import android.content.Context;
 
-import com.kasandco.familyfinance.app.expenseHistory.FinanceRepository;
-import com.kasandco.familyfinance.app.expenseHistory.fragments.FragmentCreateItemHistory;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryDao;
-import com.kasandco.familyfinance.app.expenseHistory.presenters.CreateHistoryItemPresenter;
+import com.kasandco.familyfinance.app.finance.FinanceRepository;
+import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateItemHistory;
+import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
+import com.kasandco.familyfinance.app.finance.presenters.CreateHistoryItemPresenter;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.app.list.createEditList.EditListPresenter;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentCreatePresenter;

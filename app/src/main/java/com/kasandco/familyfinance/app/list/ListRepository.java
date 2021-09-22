@@ -1,6 +1,7 @@
 package com.kasandco.familyfinance.app.list;
 
 import android.os.Handler;
+import android.os.Looper;
 
 
 import com.kasandco.familyfinance.core.icon.IconDao;
@@ -87,20 +88,17 @@ public class ListRepository {
     }
 
     public void getAllIcons(IconCallback callback){
-        iconDao.getAllIcon().observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Throwable {
-                        callback.setIcons(new ArrayList<>());
-                    }
-                })
-                .subscribe(new Consumer<List<IconModel>>() {
-                    @Override
-                    public void accept(List<IconModel> iconModels) throws Throwable {
-                        callback.setIcons(iconModels);
-                    }
-                });
+        Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(()->{
+            List<IconModel> icons  = iconDao.getAllIcon();
+            handler.post(()->{
+                if(icons.size()>0){
+                    callback.setIcons(icons);
+                }else {
+                    callback.setIcons(new ArrayList<>());
+                }
+            });
+        }).start();
     }
 
     public void getAllListActiveItem(long listId, ListRepositoryInterface callback) {
@@ -120,10 +118,6 @@ public class ListRepository {
 
     public interface IconCallback {
         void setIcons(List<IconModel> iconModels);
-    }
-
-    public interface FinanceCategoryListener{
-        void setLastId(long id);
     }
 
 }

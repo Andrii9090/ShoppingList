@@ -15,5 +15,5 @@ public interface IconDao extends BaseDao<IconModel> {
     IconModel getIcon(long id);
 
     @Query("SELECT * FROM icon")
-    Single<List<IconModel>> getAllIcon();
+    List<IconModel> getAllIcon();
 }

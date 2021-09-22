@@ -55,39 +55,33 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         if (items.get(position).getImagePath() == null || items.get(position).getImagePath().isEmpty()) {
             holder.imageIcon.setVisibility(View.INVISIBLE);
         } else {
+
             Picasso.get()
                     .load(new File(items.get(position).getImagePath()))
                     .centerCrop()
                     .resize(100, 100)
                     .into(holder.imageIcon);
+            holder.imageIcon.setVisibility(View.VISIBLE);
+
         }
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        holder.btnMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setPosition(holder.getBindingAdapterPosition());
-                if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
-                    holder.itemView.showContextMenu(holder.itemView.getWidth(), holder.itemView.getHeight() - 3);
-                } else {
-                    holder.itemView.showContextMenu();
-                }
+        holder.btnMenu.setOnClickListener(view -> {
+            setPosition(holder.getBindingAdapterPosition());
+            if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
+                holder.itemView.showContextMenu(holder.itemView.getWidth(), holder.itemView.getHeight() - 3);
+            } else {
+                holder.itemView.showContextMenu();
             }
         });
-        holder.imageIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setPosition(holder.getBindingAdapterPosition());
-                zoomImageListener.showZoomImage();
-            }
+        holder.imageIcon.setOnClickListener(view -> {
+            setPosition(holder.getBindingAdapterPosition());
+            zoomImageListener.showZoomImage();
         });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setPosition(holder.getAbsoluteAdapterPosition());
-                OnClickItemListener listener = (OnClickItemListener) holder.imageIcon.getContext();
-                listener.onClickItem();
-            }
+        holder.itemView.setOnClickListener(view -> {
+            setPosition(holder.getAbsoluteAdapterPosition());
+            OnClickItemListener listener = (OnClickItemListener) holder.imageIcon.getContext();
+            listener.onClickItem();
         });
     }
 
@@ -126,7 +120,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         private ImageView imageIcon;
         private TextView name;
-        private TextView quantity;
         private ImageButton btnMenu;
 
 

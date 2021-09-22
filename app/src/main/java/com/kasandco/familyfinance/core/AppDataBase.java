@@ -3,10 +3,10 @@ package com.kasandco.familyfinance.core;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryDao;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceCategoryModel;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceDao;
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceModel;
+import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
+import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
+import com.kasandco.familyfinance.app.finance.models.FinanceDao;
+import com.kasandco.familyfinance.app.finance.models.FinanceModel;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.item.ItemDao;

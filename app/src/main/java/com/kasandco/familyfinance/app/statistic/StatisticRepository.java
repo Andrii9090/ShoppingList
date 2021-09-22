@@ -3,7 +3,7 @@ package com.kasandco.familyfinance.app.statistic;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.kasandco.familyfinance.app.expenseHistory.models.FinanceDao;
+import com.kasandco.familyfinance.app.finance.models.FinanceDao;
 
 import java.util.List;
 

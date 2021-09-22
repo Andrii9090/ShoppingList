@@ -46,6 +46,14 @@ public class ItemDiffUtil extends DiffUtil.Callback {
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
         ItemModel oldItem = oldData.get(oldItemPosition);
         ItemModel newItem = newData.get(newItemPosition);
-        return oldItem.getImagePath()==null && newItem.getImagePath()!=null || !oldItem.getImagePath().equals(newItem.getImagePath()) || oldItem.getStatus() != newItem.getStatus();
+        if(oldItem.getStatus() != newItem.getStatus()){
+            return true;
+        }else if(oldItem.getImagePath()!=null && newItem.getImagePath()!=null){
+            return oldItem.getImagePath().equals(newItem.getImagePath()) || oldItem.getImagePath().isEmpty() && !newItem.getImagePath().isEmpty();
+        }
+        else if(oldItem.getImagePath()==null && newItem.getImagePath()!=null){
+            return true;
+        }
+        return false;
     }
 }
