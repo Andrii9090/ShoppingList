@@ -17,7 +17,7 @@ public class StatisticModule {
     @StatisticScope
     @Provides
     StatisticRepository providesStatRepository(AppDataBase appDataBase){
-        return new StatisticRepository(appDataBase.getFinanceDoa());
+        return new StatisticRepository(appDataBase.getFinanceDao());
     }
 
 }

@@ -2,9 +2,7 @@ package com.kasandco.familyfinance.app.statistic;
 
 import androidx.core.util.Pair;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,16 +24,15 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.core.Constants;
+import com.kasandco.familyfinance.utils.DateHelper;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -173,20 +170,14 @@ public class StatisticActivity extends BaseActivity implements StatisticContract
                 MaterialDatePicker.Builder.dateRangePicker()
                         .setTitleText(getString(R.string.text_select_date))
                         .build();
-        dateRangePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
-            @Override
-            public void onPositiveButtonClick(Pair<Long, Long> selection) {
-                presenter.setDateRangePeriod(String.valueOf(selection.first), String.valueOf(selection.second));
-            }
-        });
+        dateRangePicker.addOnPositiveButtonClickListener(selection -> presenter.setDateRangePeriod(String.valueOf(selection.first), String.valueOf(selection.second)));
         dateRangePicker.show(getSupportFragmentManager(), "DatePicker");
         hideLoading();
     }
 
     @Override
     public void setTextToBtnSelectPeriod(GregorianCalendar calendarStart, GregorianCalendar calendarEnd) {
-        @SuppressLint("SimpleDateFormat") String btnSelectPeriodText = String.format(getString(R.string.text_date_period), new SimpleDateFormat("dd/MM/yy").format(calendarStart.getTime().getTime()), new SimpleDateFormat("dd/MM/yy").format(calendarEnd.getTime().getTime()));
-        btnPeriod.setText(btnSelectPeriodText);
+        btnPeriod.setText(DateHelper.formatDatePeriod(getString(R.string.text_date_period), calendarStart.getTime().getTime(), calendarEnd.getTime().getTime()));
     }
 
     @Override

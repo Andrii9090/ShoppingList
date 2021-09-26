@@ -2,6 +2,7 @@ package com.kasandco.familyfinance.app.statistic;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.core.BasePresenter;
+import com.kasandco.familyfinance.utils.DateHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -103,18 +104,10 @@ public class StatisticPresenter extends BasePresenter<StatisticContract> impleme
     }
 
     public void setDateRangePeriod(String dateStart, String dateEnd) {
-        GregorianCalendar start = new GregorianCalendar();
-        start.setTime(new Date(Long.parseLong(dateStart)));
-        start.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DATE), 0, 0, 0);
-        startDate = start.getTime().getTime();
-
-        Date endPeriod = new Date(Long.parseLong(dateEnd));
-        GregorianCalendar end = new GregorianCalendar();
-        end.setTime(endPeriod);
-        end.set(end.get(Calendar.YEAR), end.get(Calendar.MONTH), end.get(Calendar.DATE), 23, 59, 59);
-        endDate = end.getTime().getTime();
-
-        view.setTextToBtnSelectPeriod(start, end);
+        GregorianCalendar[] period = DateHelper.formatDateToStartAndEndDay(dateStart, dateEnd);
+        startDate = period[0].getTime().getTime();
+        endDate = period[1].getTime().getTime();
+        view.setTextToBtnSelectPeriod(period[0], period[1]);
         loadData();
     }
 

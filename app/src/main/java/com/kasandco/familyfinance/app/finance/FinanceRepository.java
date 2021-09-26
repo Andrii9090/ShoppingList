@@ -54,8 +54,8 @@ public class FinanceRepository {
 
     public void getAllData(int type, String dateStart, String dateEnd, FinanceHistoryCallback callback) {
         disposable.add(financeCategoryDao.getAll(type, dateStart, dateEnd)
-                .observeOn(io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
                 .doOnError(throwable -> {
                 })
                 .subscribe(callback::setAllItems));
@@ -121,4 +121,5 @@ public class FinanceRepository {
     public interface AllCostCategoryCallback{
         void setAllCostCategory(List<FinanceCategoryModel> categoryModels);
     }
+
 }

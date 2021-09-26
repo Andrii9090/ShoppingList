@@ -21,4 +21,5 @@ public interface Constants {
     String STAT_TYPE = "statistic_type";
     String COLOR_THEME = "color_theme";
     String USER_NAME = "user_name";
+    String FINANCE_CATEGORY_ID = "finance_category_id";
 }

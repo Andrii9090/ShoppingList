@@ -44,7 +44,7 @@ public class FinanceModule {
     @FinanceActivityScope
     @Provides
     FinanceDao providesFinanceDao(AppDataBase appDataBase){
-       return appDataBase.getFinanceDoa();
+       return appDataBase.getFinanceDao();
     }
 
     @Named("cost_history")

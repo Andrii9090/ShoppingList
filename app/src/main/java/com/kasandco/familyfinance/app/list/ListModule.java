@@ -72,7 +72,7 @@ public class ListModule {
     @Provides
     @ListActivityScope
     FinanceRepository providesFinanceRepository(AppDataBase appDataBase){
-        return new FinanceRepository(appDataBase.getFinanceCategoryDao(), appDataBase.getFinanceDoa(), appDataBase.getListDao());
+        return new FinanceRepository(appDataBase.getFinanceCategoryDao(), appDataBase.getFinanceDao(), appDataBase.getListDao());
     }
 
     @Provides

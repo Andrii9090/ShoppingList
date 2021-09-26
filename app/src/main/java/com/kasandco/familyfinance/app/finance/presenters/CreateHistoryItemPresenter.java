@@ -22,7 +22,7 @@ public class CreateHistoryItemPresenter extends BasePresenter<CreateHistoryItemC
     }
 
     public void createNewItem(int type, long categoryId, String amount, String comment, GregorianCalendar selectedDate) {
-        FinanceModel item = new FinanceModel(String.valueOf(selectedDate.getTime().getTime()), categoryId, Double.parseDouble(amount), comment, type, String.valueOf(System.currentTimeMillis()));
+        FinanceModel item = new FinanceModel(String.valueOf(selectedDate.getTime().getTime()), categoryId, Double.parseDouble(amount), comment, type, String.valueOf(System.currentTimeMillis()), "");
         repository.createNewHistoryItem(item);
         view.close();
     }

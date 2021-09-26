@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="5dp"
+    android:layout_marginBottom="4dp"
+    app:cardElevation="3dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/rv_finance_detail_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="email@ururr.com" />
+
+        <View
+            android:id="@+id/rv_finance_detail_view_line"
+            android:layout_width="0dp"
+            android:layout_height="0.8dp"
+            android:background="@color/background_fragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_finance_detail_user"
+            app:layout_constraintWidth_percent="0.97" />
+
+        <TextView
+            android:id="@+id/rv_finance_detail_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:paddingStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_finance_detail_view_line"
+            tools:text="12:34" />
+
+        <TextView
+            android:id="@+id/rv_finance_detail_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:paddingStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/rv_finance_detail_time"
+            app:layout_constraintTop_toBottomOf="@+id/rv_finance_detail_view_line"
+            app:layout_constraintWidth_percent=".65"
+            tools:text="Lorem kdjksjfkdjft lksdlkslfk klakdlskd lklkkjlfgdmgkd" />
+
+        <TextView
+            android:id="@+id/rv_finance_detail_total"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_black"
+            android:padding="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_finance_detail_user"
+            tools:text="89000 UAH" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

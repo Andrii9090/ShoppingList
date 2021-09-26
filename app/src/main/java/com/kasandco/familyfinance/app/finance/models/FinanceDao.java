@@ -21,4 +21,7 @@ public interface FinanceDao extends BaseDao<FinanceModel> {
 
     @Query("SELECT SUM(fh.total) AS total, fc.name AS name, fc.id FROM finance_history AS fh INNER JOIN finance_category AS fc ON (fh.category_id==fc.id) WHERE fh.date>=:dateStart AND fh.date<=:dateEnd AND fh.type=:type  GROUP BY fc.name ORDER BY fh.total DESC")
     List<FinanceStatModel> getAllFromPeriod(int type, String dateStart, String dateEnd);
+
+    @Query("SELECT * FROM  finance_history WHERE category_id=:category_id AND date>=:dateStart AND date<=:dateEnd")
+    List<FinanceModel> getDetailFinance(long category_id, String dateStart, String dateEnd);
 }

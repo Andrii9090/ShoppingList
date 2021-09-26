@@ -18,17 +18,19 @@ public class FinanceModel {
     @ColumnInfo(name = "is_delete", defaultValue = "0")private int isDelete;
     @ColumnInfo(defaultValue = "1") private int type;
     @ColumnInfo(name = "date_mod") private String dateMod;
+    @ColumnInfo(name = "user_email", defaultValue = "") private String userEmail;
 
     public FinanceModel(){}
 
     @Ignore
-    public FinanceModel(String date, long categoryId, double total, String  comment, int type, String dateMod){
+    public FinanceModel(String date, long categoryId, double total, String  comment, int type, String dateMod, String  userEmail){
         this.date = date;
         this.categoryId = categoryId;
         this.total = total;
         this.type = type;
         this.dateMod = dateMod;
         this.comment = comment;
+        this.userEmail = userEmail;
     }
 
     public long getId() {
@@ -109,5 +111,13 @@ public class FinanceModel {
 
     public void setComment(String comment){
         this.comment = comment;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

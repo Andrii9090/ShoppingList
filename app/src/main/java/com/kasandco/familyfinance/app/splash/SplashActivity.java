@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.app.finance.FinanceDetailActivity;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.list.ListActivity;
@@ -57,7 +58,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = new Intent(this, ListActivity.class);
+        Intent intent = new Intent(this, FinanceDetailActivity.class);
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, 1f)
                 .setDuration(1000);
 

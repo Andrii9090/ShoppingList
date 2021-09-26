@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp"
+    android:layout_marginBottom="16dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rv_header_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="12/08/2022"
+        android:textAlignment="center"
+        android:fontFamily="@font/roboto_black"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/ItemListSize"
+        android:padding="8dp"
+        android:layout_marginVertical="5dp"
+        android:textColor="@color/background_fragment"
+        />
+
+
+    <View
+        android:id="@+id/rv_finance_detail_view_line"
+        android:layout_width="0dp"
+        android:layout_height="1.8dp"
+        android:background="@color/background_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_header_text"
+        app:layout_constraintWidth_percent="0.45" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

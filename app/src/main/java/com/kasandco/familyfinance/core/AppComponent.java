@@ -1,6 +1,8 @@
 package com.kasandco.familyfinance.core;
 
 import com.kasandco.familyfinance.app.finance.FinanceComponent;
+import com.kasandco.familyfinance.app.finance.FinanceDetailComponent;
+import com.kasandco.familyfinance.app.finance.FinanceDetailModule;
 import com.kasandco.familyfinance.app.finance.FinanceModule;
 import com.kasandco.familyfinance.app.item.DataComponent;
 import com.kasandco.familyfinance.app.item.DataModule;
@@ -32,4 +34,5 @@ public interface AppComponent {
     StatisticComponent plus(StatisticModule module);
     RegistrationComponent plus(RegistrationModule module);
     LoginComponent plus(LoginModule module);
+    FinanceDetailComponent plus(FinanceDetailModule module);
 }
