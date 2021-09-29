@@ -94,6 +94,7 @@ public class AdapterIcon extends RecyclerView.Adapter<AdapterIcon.ViewHolder> {
     }
 
     public void setItems(List<IconModel> items){
+        icons.clear();
         icons.addAll(items);
     }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.R;
@@ -62,8 +63,6 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         }else {
             ((HeaderViewHolder) holder).bind(items.get(position).getDate());
         }
-
-        //TODO Допилить и проверить отображение данных в recyclerview
     }
 
     @Override
@@ -91,7 +90,6 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             comment = itemView.findViewById(R.id.rv_finance_detail_comment);
-            userEmail = itemView.findViewById(R.id.rv_finance_detail_user);
             total = itemView.findViewById(R.id.rv_finance_detail_total);
             lineView = itemView.findViewById(R.id.rv_finance_detail_view_line);
             time = itemView.findViewById(R.id.rv_finance_detail_time);
@@ -99,15 +97,12 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         public void bind(String _comment, String _userEmail, double _total, String _time, String currency){
             if(_comment !=null){
-                comment.setText(_comment);
+                String textComment = itemView.getContext().getString(R.string.pattern_finance_comment,_userEmail.isEmpty()?"":_userEmail+":", _comment);
+
+                CharSequence styledText = HtmlCompat.fromHtml(textComment, HtmlCompat.FROM_HTML_MODE_LEGACY);
+                comment.setText(styledText);
             }else {
                 comment.setText(R.string.empty_comment);
-            }
-            if(_userEmail != null){
-                userEmail.setText(_userEmail);
-            }else {
-                userEmail.setVisibility(View.GONE);
-                lineView.setVisibility(View.GONE);
             }
             time.setText(_time);
             total.setText(String.format(itemView.getContext().getString(R.string.text_currency_format), _total, currency));

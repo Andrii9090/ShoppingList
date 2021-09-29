@@ -83,7 +83,7 @@ public class RegistrationActivity extends BaseActivity implements RegistrationCo
                 if(isInternetAvailable()) {
                     presenter.clickRegistrationBtn();
                 }else{
-                    showToast(R.string.interner_conection_error);
+                    showToast(R.string.internet_connection_error);
                 }
                 break;
             case R.id.login_nav_menu_btn:

@@ -31,22 +31,25 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     @Override
     public void create() {
         boolean isEdit = false;
+        ListModel newList = new ListModel();
+        newList = editItem.clone();
         if (!editItem.getName().equals(name)) {
-            editItem.setName(name);
+            newList.setName(name);
             isEdit = true;
         }
-        if (editItem.getIcon() != null && !editItem.getIcon().equals(pathIcon) || editItem.getIcon() == null && pathIcon != null && !pathIcon.isEmpty()) {
-            editItem.setIcon(pathIcon);
+        if (editItem.getIcon() != null && !editItem.getIcon().equals(pathIcon) || editItem.getIcon() == null && pathIcon != null) {
+            newList.setIcon(pathIcon);
             isEdit = true;
         }
         if (editItem.getFinanceCategoryId() != financeCategory) {
-            editItem.setFinanceCategoryId(financeCategory);
+            newList.setFinanceCategoryId(financeCategory);
             isEdit = true;
         }
         if (isEdit) {
-            editItem.setDateMod(String.valueOf(System.currentTimeMillis()));
-            listRepository.edit(editItem);
+            newList.setDateMod(String.valueOf(System.currentTimeMillis()));
+            listRepository.edit(newList);
         }
+        nullingSpinnerPosition();
         view.close();
     }
 
@@ -82,6 +85,11 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
             }
         }
         view.setSpinnerPosition(positionSpinner);
+    }
+
+    @Override
+    public void nullingSpinnerPosition(){
+        positionSpinner = -1;
     }
 
     private void setEditDataIcon(){

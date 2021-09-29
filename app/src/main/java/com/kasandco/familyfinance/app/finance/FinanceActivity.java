@@ -143,6 +143,13 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
     }
 
     @Override
+    protected void onDestroy() {
+        presenter.viewDestroy();
+        presenter = null;
+        super.onDestroy();
+    }
+
+    @Override
     public void onClickAddCategory(int type) {
         presenter.clickBtnNewCategory(type);
     }
@@ -169,6 +176,13 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
             fragmentCreateIncomeCategory.setEditItem(financeCategoryModel);
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen, fragmentCreateIncomeCategory).commitNow();
         }
+    }
+
+    @Override
+    public void onclickShowFinanceDetailActivity(long categoryId) {
+        Intent intent = new Intent(this, FinanceDetailActivity.class);
+        intent.putExtra(Constants.FINANCE_CATEGORY_ID, categoryId);
+        startActivity(intent);
     }
 
     @Override
@@ -325,11 +339,13 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
         }
 
         private Fragment showIncomeFragment() {
+            fragmentFinanceHistory.setPeriod(presenter.getDateStart(), presenter.getDateEnd());
             presenter.selectIncomeFragment();
             return fragmentIncomeHistory;
         }
 
         private Fragment showCostHistoryFragment() {
+            fragmentIncomeHistory.setPeriod(presenter.getDateStart(), presenter.getDateEnd());
             presenter.selectCostFragment();
             return fragmentFinanceHistory;
         }

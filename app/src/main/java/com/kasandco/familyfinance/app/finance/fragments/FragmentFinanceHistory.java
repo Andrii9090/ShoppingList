@@ -32,11 +32,10 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     private int type;
 
     @Inject
-    public FragmentFinanceHistory(int type, PresenterFinanceHistory presenter){
+    public FragmentFinanceHistory(int type, PresenterFinanceHistory presenter) {
         this.type = type;
         this.presenter = presenter;
     }
-
 
 
     @Nullable
@@ -65,9 +64,9 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.fragment_expensive_btn_add_category:
-                        callback.onClickAddCategory(type);
+                    callback.onClickAddCategory(type);
                     break;
             }
         }
@@ -83,11 +82,14 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
 
     }
 
-
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        presenter.contextMenuClick(item.getItemId());
-        return super.onContextItemSelected(item);
+        if(isVisible()) {
+            presenter.contextMenuClick(item.getItemId());
+            return super.onContextItemSelected(item);
+        }else {
+            return false;
+        }
     }
 
     @Override
@@ -124,6 +126,11 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     }
 
     @Override
+    public void startFinanceDetailActivity(FinanceCategoryModel category) {
+        callback.onclickShowFinanceDetailActivity(category.getId());
+    }
+
+    @Override
     public void clickToItem() {
         presenter.clickToCategoryItem();
     }
@@ -131,10 +138,7 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     private View.OnClickListener addHistoryItemListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
-                default:
-                    presenter.clickToCreateNewHistoryItem();
-            }
+            presenter.clickToCreateNewHistoryItem();
         }
     };
 
@@ -142,15 +146,19 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
         presenter.periodSet(startDate, endDate);
     }
 
-    public interface ClickFragmentHistory {
-        void onClickAddCategory(int financeType);
-        void onClickAddCosts(long categoryId, int type);
-        void onClickEdit(int type, FinanceCategoryModel financeCategoryModel);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.destroy();
+    }
+
+    public interface ClickFragmentHistory {
+        void onClickAddCategory(int financeType);
+
+        void onClickAddCosts(long categoryId, int type);
+
+        void onClickEdit(int type, FinanceCategoryModel financeCategoryModel);
+
+        void onclickShowFinanceDetailActivity(long categoryId);
     }
 }

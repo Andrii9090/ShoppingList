@@ -77,7 +77,7 @@
     <string name="text_selected_language">Язык</string>
     <string name="text_save">Сохранить</string>
     <string name="title_list">Мои списки</string>
-    <string name="text_send_list">Отправить список...</string>
+    <string name="text_send_list">Отправить список…</string>
     <string name="text_header_msg">Список покупок:</string>
     <string name="text_footer_msg">Создано с помощью приложения %s</string>
     <!-- Preference Titles -->
@@ -121,6 +121,11 @@
     <string name="confirmation_code_dialog_btn_enter_code">Ввести код</string>
     <string name="confirmation_code_dialog_btn_cancel">Отмена</string>
     <string name="text_error_password_or_email">Пароли не совпадают или некоректно указан email</string>
-    <string name="interner_conection_error">Проверьте соединение с Интернет</string>
+    <string name="internet_connection_error">Проверьте соединение с Интернет</string>
     <string name="empty_comment">Нет комментария</string>
+    <string name="pattern_finance_comment">&lt;b>%s&lt;/b> %s</string>
+    <string name="title_finance_detail">История</string>
+    <string name="text_detail">История</string>
+    <string name="subject_review_email">Отзыв и предложение</string>
+    <string name="select_mail_app">Для отправки EMAIL</string>
 </resources>

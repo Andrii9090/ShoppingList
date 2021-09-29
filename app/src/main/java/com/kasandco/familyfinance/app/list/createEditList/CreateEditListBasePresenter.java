@@ -7,5 +7,6 @@ public interface CreateEditListBasePresenter {
     void setData(String name, String iconPath);
     void selectedSpinner(int i);
     void destroyView();
+    void nullingSpinnerPosition();
 }
 

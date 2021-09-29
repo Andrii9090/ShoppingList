@@ -164,7 +164,6 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            //TODO пересмотреть deprecated startActivityForResult
         } else {
             presenter.noCamara();
         }

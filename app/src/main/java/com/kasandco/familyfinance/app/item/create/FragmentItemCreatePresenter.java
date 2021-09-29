@@ -35,11 +35,9 @@ public class FragmentItemCreatePresenter extends BasePresenter<FragmentItemCreat
         String[] arrayTextName = getQuantity(text);
         String name = arrayTextName[0];
         if (!itemEdit.getName().equals(name)) {
-            ItemModel edited = new ItemModel();
-            edited = itemEdit.clone();
-            edited.setName(name);
-            edited.setDateMod(String.valueOf(System.currentTimeMillis()));
-            repository.edit(edited);
+            itemEdit.setName(name);
+            itemEdit.setDateMod(String.valueOf(System.currentTimeMillis()));
+            repository.edit(itemEdit);
             view.setEditedItemNull();
         }
     }

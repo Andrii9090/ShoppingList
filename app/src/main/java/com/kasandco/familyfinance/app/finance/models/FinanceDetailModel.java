@@ -53,13 +53,14 @@ public class FinanceDetailModel {
     }
 
 
-    public FinanceDetailModel(String _date, long _categoryId, double _total, String _comment, int _type){
+    public FinanceDetailModel(String _userEmail, String _date, long _categoryId, double _total, String _comment, int _type){
         date = formatDateToStr(_date);
         time = formatTimeToStr(_date);
         categoryId = _categoryId;
         total = _total;
         type = _type;
         comment = _comment;
+        userEmail = _userEmail;
     }
     public FinanceDetailModel(String _date, int _type){
         date = formatDateToStr(_date);

@@ -35,15 +35,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
 public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategoryAdapter.ViewHolder> {
     private List<FinanceCategoryWithTotal> items;
     private int currentPosition;
     private OnClickItemListener listener;
 
-    @Inject
-    public FinanceCategoryAdapter(){
+    public FinanceCategoryAdapter() {
         currentPosition = -1;
     }
 
@@ -54,16 +52,16 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         return new ViewHolder(view);
     }
 
-    public List<FinanceCategoryWithTotal> getItems(){
+    public List<FinanceCategoryWithTotal> getItems() {
         return items;
     }
 
-    public void setItems(List<FinanceCategoryWithTotal> items){
-        if(this.items==null) {
+    public void setItems(List<FinanceCategoryWithTotal> items) {
+        if (this.items == null) {
             this.items = new ArrayList<>();
             this.items.addAll(items);
             notifyDataSetChanged();
-        }else {
+        } else {
             diff(items);
         }
     }
@@ -76,11 +74,11 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public void setPosition(int current){
+    public void setPosition(int current) {
         currentPosition = current;
     }
 
-    public void nullingPosition(){
+    public void nullingPosition() {
         currentPosition = -1;
     }
 
@@ -94,11 +92,11 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         return items.size();
     }
 
-    public int getCurrentPosition(){
+    public int getCurrentPosition() {
         return currentPosition;
     }
 
-    public void setOnClickListener(OnClickItemListener listener){
+    public void setOnClickListener(OnClickItemListener listener) {
         this.listener = listener;
     }
 
@@ -111,6 +109,14 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
             icon = itemView.findViewById(R.id.rv_item_category_icon);
             name = itemView.findViewById(R.id.rv_item_category_name);
             total = itemView.findViewById(R.id.rv_item_category_total);
+            itemView.setOnClickListener(view -> {
+                setPosition(getAbsoluteAdapterPosition());
+                changeSelected();
+                items.get(getAbsoluteAdapterPosition()).setSelected(true);
+                items.get(getAbsoluteAdapterPosition()).getCategory().setDateMod(String.valueOf(System.currentTimeMillis()));
+                notifyDataSetChanged();
+                listener.clickToItem();
+            });
             itemView.setOnCreateContextMenuListener(this);
             itemView.setOnLongClickListener(view -> {
                 setPosition(getAbsoluteAdapterPosition());
@@ -120,31 +126,21 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
 
         @SuppressLint({"DefaultLocale", "ResourceType"})
         public void bind(int position) {
-            //TODO Сделать с Handler  и также в лист адаптере
-            itemView.setOnClickListener(view -> {
-                setPosition(getAbsoluteAdapterPosition());
-                changeSelected();
-                items.get(position).setSelected(true);
-                items.get(position).getCategory().setDateMod(String.valueOf(System.currentTimeMillis()));
-                notifyDataSetChanged();
-                listener.clickToItem();
-            });
-
             AssetManager am = icon.getContext().getAssets();
-            if(!items.get(position).isSelected()) {
+            if (!items.get(position).isSelected()) {
                 itemView.setBackgroundColor(Color.TRANSPARENT);
-            }else{
+            } else {
                 ValueAnimator colorAnimation;
                 colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), Color.WHITE, ContextCompat.getColor(name.getContext(), R.color.selected));
                 colorAnimation.setDuration(150);
                 colorAnimation.addUpdateListener(animator -> itemView.setBackgroundColor((int) animator.getAnimatedValue()));
                 colorAnimation.start();
             }
-            InputStream is  = null;
+            InputStream is = null;
             Bitmap bitmap = null;
             try {
                 is = am.open(items.get(position).getCategory().getIconPath());
-                bitmap= BitmapFactory.decodeStream(is);
+                bitmap = BitmapFactory.decodeStream(is);
                 icon.setImageBitmap(bitmap);
                 TypedValue typedValue = new TypedValue();
                 Resources.Theme theme = icon.getContext().getTheme();
@@ -155,7 +151,7 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
                 e.printStackTrace();
             }
             name.setText(items.get(position).getCategory().getName());
-            total.setText(String.format("%.2f %s", items.get(position).getTotal(), new SharedPreferenceUtil(total.getContext()).getSharedPreferences().getString(SHP_DEFAULT_CURRENCY, "USD")));
+            total.setText(String.format("%.2f %s", (float) items.get(position).getTotal(), new SharedPreferenceUtil(total.getContext()).getSharedPreferences().getString(SHP_DEFAULT_CURRENCY, "USD")));
         }
 
         @Override
@@ -166,8 +162,8 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
     }
 
     private void changeSelected() {
-        for (FinanceCategoryWithTotal item:items) {
-            if(item.isSelected()){
+        for (FinanceCategoryWithTotal item : items) {
+            if (item.isSelected()) {
                 item.setSelected(false);
                 item.getCategory().setDateMod(String.valueOf(System.currentTimeMillis()));
                 break;
@@ -175,7 +171,7 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         }
     }
 
-    public interface OnClickItemListener{
+    public interface OnClickItemListener {
         void clickToItem();
     }
 }

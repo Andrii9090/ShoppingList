@@ -72,6 +72,7 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
 
     public void clickClose() {
         adapterIcon.setDefaultBackground();
+        nullingSpinnerPosition();
         view.clearViewData();
     }
 

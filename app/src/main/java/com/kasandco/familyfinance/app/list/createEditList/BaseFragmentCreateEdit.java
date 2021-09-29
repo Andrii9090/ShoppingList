@@ -40,7 +40,7 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
     protected TextView textSpinner;
     protected String iconPath;
 
-    public BaseFragmentCreateEdit(CreateEditListBasePresenter presenter){
+    public BaseFragmentCreateEdit(CreateEditListBasePresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -104,9 +104,9 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
 
     @Override
     public void setDataToSelection(List<String> names) {
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, names);
-            financeCategorySpinner.setAdapter(arrayAdapter);
-            financeCategorySpinner.setOnItemSelectedListener(this);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, names);
+        financeCategorySpinner.setAdapter(arrayAdapter);
+        financeCategorySpinner.setOnItemSelectedListener(this);
     }
 
     @Override

@@ -49,7 +49,7 @@
         <activity
             android:name=".app.list.ListActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".app.splash.SplashActivity"
             android:exported="true" >

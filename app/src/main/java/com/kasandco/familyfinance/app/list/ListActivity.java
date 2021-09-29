@@ -274,5 +274,6 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDetach();
+        presenter = null;
     }
 }

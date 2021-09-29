@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.kasandco.familyfinance.BuildConfig;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.finance.FinanceActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
@@ -25,6 +26,7 @@ import com.kasandco.familyfinance.app.statistic.StatisticActivity;
 import com.kasandco.familyfinance.app.user.login.LoginActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
+import com.kasandco.familyfinance.utils.ToastUtils;
 
 public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     protected NavigationView navigationView;
@@ -81,14 +83,30 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             case R.id.menu_drawer_setting:
                 startNewActivity(SettingsActivity.class);
                 break;
+            case R.id.menu_drawer_mail:
+                startEmailIntent();
+                break;
+            case R.id.menu_drawer_pro:
+            case R.id.menu_drawer_feed:
+                ToastUtils.showToast("Скоро...", this);
+                break;
         }
         return true;
     }
 
-    private void startStatActivity(int type) {
-        Intent intent = new Intent(this, StatisticActivity.class);
-        intent.putExtra(Constants.STAT_TYPE, type);
-        startActivity(intent);
+    private void startEmailIntent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "Version " + BuildConfig.VERSION_NAME);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"webdevua2017@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.subject_review_email));
+        intent.setType("message/rfc822");
+        startActivity(Intent.createChooser(intent, getString(R.string.select_mail_app)));
+    }
+
+    protected void startStatActivity(int type) {
+            Intent intent = new Intent(this, StatisticActivity.class);
+            intent.putExtra(Constants.STAT_TYPE, type);
+            startActivity(intent);
     }
 
     protected abstract void startNewActivity(Class<?> activityClass);

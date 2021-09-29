@@ -63,7 +63,7 @@ public class FinanceDetailActivity extends BaseActivity implements FinanceDetail
 
         setSupportActionBar(toolbar);
         MaterialTextView title = toolbar.findViewById(R.id.toolbar_title);
-        title.setText(R.string.title_list);
+        title.setText(R.string.title_finance_detail);
         toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
     }
 
@@ -75,10 +75,17 @@ public class FinanceDetailActivity extends BaseActivity implements FinanceDetail
 
     @Override
     protected void startNewActivity(Class<?> activityClass) {
-        if(activityClass!=getClass()){
+        if (activityClass != getClass()) {
             Intent intent = new Intent(this, activityClass);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, FinanceActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -100,7 +107,6 @@ public class FinanceDetailActivity extends BaseActivity implements FinanceDetail
         dateRangePicker.addOnPositiveButtonClickListener(selection -> presenter.setDateRangePeriod(String.valueOf(selection.first), String.valueOf(selection.second)));
         dateRangePicker.show(getSupportFragmentManager(), "DatePicker");
     }
-
 
     @Override
     public void setTextToBtnSelectPeriod(GregorianCalendar calendarStart, GregorianCalendar calendarEnd) {

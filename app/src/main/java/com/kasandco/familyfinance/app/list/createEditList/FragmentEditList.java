@@ -32,6 +32,7 @@ public class FragmentEditList extends BaseFragmentCreateEdit implements EditList
 
     public void setEditItem(ListModel editItem){
         this.editItem = editItem;
+        iconPath = editItem.getIcon();
     }
 
     @Override

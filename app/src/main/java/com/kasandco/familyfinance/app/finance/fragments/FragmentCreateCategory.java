@@ -140,6 +140,7 @@ public class FragmentCreateCategory extends Fragment implements CreateCategoryCo
 
     private void setIcon() {
         adapterIcon.setIcon(editItem.getIconPath());
+        iconPath = editItem.getIconPath();
     }
 
     @Override

@@ -100,6 +100,10 @@ public class StatisticActivity extends BaseActivity implements StatisticContract
     }
 
     @Override
+    protected void startStatActivity(int type) {
+    }
+
+    @Override
     public void loadPieChartData(List<StatModel> data) {
         ArrayList<PieEntry> entries = new ArrayList<>();
         for (StatModel item : data) {

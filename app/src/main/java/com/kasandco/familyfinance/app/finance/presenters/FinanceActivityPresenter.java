@@ -45,7 +45,7 @@ public class FinanceActivityPresenter extends BasePresenter<FinanceViewContract>
                 calendarStart.add(Calendar.DAY_OF_YEAR, -7);
                 break;
             case Calendar.DAY_OF_WEEK:
-                calendarStart.set(calendarStart.get(Calendar.YEAR), calendarStart.get(Calendar.MONTH), calendarStart.get(Calendar.DATE), 00, 00);
+                calendarStart.set(calendarStart.get(Calendar.YEAR), calendarStart.get(Calendar.MONTH), calendarStart.get(Calendar.DATE), 0, 0);
                 break;
         }
         startDate = String.valueOf(calendarStart.getTime().getTime());
@@ -85,5 +85,16 @@ public class FinanceActivityPresenter extends BasePresenter<FinanceViewContract>
 
     public void selectCostFragment() {
         view.setTotal(totalCost);
+    }
+
+    public String getDateStart() {
+        return startDate;
+    }
+    public String getDateEnd() {
+        return endDate;
+    }
+
+    public void viewDestroy() {
+        repository.clearDisposable();
     }
 }

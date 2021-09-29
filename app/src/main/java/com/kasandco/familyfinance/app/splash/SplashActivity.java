@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.finance.FinanceDetailActivity;
+import com.kasandco.familyfinance.app.settings.SettingsActivity;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.list.ListActivity;
@@ -36,7 +37,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferenceUtil = new SharedPreferenceUtil(this);
-        int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, R.style.Theme_FamilyFinance);
+        int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, R.style.Theme_FamilyFinanceBlue);
         setTheme(themeResource);
         setContentView(R.layout.activity_splash);
         App.appComponent.plus(new SplashModule()).inject(this);
@@ -58,16 +59,17 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = new Intent(this, FinanceDetailActivity.class);
+        Intent intent;
+        if (sharedPreferenceUtil.getSharedPreferences().getBoolean(Constants.IS_FIRST_START, false)) {
+            intent = new Intent(this, ListActivity.class);
+        }else{
+            intent = new Intent(this, SettingsActivity.class);
+            sharedPreferenceUtil.getEditor().putBoolean(Constants.IS_FIRST_START, true).apply();
+        }
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, 1f)
                 .setDuration(1000);
 
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                logo.setAlpha((float) valueAnimator.getAnimatedValue());
-            }
-        });
+        valueAnimator.addUpdateListener(valueAnimator1 -> logo.setAlpha((float) valueAnimator1.getAnimatedValue()));
         valueAnimator.start();
 
         valueAnimator.addListener(new Animator.AnimatorListener() {
@@ -79,7 +81,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
             @Override
             public void onAnimationEnd(Animator animator) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(700);
                     startActivity(intent);
                     finish();
                 } catch (InterruptedException e) {

@@ -15,7 +15,7 @@ public class DateHelper {
     }
     @SuppressLint("SimpleDateFormat")
     public static String formatTimeToStr(String date) {
-        return new SimpleDateFormat("hh:mm").format(new Date(Long.parseLong(date)));
+        return new SimpleDateFormat("HH:mm").format(new Date(Long.parseLong(date)));
     }
     @SuppressLint("SimpleDateFormat")
     public static String formatDatePeriod(String pattern, long dateStart, long dateEnd) {

@@ -25,13 +25,13 @@ public class ConverterFinanceModelToFinanceDetailModel {
             if(i==0) {
                 currentDate = dateItem;
                 financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getDate(), -1));
-
+            }else {
+                if (!dateItem.equals(currentDate)) {
+                    financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getDate(), -1));
+                    currentDate = dateItem;
+                }
             }
-
-            if (!dateItem.equals(currentDate)) {
-                financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getDate(), -1));
-            }
-            financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getDate(), financeModel.get(i).getCategoryId(), financeModel.get(i).getTotal(), financeModel.get(i).getComment(), financeModel.get(i).getType()));
+            financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getUserEmail(), financeModel.get(i).getDate(), financeModel.get(i).getCategoryId(), financeModel.get(i).getTotal(), financeModel.get(i).getComment(), financeModel.get(i).getType()));
 
         }
         return financeDetailModel;

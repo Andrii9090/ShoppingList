@@ -32,4 +32,9 @@ public class FragmentCreatePresenter extends BaseCreateEditPresenter<CreateListC
             view.showToast(R.string.text_name_error);
         }
     }
+
+    @Override
+    public void nullingSpinnerPosition() {
+        financeCategory = -1;
+    }
 }
