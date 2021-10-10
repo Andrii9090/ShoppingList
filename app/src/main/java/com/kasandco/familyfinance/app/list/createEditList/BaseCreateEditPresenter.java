@@ -105,7 +105,7 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
 
     @Override
     public void setAllCostCategory(List<FinanceCategoryModel> categoryModels) {
-        if(view!=null) {
+        if (view != null) {
             financeCategoryModelList.clear();
             financeCategoryNames.clear();
             financeCategoryModelList.addAll(categoryModels);
@@ -138,7 +138,7 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
     @Override
     public void destroyView() {
         adapterIcon.setDefaultBackground();
-        view=null;
+        view = null;
         financeRepository.clearDisposable();
     }
 }

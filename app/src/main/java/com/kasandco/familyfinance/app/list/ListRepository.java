@@ -4,56 +4,194 @@ import android.os.Handler;
 import android.os.Looper;
 
 
+import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.item.ItemModel;
+import com.kasandco.familyfinance.network.ListNetworkInterface;
+import com.kasandco.familyfinance.network.model.NetworkListData;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import javax.inject.Inject;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
+@ListActivityScope
 public class ListRepository {
     ListDao listDao;
     ItemDao itemDao;
     ListRepositoryInterface callback;
+    ListNetworkInterface network;
+    private SharedPreferenceUtil sharedPreference;
+    private boolean isLogged;
 
     IconDao iconDao;
 
-    private Disposable disposable;
+    private final CompositeDisposable disposable;
 
-    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao){
+    @Inject
+    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil) {
         listDao = _listDao;
-        iconDao=_iconDao;
-        itemDao=_itemDao;
+        iconDao = _iconDao;
+        itemDao = _itemDao;
+        network = retrofit.create(ListNetworkInterface.class);
+        sharedPreference = sharedPreferenceUtil;
+        disposable = new CompositeDisposable();
     }
 
-    public void create(ListModel listModel){
-        new Thread(() -> listDao.insert(listModel)).start();
+    public void setIsLogged(boolean _isLogged) {
+        isLogged = _isLogged;
     }
 
-    public void edit(ListModel listModel){
+    public void create(ListModel listModel) {
+        new Thread(() -> {
+            long id = listDao.insert(listModel);
+            listModel.setId(id);
+            if (isLogged) {
+                NetworkListData networkData = new NetworkListData(listModel);
+                Call<NetworkListData> call = network.createNewList(networkData);
+                call.enqueue(new Callback<NetworkListData>() {
+                    @Override
+                    public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
+                        if (response.isSuccessful()) {
+                            if (networkData.equals(response.body())) {
+                                listModel.setServerId(response.body().getId());
+                                listModel.setDateMod(response.body().getDateMod());
+                                new Thread(() -> listDao.update(listModel)).start();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NetworkListData> call, Throwable t) {
+
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void update(ListModel listModel) {
         new Thread(() -> listDao.update(listModel)).start();
+        if (isLogged) {
+            NetworkListData networkData = new NetworkListData(listModel);
+            Call<NetworkListData> call = network.createNewList(networkData);
+            call.enqueue(new Callback<NetworkListData>() {
+                @Override
+                public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
+                    if (response.isSuccessful()) {
+                        if (networkData.equals(response.body())) {
+                            ListModel responseItem = new ListModel(response.body());
+                            new Thread(() -> listDao.update(responseItem)).start();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<NetworkListData> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
-    public void getAll(ListRepositoryInterface callback){
+    public void getAll(ListRepositoryInterface callback) {
         this.callback = callback;
-        disposable = listDao.getAllActiveList().subscribeOn(Schedulers.newThread())
+        disposable.add(listDao.getAllActiveList().subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> callback.setListItems(null))
-                .subscribe(listModels -> callback.setListItems(listModels));
+                .subscribe(callback::setListItems));
+        if (isLogged) {
+            sync();
+        }
     }
 
-    public void addFinanceCategoryId(long id, long categoryId){
-        new Thread(() -> listDao.addFinanceCategoryId(id, categoryId)).start();
+    private void sync() {
+        String lastDateMod = sharedPreference.getSharedPreferences().getString(Constants.LAST_SYNC_LIST, null);
+        List<NetworkListData> networkData = new ArrayList<>();
+        new Thread(() -> {
+            if (lastDateMod != null) {
+
+            } else {
+                List<ListModel> listModels = listDao.getAllList();
+                for (ListModel item : listModels) {
+                    NetworkListData data = new NetworkListData(item);
+                    if (item.getFinanceCategoryId() != null && item.getFinanceCategoryId() > 0) {
+                        data.setFinanceCategoryId(listDao.getFinanceCategoryId(item.getFinanceCategoryId()));
+                    }
+                    if (item.getIsDelete() == 1) {
+                        removeList(item);
+                    } else {
+                        networkData.add(data);
+                    }
+                }
+                Call<List<NetworkListData>> call = network.syncData(networkData);
+                call.enqueue(new Callback<List<NetworkListData>>() {
+                    @Override
+                    public void onResponse(Call<List<NetworkListData>> call, Response<List<NetworkListData>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            for (NetworkListData item : response.body()) {
+                                if (item.isDelete()) {
+                                    listDao.delete(item.getLocalId(), item.getId());
+                                    listDao.deleteListItems(item.getLocalId(), item.getId());
+                                } else {
+                                    if (item.getLocalId() == 0) {
+                                        ListModel itemCreate = new ListModel(item);
+                                        new Thread(() -> listDao.insert(itemCreate)).start();
+                                    } else {
+                                        ListModel itemUpdate = new ListModel(item);
+                                        new Thread(() -> listDao.update(itemUpdate)).start();
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<NetworkListData>> call, Throwable t) {
+
+                    }
+                });
+            }
+        }).start();
     }
 
     public void removeList(ListModel listModel) {
-        new Thread(() -> listDao.delete(listModel)).start();
+
+        if (isLogged) {
+            listModel.setIsDelete(1);
+            new Thread(()->listDao.update(listModel)).start();
+            long serverId = listModel.getServerId();
+            if (serverId > 0) {
+                Call<ResponseBody> call = network.removeList(serverId);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            new Thread(() -> listDao.delete(listModel)).start();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+            }
+        } else {
+            new Thread(() -> listDao.delete(listModel)).start();
+        }
     }
 
     public void clearInactiveItems(ListModel listModel) {
@@ -66,25 +204,28 @@ public class ListRepository {
         deleteActiveListItems(listModel.getId());
     }
 
-    private void deleteActiveListItems(long listId){
+    private void deleteActiveListItems(long listId) {
         new Thread(() -> listDao.deleteActiveListItem(listId)).start();
+        //@TODO Сделать удаление listItem использую интерфейс айтемов
     }
-    private void deleteInactiveListItems(long listId){
+
+    private void deleteInactiveListItems(long listId) {
         new Thread(() -> listDao.deleteInactiveListItem(listId)).start();
+        //@TODO Сделать удаление listItem использую интерфейс айтемов
     }
 
     public void unsubscribe() {
         disposable.dispose();
     }
 
-    public void getAllIcons(IconCallback callback){
+    public void getAllIcons(IconCallback callback) {
         Handler handler = new Handler(Looper.getMainLooper());
-        new Thread(()->{
-            List<IconModel> icons  = iconDao.getAllIcon();
-            handler.post(()->{
-                if(icons.size()>0){
+        new Thread(() -> {
+            List<IconModel> icons = iconDao.getAllIcon();
+            handler.post(() -> {
+                if (icons.size() > 0) {
                     callback.setIcons(icons);
-                }else {
+                } else {
                     callback.setIcons(new ArrayList<>());
                 }
             });
@@ -95,15 +236,39 @@ public class ListRepository {
         Handler handler = new Handler();
         new Thread(() -> {
             List<ItemModel> items = itemDao.getActiveItems(listId);
-            handler.post(()->{
+            handler.post(() -> {
                 callback.getAllActiveListItems(items);
             });
         }).start();
     }
 
+    public void subscribeToList(String token, ListResponseListener callback) {
+        Call<NetworkListData> call = network.subscribeToList(token);
+        call.enqueue(new Callback<NetworkListData>() {
+            @Override
+            public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ListModel listModel = new ListModel(response.body());
+                    new Thread(() -> listDao.insert(listModel)).start();
+                    callback.closeCreateForm();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetworkListData> call, Throwable t) {
+                callback.closeCreateForm();
+            }
+        });
+    }
+
     public interface ListRepositoryInterface {
         void setListItems(List<ListModel> listModel);
+
         void getAllActiveListItems(List<ItemModel> items);
+    }
+
+    public interface ListResponseListener{
+        void closeCreateForm();
     }
 
     public interface IconCallback {

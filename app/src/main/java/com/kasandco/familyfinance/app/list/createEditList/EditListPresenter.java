@@ -41,13 +41,13 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
             newList.setIcon(pathIcon);
             isEdit = true;
         }
-        if (editItem.getFinanceCategoryId() != financeCategory) {
+        if (editItem.getFinanceCategoryId()!=null && editItem.getFinanceCategoryId() != financeCategory) {
             newList.setFinanceCategoryId(financeCategory);
             isEdit = true;
         }
         if (isEdit) {
             newList.setDateMod(String.valueOf(System.currentTimeMillis()));
-            listRepository.edit(newList);
+            listRepository.update(newList);
         }
         nullingSpinnerPosition();
         view.close();
@@ -73,7 +73,7 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     }
 
     private void setEditDataSpinner() {
-        if (editItem.getFinanceCategoryId() != 0) {
+        if (editItem.getFinanceCategoryId() != null && editItem.getFinanceCategoryId() != 0) {
             for (FinanceCategoryModel category : financeCategoryModelList) {
                 if (category.getId() == editItem.getFinanceCategoryId()) {
                     positionSpinner = financeCategoryModelList.indexOf(category);

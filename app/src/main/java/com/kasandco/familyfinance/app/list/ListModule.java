@@ -6,9 +6,10 @@ import com.kasandco.familyfinance.app.finance.FinanceRepository;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateItemHistory;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
 import com.kasandco.familyfinance.app.finance.presenters.CreateHistoryItemPresenter;
+import com.kasandco.familyfinance.app.item.ItemDao;
+import com.kasandco.familyfinance.app.list.createEditList.CreatePresenter;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.app.list.createEditList.EditListPresenter;
-import com.kasandco.familyfinance.app.list.createEditList.FragmentCreatePresenter;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;
 import com.kasandco.familyfinance.core.AppDataBase;
@@ -34,20 +35,19 @@ public class ListModule {
 
     @Provides
     @ListActivityScope
-    ListRepository providesListRepository(ListDao listDao, AppDataBase appDataBase){
-        return new ListRepository(listDao, appDataBase.getIconDao(), appDataBase.getItemDao());
-    }
-
-    @Provides
-    @ListActivityScope
     FragmentEditList providesEditListFragment(EditListPresenter presenter){
         return new FragmentEditList(presenter);
     }
 
+    @Provides
+    @ListActivityScope
+    ItemDao providesItemDao(AppDataBase appDataBase){
+        return appDataBase.getItemDao();
+    }
 
     @Provides
     @ListActivityScope
-    FragmentCreateList providesCreateListFragment(FragmentCreatePresenter presenter){
+    FragmentCreateList providesCreateListFragment(CreatePresenter presenter){
         return new FragmentCreateList(presenter);
     }
 

@@ -19,6 +19,7 @@ import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
+import com.kasandco.familyfinance.app.user.login.LoginActivity;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
 import javax.inject.Inject;
@@ -108,17 +109,14 @@ public class RegistrationActivity extends BaseActivity implements RegistrationCo
     public void showInfoDialog() {
         DialogInterface.OnClickListener dialogBtnListener = (dialogInterface, i) -> {
             if(i==AlertDialog.BUTTON_POSITIVE){
-                ToastUtils.showToast(getString(R.string.app_name), RegistrationActivity.this);
-            }else {
-                startNewActivity(ListActivity.class);
+                startNewActivity(LoginActivity.class);
             }
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.confirmation_code_dialog_title)
                 .setMessage(R.string.confirmation_code_dialog_msg)
-                .setPositiveButton(R.string.confirmation_code_dialog_btn_enter_code, dialogBtnListener)
-                .setNegativeButton(R.string.confirmation_code_dialog_btn_cancel, dialogBtnListener);
+                .setPositiveButton(R.string.confirmation_code_dialog_btn_enter_code, dialogBtnListener);
 
         AlertDialog dialog = builder.create();
         dialog.show();

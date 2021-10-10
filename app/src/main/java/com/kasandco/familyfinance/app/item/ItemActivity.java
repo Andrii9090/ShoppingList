@@ -33,6 +33,7 @@ import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.FragmentZoomImage;
 import com.kasandco.familyfinance.app.item.create.FragmentItemCreate;
+import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
@@ -369,5 +370,10 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     protected void onDestroy() {
         presenter.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startNewActivity(ListActivity.class);
     }
 }

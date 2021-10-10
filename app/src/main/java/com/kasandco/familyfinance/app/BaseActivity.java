@@ -24,6 +24,7 @@ import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.app.settings.SettingsActivity;
 import com.kasandco.familyfinance.app.statistic.StatisticActivity;
 import com.kasandco.familyfinance.app.user.login.LoginActivity;
+import com.kasandco.familyfinance.app.user.settings.UserSettingsActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
@@ -50,6 +51,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         navigationView.setNavigationItemSelectedListener(this);
         btnUserSetting = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_btn_settings);
         btnLogin = navigationView.getHeaderView(0).findViewById(R.id.nav_header_login);
+        if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN,null)!=null){
+            btnLogin.setText(R.string.settings_user);
+        }
         userEmail = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_email);
 
         if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.USER_NAME,"").isEmpty()){
@@ -114,7 +118,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     private View.OnClickListener clickListener = (view -> {
         switch (view.getId()){
             case R.id.nav_header_login:
-                startNewActivity(LoginActivity.class);
+                if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN,null)!=null) {
+                    startNewActivity(LoginActivity.class);
+                }else {
+                    startNewActivity(UserSettingsActivity.class);
+                }
                 break;
             case R.id.navigation_drawer_btn_settings:
                 break;

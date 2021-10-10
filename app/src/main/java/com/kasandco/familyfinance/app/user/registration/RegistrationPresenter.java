@@ -2,19 +2,23 @@ package com.kasandco.familyfinance.app.user.registration;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.core.BasePresenter;
+import com.kasandco.familyfinance.network.model.UserRegisterModel;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-public class RegistrationPresenter extends BasePresenter<RegistrationContract.View> implements RegistrationContract.Presenter {
+public class RegistrationPresenter extends BasePresenter<RegistrationContract.View> implements RegistrationContract.Presenter, RegistrationRepository.UserRepositoryCallback {
     private String email;
     private String password;
     private String password2;
+    private RegistrationRepository repository;
 
     @Inject
-    public RegistrationPresenter(){}
+    public RegistrationPresenter(RegistrationRepository repository){
+        this.repository=repository;
+    }
 
     @Override
     public void clickRegistrationBtn() {
@@ -33,8 +37,8 @@ public class RegistrationPresenter extends BasePresenter<RegistrationContract.Vi
 
     private void registration() {
         if(validation()){
-            view.showToast(R.string.app_name);
-            view.showInfoDialog();
+            UserRegisterModel user = new UserRegisterModel(email, password);
+            repository.createUser(user, this);
         }else {
             view.showToast(R.string.text_error_password_or_email);
         }
@@ -64,5 +68,14 @@ public class RegistrationPresenter extends BasePresenter<RegistrationContract.Vi
     public static boolean validateEmail(String emailStr) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
+    }
+
+    @Override
+    public void createdUser(boolean isCreated) {
+        if(isCreated){
+            view.showInfoDialog();
+        }else {
+            view.showToast(R.string.register_user_error);
+        }
     }
 }

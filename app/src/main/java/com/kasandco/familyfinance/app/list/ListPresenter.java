@@ -5,12 +5,14 @@ import android.annotation.SuppressLint;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.core.BasePresenter;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+@ListActivityScope
 public class ListPresenter extends BasePresenter<ListActivity> implements ListRepository.ListRepositoryInterface {
     @Inject
     ListRepository repository;
@@ -24,6 +26,11 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     @Inject
     public ListPresenter() {
         listItems = new ArrayList<>();
+    }
+
+    @Inject
+    public void setIsLogged(SharedPreferenceUtil sharedPreferenceUtil) {
+        repository.setIsLogged(sharedPreferenceUtil.getSharedPreferences().getString(TOKEN, null) != null);
     }
 
     private void getListItems() {
@@ -55,9 +62,9 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
         int count = 0;
         StringBuilder text = new StringBuilder();
         text.append(view.getStringResource(R.string.text_header_msg)).append(System.lineSeparator());
-        for (ItemModel item:items) {
+        for (ItemModel item : items) {
             count++;
-            text.append(String.format("%d. %s"+ System.lineSeparator(), count, item.getName()));
+            text.append(String.format("%d. %s" + System.lineSeparator(), count, item.getName()));
         }
         text.append(String.format(view.getStringResource(R.string.text_footer_msg), view.getStringResource(R.string.app_name))).append(System.lineSeparator());
         view.runSendIntent(text.toString());
@@ -97,9 +104,9 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     public void selectAddCost() {
-        if(adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId()==0){
+        if (adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == 0) {
             view.showToast(R.string.text_error_add_cost);
-        }else {
+        } else {
             view.showCreateItemHistoryFragment();
             view.setCategoryId(adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId());
         }
@@ -108,6 +115,7 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     public void onDetach() {
         repository.unsubscribe();
         view = null;
+        adapter = null;
     }
 
     public void selectShareList() {
@@ -115,6 +123,6 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     private void copyActiveListItem() {
-        repository.getAllListActiveItem(listItems.get(adapter.getPosition()).getId(),this);
+        repository.getAllListActiveItem(listItems.get(adapter.getPosition()).getId(), this);
     }
 }

@@ -80,6 +80,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         return listItems.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateItems(List<ListModel> listItems) {
         if(getItemCount()>0) {
             DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffListItem(this.listItems, listItems));
@@ -107,12 +108,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             name = itemView.findViewById(R.id.list_item_name);
             quantity = itemView.findViewById(R.id.list_item_quantity);
             menu = itemView.findViewById(R.id.list_item_menu);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    return true;
-                }
-            });
+            itemView.setOnLongClickListener(view -> true);
         }
 
         @Override

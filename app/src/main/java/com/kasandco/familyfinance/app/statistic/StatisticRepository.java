@@ -16,17 +16,9 @@ public class StatisticRepository {
 
     public void getAllFromPeriod(int type, String dateStart, String dateEnd, RepositoryCallback callback){
         Handler handler = new Handler(Looper.getMainLooper());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<FinanceStatModel> statDb = financeDao.getAllFromPeriod(type, dateStart, dateEnd);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.loadedData(statDb);
-                    }
-                });
-            }
+        new Thread(() -> {
+            List<FinanceStatModel> statDb = financeDao.getAllFromPeriod(type, dateStart, dateEnd);
+            handler.post(() -> callback.loadedData(statDb));
         }).start();
     }
 

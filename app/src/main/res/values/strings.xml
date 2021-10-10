@@ -117,8 +117,8 @@
     <string name="text_registration">Регистрация</string>
     <string name="error_email_or_password">Email и/или пароль не могут быть пустыми</string>
     <string name="confirmation_code_dialog_title">Подтверждение email</string>
-    <string name="confirmation_code_dialog_msg">Для того, чтоб ввойти и синхронизировать данные введите код подтверждения, который пришел вам по email</string>
-    <string name="confirmation_code_dialog_btn_enter_code">Ввести код</string>
+    <string name="confirmation_code_dialog_msg">Для того, чтоб ввойти и синхронизировать данные необходимо подвердить email и ввойти в приложение используя свой email и пароль. Инструкция выслана на указанныей email при регистрации.</string>
+    <string name="confirmation_code_dialog_btn_enter_code">Ок</string>
     <string name="confirmation_code_dialog_btn_cancel">Отмена</string>
     <string name="text_error_password_or_email">Пароли не совпадают или некоректно указан email</string>
     <string name="internet_connection_error">Проверьте соединение с Интернет</string>
@@ -128,4 +128,7 @@
     <string name="text_detail">История</string>
     <string name="subject_review_email">Отзыв и предложение</string>
     <string name="select_mail_app">Для отправки EMAIL</string>
+    <string name="register_user_error">Ошибка регистрации! Попробуйте еще раз</string>
+    <string name="text_loggin_error">Не удалось войти, проверьте  данные и повторите попытку</string>
+    <string name="settings_user">Мой профиль</string>
 </resources>

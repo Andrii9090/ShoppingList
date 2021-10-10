@@ -45,4 +45,19 @@ public interface ListDao extends BaseDao<ListModel> {
 
     @Query("UPDATE list SET cost_category_id=:categoryId WHERE id=:id")
     void addFinanceCategoryId(long id, long categoryId);
+
+    @Query("UPDATE list SET date_mod=:dateMod, server_id=:serverId WHERE id=:id")
+    void updateServerId(long id, Long serverId, String dateMod);
+
+    @Query("SELECT id FROM list WHERE server_id =:serverId")
+    long getId(Long serverId);
+
+    @Query("SELECT server_id FROM finance_category WHERE id =:financeCategoryId")
+    long getFinanceCategoryId(long financeCategoryId);
+
+    @Query("DELETE FROM list WHERE id=:id OR server_id=:serverId")
+    void delete(long id, long serverId);
+
+    @Query("DELETE FROM list_item WHERE local_list_id=:localListId OR server_list_id=:serverListId")
+    void deleteListItems(long localListId, long serverListId);
 }

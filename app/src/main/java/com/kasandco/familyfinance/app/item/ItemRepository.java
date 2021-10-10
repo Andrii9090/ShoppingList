@@ -16,13 +16,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class ItemRepository {
     @Inject
     ItemDao itemDao;
-
     ItemPresenter presenter;
-
+    //@TODO пересмотреть почему тут презентер
     long listId;
-
-    private Flowable<List<ItemModel>> allItems;
-
     private Disposable disposable;
 
     @Inject

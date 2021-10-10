@@ -1,7 +1,8 @@
 package com.kasandco.familyfinance.core;
 
 public interface Constants {
-    String BASE_URL = "http://test.fffs";
+    String REST_API_VERSION = "/api/v1/";
+    String BASE_URL = "http://b353-85-86-244-26.ngrok.io";
     String API_KEY = "api_key";
     String IS_ADDED_ICONS = "is_added_icons";
 
@@ -23,4 +24,7 @@ public interface Constants {
     String USER_NAME = "user_name";
     String FINANCE_CATEGORY_ID = "finance_category_id";
     String IS_FIRST_START = "is_first_start";
+    String TOKEN = "token";
+    String LAST_SYNC = "last_sync_";
+    String LAST_SYNC_LIST = LAST_SYNC+"list";
 }

@@ -1,8 +1,19 @@
 package com.kasandco.familyfinance.core;
 
+import androidx.annotation.NonNull;
+
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
+
+import java.io.IOException;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -11,22 +22,37 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkModule implements Constants {
 
     @Provides
-    Retrofit network(OkHttpClient client){
+    @Singleton
+    Retrofit network(OkHttpClient client) {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build();
 
     }
 
     @Provides
-    OkHttpClient createHttpConnection(HttpLoggingInterceptor interceptor){
-        return new OkHttpClient.Builder().addInterceptor(interceptor).build();
+    @Singleton
+    OkHttpClient createHttpConnection(HttpLoggingInterceptor interceptor, SharedPreferenceUtil sharedPreference) {
+
+        Interceptor interceptor1 = chain -> {
+            Request newRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", "Token " + sharedPreference.getSharedPreferences().getString(Constants.TOKEN, ""))
+                    .build();
+            return chain.proceed(newRequest);
+        };
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        if(sharedPreference.getSharedPreferences().getString(Constants.TOKEN, null)!=null){
+            client.addInterceptor(interceptor1);
+        }
+        client.addInterceptor(interceptor);
+        return client.build();
     }
 
     @Provides
-    HttpLoggingInterceptor createHttpLoggingInterceptor(){
+    @Singleton
+    HttpLoggingInterceptor createHttpLoggingInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
         return interceptor;

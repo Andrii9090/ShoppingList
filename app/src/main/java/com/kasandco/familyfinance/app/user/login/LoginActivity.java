@@ -50,7 +50,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
         password2Layout = findViewById(R.id.login_input_password2_layout);
         btnStartRegister.setOnClickListener(btnClickListener);
         btnEnter.setOnClickListener(btnClickListener);
-        presenter = new LoginPresenter();
         password2.setVisibility(View.GONE);
         password2Layout.setVisibility(View.GONE);
         navigationView = findViewById(R.id.nav_view);
