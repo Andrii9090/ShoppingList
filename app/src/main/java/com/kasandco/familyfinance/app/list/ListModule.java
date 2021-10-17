@@ -47,6 +47,12 @@ public class ListModule {
 
     @Provides
     @ListActivityScope
+    ListSyncHistoryDao providesListSyncDao(AppDataBase appDataBase){
+        return appDataBase.getListSyncDao();
+    }
+
+    @Provides
+    @ListActivityScope
     FragmentCreateList providesCreateListFragment(CreatePresenter presenter){
         return new FragmentCreateList(presenter);
     }

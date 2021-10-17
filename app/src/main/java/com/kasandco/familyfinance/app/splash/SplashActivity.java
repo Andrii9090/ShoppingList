@@ -81,7 +81,11 @@ public class SplashActivity extends AppCompatActivity implements Constants {
             @Override
             public void onAnimationEnd(Animator animator) {
                 try {
-                    Thread.sleep(700);
+                    int timeStart = 600;
+                    if(sharedPreferenceUtil.getSharedPreferences().getInt(Constants.IS_FIRST_START,0)==0){
+                        timeStart = 1500;
+                    }
+                    Thread.sleep(timeStart);
                     startActivity(intent);
                     finish();
                 } catch (InterruptedException e) {

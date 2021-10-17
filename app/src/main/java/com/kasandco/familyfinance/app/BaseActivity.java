@@ -51,11 +51,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         navigationView.setNavigationItemSelectedListener(this);
         btnUserSetting = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_btn_settings);
         btnLogin = navigationView.getHeaderView(0).findViewById(R.id.nav_header_login);
+
+        userEmail = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_email);
         if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN,null)!=null){
             btnLogin.setText(R.string.settings_user);
+            userEmail.setText(sharedPreferenceUtil.getSharedPreferences().getString(Constants.EMAIL, ""));
         }
-        userEmail = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_email);
-
         if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.USER_NAME,"").isEmpty()){
             btnUserSetting.setVisibility(View.GONE);
             userEmail.setVisibility(View.GONE);
@@ -119,9 +120,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         switch (view.getId()){
             case R.id.nav_header_login:
                 if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN,null)!=null) {
-                    startNewActivity(LoginActivity.class);
-                }else {
                     startNewActivity(UserSettingsActivity.class);
+                }else {
+                    startNewActivity(LoginActivity.class);
                 }
                 break;
             case R.id.navigation_drawer_btn_settings:

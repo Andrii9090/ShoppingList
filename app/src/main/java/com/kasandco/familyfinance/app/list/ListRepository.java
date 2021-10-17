@@ -2,6 +2,7 @@ package com.kasandco.familyfinance.app.list;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 
 
 import com.kasandco.familyfinance.core.Constants;
@@ -10,6 +11,7 @@ import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.network.ListNetworkInterface;
+import com.kasandco.familyfinance.network.model.LastSyncDataModel;
 import com.kasandco.familyfinance.network.model.NetworkListData;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -29,22 +31,25 @@ import retrofit2.Retrofit;
 
 @ListActivityScope
 public class ListRepository {
-    ListDao listDao;
-    ItemDao itemDao;
-    ListRepositoryInterface callback;
-    ListNetworkInterface network;
+    private ListDao listDao;
+    private ItemDao itemDao;
+    private ListRepositoryInterface callback;
+    private ListNetworkInterface network;
     private SharedPreferenceUtil sharedPreference;
     private boolean isLogged;
+    private ListSyncHistoryDao listSyncHistoryDao;
+    private String deviceId;
 
-    IconDao iconDao;
+    private IconDao iconDao;
 
     private final CompositeDisposable disposable;
 
     @Inject
-    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil) {
+    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil) {
         listDao = _listDao;
         iconDao = _iconDao;
         itemDao = _itemDao;
+        listSyncHistoryDao = _listSyncHistoryDao;
         network = retrofit.create(ListNetworkInterface.class);
         sharedPreference = sharedPreferenceUtil;
         disposable = new CompositeDisposable();
@@ -58,35 +63,43 @@ public class ListRepository {
         new Thread(() -> {
             long id = listDao.insert(listModel);
             listModel.setId(id);
-            if (isLogged) {
-                NetworkListData networkData = new NetworkListData(listModel);
-                Call<NetworkListData> call = network.createNewList(networkData);
-                call.enqueue(new Callback<NetworkListData>() {
-                    @Override
-                    public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
-                        if (response.isSuccessful()) {
-                            if (networkData.equals(response.body())) {
-                                listModel.setServerId(response.body().getId());
-                                listModel.setDateMod(response.body().getDateMod());
-                                new Thread(() -> listDao.update(listModel)).start();
-                            }
+            networkCreate(listModel);
+        }).start();
+    }
+
+    private void networkCreate(ListModel listModel) {
+        if (isLogged) {
+            NetworkListData networkData = new NetworkListData(listModel);
+            Call<NetworkListData> call = network.createNewList(networkData);
+            call.enqueue(new Callback<NetworkListData>() {
+                @Override
+                public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
+                    if (response.isSuccessful()) {
+                        if (networkData.equals(response.body())) {
+                            listModel.setServerId(response.body().getId());
+                            listModel.setDateMod(response.body().getDateMod());
+                            new Thread(() -> listDao.update(listModel)).start();
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<NetworkListData> call, Throwable t) {
+                @Override
+                public void onFailure(Call<NetworkListData> call, Throwable t) {
 
-                    }
-                });
-            }
-        }).start();
+                }
+            });
+        }
     }
 
     public void update(ListModel listModel) {
         new Thread(() -> listDao.update(listModel)).start();
+        networkUpdate(listModel);
+    }
+
+    private void networkUpdate(ListModel listModel) {
         if (isLogged) {
             NetworkListData networkData = new NetworkListData(listModel);
-            Call<NetworkListData> call = network.createNewList(networkData);
+            Call<NetworkListData> call = network.updateList(networkData);
             call.enqueue(new Callback<NetworkListData>() {
                 @Override
                 public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
@@ -118,60 +131,75 @@ public class ListRepository {
     }
 
     private void sync() {
-        String lastDateMod = sharedPreference.getSharedPreferences().getString(Constants.LAST_SYNC_LIST, null);
-        List<NetworkListData> networkData = new ArrayList<>();
         new Thread(() -> {
-            if (lastDateMod != null) {
-
-            } else {
-                List<ListModel> listModels = listDao.getAllList();
-                for (ListModel item : listModels) {
-                    NetworkListData data = new NetworkListData(item);
-                    if (item.getFinanceCategoryId() != null && item.getFinanceCategoryId() > 0) {
-                        data.setFinanceCategoryId(listDao.getFinanceCategoryId(item.getFinanceCategoryId()));
-                    }
-                    if (item.getIsDelete() == 1) {
-                        removeList(item);
-                    } else {
-                        networkData.add(data);
-                    }
+            List<ListModel> listModels = listDao.getAllList();
+            for (ListModel item : listModels) {
+                if (item.getIsDelete() == 1) {
+                    removeList(item);
+                    continue;
                 }
-                Call<List<NetworkListData>> call = network.syncData(networkData);
-                call.enqueue(new Callback<List<NetworkListData>>() {
-                    @Override
-                    public void onResponse(Call<List<NetworkListData>> call, Response<List<NetworkListData>> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            for (NetworkListData item : response.body()) {
-                                if (item.isDelete()) {
-                                    listDao.delete(item.getLocalId(), item.getId());
-                                    listDao.deleteListItems(item.getLocalId(), item.getId());
-                                } else {
-                                    if (item.getLocalId() == 0) {
-                                        ListModel itemCreate = new ListModel(item);
-                                        new Thread(() -> listDao.insert(itemCreate)).start();
-                                    } else {
-                                        ListModel itemUpdate = new ListModel(item);
-                                        new Thread(() -> listDao.update(itemUpdate)).start();
-                                    }
+                if (item.getServerId() == 0) {
+                    networkCreate(item);
+                } else if (Long.parseLong(sharedPreference.getSharedPreferences().getString(Constants.LAST_SYNC_LIST, "0")) < Long.parseLong(item.getDateMod().substring(0, 10))) {
+                    networkUpdate(item);
+                }
+            }
+
+            List<ListSyncHistory> lastSyncItems = listSyncHistoryDao.getAll();
+            List<LastSyncDataModel> lastSyncData = new ArrayList<>();
+            for (ListSyncHistory item : lastSyncItems) {
+                lastSyncData.add(new LastSyncDataModel(item.getServerId(), item.getDateMod()));
+            }
+
+            Call<List<NetworkListData>> call = network.syncData(lastSyncData, deviceId);
+
+            call.enqueue(new Callback<List<NetworkListData>>() {
+                @Override
+                public void onResponse(Call<List<NetworkListData>> call, Response<List<NetworkListData>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        new Thread(() -> listSyncHistoryDao.clear()).start();
+                        String lastUpdate = "0";
+                        for (NetworkListData item : response.body()) {
+                            if (lastUpdate.isEmpty()) {
+                                lastUpdate = item.getDateMod();
+                            } else {
+                                if (Long.parseLong(lastUpdate) < Long.parseLong(item.getDateMod())) {
+                                    lastUpdate = item.getDateMod();
                                 }
                             }
+                            if (item.isDelete()) {
+                                new Thread(() -> {
+                                    listDao.delete(item.getLocalId(), item.getId());
+                                    listDao.deleteListItems(item.getLocalId(), item.getId());
+                                });
+                            } else {
+                                ListModel list = new ListModel(item);
+                                new Thread(() -> {
+                                    list.setId(listDao.getId(list.getServerId()));
+                                    if (listDao.update(list) == 0) {
+                                        listDao.insert(list);
+                                    }
+                                }).start();
+                            }
+                            ListSyncHistory syncData = new ListSyncHistory(item);
+                            new Thread(() -> listSyncHistoryDao.insert(syncData)).start();
                         }
+                        sharedPreference.getEditor().putString(Constants.LAST_SYNC_LIST, lastUpdate).apply();
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<List<NetworkListData>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<NetworkListData>> call, Throwable t) {
 
-                    }
-                });
-            }
+                }
+            });
         }).start();
     }
 
     public void removeList(ListModel listModel) {
-
         if (isLogged) {
             listModel.setIsDelete(1);
-            new Thread(()->listDao.update(listModel)).start();
+            new Thread(() -> listDao.update(listModel)).start();
             long serverId = listModel.getServerId();
             if (serverId > 0) {
                 Call<ResponseBody> call = network.removeList(serverId);
@@ -261,13 +289,17 @@ public class ListRepository {
         });
     }
 
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
     public interface ListRepositoryInterface {
         void setListItems(List<ListModel> listModel);
 
         void getAllActiveListItems(List<ItemModel> items);
     }
 
-    public interface ListResponseListener{
+    public interface ListResponseListener {
         void closeCreateForm();
     }
 

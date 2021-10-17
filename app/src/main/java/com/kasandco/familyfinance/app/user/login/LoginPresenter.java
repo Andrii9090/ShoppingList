@@ -60,7 +60,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
     public void logged(boolean isLogged, String token) {
         if (isLogged){
             if(token!=null){
-                repository.saveToken(token);
+                repository.saveToken(token,email);
                 view.startListActivity();
             }else {
                 view.showToast(R.string.text_loggin_error);

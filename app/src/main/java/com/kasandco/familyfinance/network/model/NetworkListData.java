@@ -44,7 +44,12 @@ public class NetworkListData {
         financeCategoryId = null;
         token = listModel.getListCode();
         localId = listModel.getId();
-        dateMod = "";
+        if(listModel.getDateMod().length()==10) {
+            dateMod = listModel.getDateMod();
+        }else {
+            dateMod = listModel.getDateMod().substring(0,10);
+        }
+
         isDelete = listModel.getIsDelete() == 1;
         quantityActive = listModel.getQuantityActive();
         quantityInactive = listModel.getQuantityInactive();

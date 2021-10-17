@@ -1,5 +1,6 @@
 package com.kasandco.familyfinance.app.user.registration;
 
+import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
 import com.kasandco.familyfinance.network.model.UserRegisterModel;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
@@ -30,6 +31,7 @@ public class RegistrationRepository {
             @Override
             public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
                 if(response.isSuccessful()){
+                    sharedPreference.getEditor().putString(Constants.EMAIL, user.getEmail()).apply();
                     callback.createdUser(true);
                 }else{
                     callback.createdUser(false);

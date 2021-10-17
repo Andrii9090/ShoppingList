@@ -41,8 +41,9 @@ public class LoginRepository {
         });
     }
 
-    public void saveToken(String token) {
+    public void saveToken(String token, String email) {
         sharedPreference.getEditor().putString(Constants.TOKEN, token).apply();
+        sharedPreference.getEditor().putString(Constants.EMAIL, email).apply();
     }
 
     public interface LoginCallback{

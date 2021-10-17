@@ -24,6 +24,10 @@ public class App extends Application {
         super.onCreate();
     }
 
+    public static void recreateDagger(Context appContext){
+        appComponent = DaggerAppComponent.builder().appModule(new AppModule(appContext)).build();
+    }
+
     public static AppComponent getAppComponent(){
         return appComponent;
     }

@@ -19,6 +19,7 @@ import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.app.user.registration.RegistrationActivity;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -60,10 +61,10 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
 
     @Override
     protected void startNewActivity(Class<?> activityClass) {
-        if(activityClass!=getClass()) {
+        if (activityClass != getClass()) {
             Intent intent = new Intent(this, activityClass);
             startActivity(intent);
-        }else{
+        } else {
             drawerLayout.closeDrawer(Gravity.LEFT);
         }
     }
@@ -106,8 +107,8 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
 
     @Override
     public void startListActivity() {
-        Intent intent = new Intent(this, ListActivity.class);
-        startActivity(intent);
+        App.recreateDagger(getApplicationContext());
+        startNewActivity(ListActivity.class);
     }
 
 
@@ -121,6 +122,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
                 break;
             case R.id.login_nav_menu_btn:
                 drawerLayout.openDrawer(Gravity.LEFT);
+                break;
         }
     };
 }

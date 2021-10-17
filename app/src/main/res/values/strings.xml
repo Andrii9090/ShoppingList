@@ -131,4 +131,19 @@
     <string name="register_user_error">Ошибка регистрации! Попробуйте еще раз</string>
     <string name="text_loggin_error">Не удалось войти, проверьте  данные и повторите попытку</string>
     <string name="settings_user">Мой профиль</string>
+    <string name="user_new_email">Новый email</string>
+    <string name="user_new_password2">Повторите новый пароль</string>
+    <string name="user_new_password">Новый  пароль</string>
+    <string name="user_old_password">Пароль</string>
+    <string name="user_settings_title">Профиль</string>
+    <string name="logout">Выйти</string>
+    <string name="text_error_password_to_change_email">Для смены email укажите пароль</string>
+    <string name="text_error_empty_email">Поле email не может быть пустым</string>
+    <string name="text_change_password">Изменить пароль</string>
+    <string name="text_error_updated_email">Произошла ошибка! Повторите запрос позже</string>
+    <string name="text_updated_email">Email успешно обновлен</string>
+    <string name="text_error_equals_password">Новые пароли должны совпадать</string>
+    <string name="text_error_old_password">Укажите текущий пароль</string>
+    <string name="text_password_changed_success">Пароль изменен</string>
+    <string name="text_password_changed_error">Пароль не изменен, произошла ошибка</string>
 </resources>

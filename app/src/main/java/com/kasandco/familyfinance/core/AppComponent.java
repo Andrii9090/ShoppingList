@@ -18,6 +18,8 @@ import com.kasandco.familyfinance.app.user.login.LoginComponent;
 import com.kasandco.familyfinance.app.user.login.LoginModule;
 import com.kasandco.familyfinance.app.user.registration.RegistrationComponent;
 import com.kasandco.familyfinance.app.user.registration.RegistrationModule;
+import com.kasandco.familyfinance.app.user.settings.UserSettingsComponent;
+import com.kasandco.familyfinance.app.user.settings.UserSettingsModule;
 
 import javax.inject.Singleton;
 
@@ -35,4 +37,5 @@ public interface AppComponent {
     RegistrationComponent plus(RegistrationModule module);
     LoginComponent plus(LoginModule module);
     FinanceDetailComponent plus(FinanceDetailModule module);
+    UserSettingsComponent plus(UserSettingsModule module);
 }

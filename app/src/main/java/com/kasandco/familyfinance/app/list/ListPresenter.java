@@ -1,6 +1,7 @@
 package com.kasandco.familyfinance.app.list;
 
 import android.annotation.SuppressLint;
+import android.provider.Settings;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.item.ItemModel;
@@ -47,6 +48,7 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     @Override
     public void viewReady(ListActivity view) {
         this.view = view;
+        repository.setDeviceId(view.getDeviceId());
         getListItems();
     }
 

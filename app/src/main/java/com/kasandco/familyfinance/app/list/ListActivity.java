@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -184,6 +186,13 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     @Override
     public String getStringResource(int resource) {
         return getString(resource);
+    }
+
+    @SuppressLint("HardwareIds")
+    @Override
+    public String getDeviceId() {
+        return Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
     }
 
     @Override
