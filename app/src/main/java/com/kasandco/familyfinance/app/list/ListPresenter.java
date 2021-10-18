@@ -120,11 +120,15 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
         adapter = null;
     }
 
-    public void selectShareList() {
+    public void selectSendListToMessage() {
         copyActiveListItem();
     }
 
     private void copyActiveListItem() {
         repository.getAllListActiveItem(listItems.get(adapter.getPosition()).getId(), this);
+    }
+
+    public void selectShareList() {
+
     }
 }

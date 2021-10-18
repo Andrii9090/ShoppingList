@@ -65,11 +65,13 @@ public class FinanceRepository {
     }
 
     public void getAllCostCategory(AllCostCategoryCallback callback) {
-        disposable.add(financeCategoryDao.getAllCostCategory()
-                .doOnError(throwable -> callback.setAllCostCategory(new ArrayList<>()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(callback::setAllCostCategory));
+        Handler handler = new Handler();
+        new Thread(()->{
+            List<FinanceCategoryModel>  lists = financeCategoryDao.getAllCostCategory();
+            handler.post(()->{
+                callback.setAllCostCategory(lists);
+            });
+        }).start();
     }
 
     public void clearDisposable() {

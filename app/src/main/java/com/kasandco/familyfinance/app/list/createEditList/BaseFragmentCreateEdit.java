@@ -68,9 +68,14 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.viewReady(this);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.viewReady(this);
         KeyboardUtil.showKeyboard(getActivity());
         view.setOnClickListener(view1 -> {
             presenter.clickClose();

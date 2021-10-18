@@ -264,9 +264,7 @@ public class ListRepository {
         Handler handler = new Handler();
         new Thread(() -> {
             List<ItemModel> items = itemDao.getActiveItems(listId);
-            handler.post(() -> {
-                callback.getAllActiveListItems(items);
-            });
+            handler.post(() -> callback.getAllActiveListItems(items));
         }).start();
     }
 

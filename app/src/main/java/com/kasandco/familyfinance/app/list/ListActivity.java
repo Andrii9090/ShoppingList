@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -214,6 +213,9 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
                 presenter.selectAddCost();
                 break;
             case R.id.context_menu_list_item_send_list:
+                presenter.selectSendListToMessage();
+                break;
+            case R.id.context_menu_list_item_share_list:
                 presenter.selectShareList();
                 break;
         }

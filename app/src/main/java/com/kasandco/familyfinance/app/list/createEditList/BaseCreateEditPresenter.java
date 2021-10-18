@@ -44,8 +44,8 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
         this.view = view;
         financeCategoryModelList = new ArrayList<>();
         adapterIcon.setListener((AdapterIcon.OnClickIconListener) view);
-        loadFinanceCategory();
         listRepository.getAllIcons(this);
+        loadFinanceCategory();
     }
 
     protected void loadFinanceCategory() {

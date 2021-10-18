@@ -20,5 +20,5 @@ public interface FinanceCategoryDao extends BaseDao<FinanceCategoryModel> {
     Flowable<List<FinanceCategoryWithTotal>> getAll(int type, String dateStart, String dateEnd);
 
     @Query("SELECT * FROM finance_category WHERE type=1")
-    Flowable<List<FinanceCategoryModel>> getAllCostCategory();
+    List<FinanceCategoryModel> getAllCostCategory();
 }

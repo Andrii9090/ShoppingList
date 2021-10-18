@@ -57,6 +57,9 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     public void setEditItem(ListModel item) {
         editItem = item;
         view.setName(editItem.getName());
+        if(financeCategoryNames.size()>0){
+            setEditDataSpinner();
+        }
     }
 
     @Override
