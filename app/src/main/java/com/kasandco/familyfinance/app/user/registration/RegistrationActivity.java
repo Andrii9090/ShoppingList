@@ -20,6 +20,7 @@ import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.app.user.login.LoginActivity;
+import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
 import javax.inject.Inject;
@@ -33,6 +34,9 @@ public class RegistrationActivity extends BaseActivity implements RegistrationCo
 
     @Inject
     public RegistrationPresenter presenter;
+
+    @Inject
+    public IsNetworkConnect isNetworkConnect;
 
     private ImageButton btnNav;
     private TextView registrationTextView;
@@ -81,7 +85,7 @@ public class RegistrationActivity extends BaseActivity implements RegistrationCo
     private View.OnClickListener btnClickListener = view -> {
         switch (view.getId()) {
             case R.id.login_btn_enter:
-                if(isInternetAvailable()) {
+                if(isNetworkConnect.isInternetAvailable()) {
                     presenter.clickRegistrationBtn();
                 }else{
                     showToast(R.string.internet_connection_error);

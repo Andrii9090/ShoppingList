@@ -6,9 +6,6 @@ import com.kasandco.familyfinance.app.user.registration.RegistrationPresenter;
 import com.kasandco.familyfinance.core.BasePresenter;
 import com.kasandco.familyfinance.network.model.UserRegisterModel;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.inject.Inject;
 
 public class LoginPresenter extends BasePresenter<LoginContract.View> implements LoginContract.Presenter, LoginRepository.LoginCallback {
@@ -63,10 +60,10 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
                 repository.saveToken(token,email);
                 view.startListActivity();
             }else {
-                view.showToast(R.string.text_loggin_error);
+                view.showToast(R.string.text_login_error);
             }
         }else {
-            view.showToast(R.string.text_loggin_error);
+            view.showToast(R.string.text_login_error);
         }
         view.hideLoading();
     }

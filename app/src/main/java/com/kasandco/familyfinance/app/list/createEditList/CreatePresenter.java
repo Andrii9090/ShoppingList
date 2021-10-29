@@ -49,4 +49,9 @@ public class CreatePresenter extends BaseCreateEditPresenter<CreateListContract.
     public void closeCreateForm(){
         view.close();
     }
+
+    @Override
+    public void noSubscribed() {
+        view.showToast(R.string.error_no_added_subscribe_list);
+    }
 }

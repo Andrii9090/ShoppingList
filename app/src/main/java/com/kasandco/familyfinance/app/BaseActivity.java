@@ -129,12 +129,4 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 break;
         }
     });
-
-    public boolean isInternetAvailable() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
 }

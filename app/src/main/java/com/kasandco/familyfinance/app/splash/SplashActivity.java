@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.ImageView;
 
 import com.kasandco.familyfinance.App;
@@ -43,6 +44,11 @@ public class SplashActivity extends AppCompatActivity implements Constants {
         App.appComponent.plus(new SplashModule()).inject(this);
         logo = findViewById(R.id.splash_logo);
 
+        @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        sharedPreferenceUtil.getEditor().putString(Constants.DEVICE_ID, deviceId).apply();
+
         new Thread(() -> {
             if (sharedPreferenceUtil.getSharedPreferences().getInt(IS_ADDED_ICONS, 0) == 0) {
                 List<String> iconsPath = listAssetFiles(SplashActivity.this, "icons");
@@ -62,7 +68,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
         Intent intent;
         if (sharedPreferenceUtil.getSharedPreferences().getBoolean(Constants.IS_FIRST_START, false)) {
             intent = new Intent(this, ListActivity.class);
-        }else{
+        } else {
             intent = new Intent(this, SettingsActivity.class);
             sharedPreferenceUtil.getEditor().putBoolean(Constants.IS_FIRST_START, true).apply();
         }
@@ -82,7 +88,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
             public void onAnimationEnd(Animator animator) {
                 try {
                     int timeStart = 600;
-                    if(sharedPreferenceUtil.getSharedPreferences().getInt(Constants.IS_ADDED_ICONS,0)==0){
+                    if (sharedPreferenceUtil.getSharedPreferences().getInt(Constants.IS_ADDED_ICONS, 0) == 0) {
                         timeStart = 1500;
                     }
                     Thread.sleep(timeStart);

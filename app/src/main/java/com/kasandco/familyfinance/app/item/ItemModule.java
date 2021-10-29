@@ -3,13 +3,18 @@ package com.kasandco.familyfinance.app.item;
 import android.content.Context;
 
 import com.kasandco.familyfinance.app.item.create.FragmentItemCreate;
-import com.kasandco.familyfinance.app.item.create.FragmentItemCreatePresenter;
+import com.kasandco.familyfinance.app.item.create.ItemCreatePresenter;
+import com.kasandco.familyfinance.core.AppDataBase;
+import com.kasandco.familyfinance.network.ItemNetworkInterface;
+import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SaveImageUtils;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 @Module(includes = {DataModule.class})
 public class ItemModule {
@@ -21,7 +26,7 @@ public class ItemModule {
     }
 
     @Provides
-    FragmentItemCreate providesFragmentItemCreate(FragmentItemCreatePresenter presenter){
+    FragmentItemCreate providesFragmentItemCreate(ItemCreatePresenter presenter){
         return new FragmentItemCreate(presenter);
     }
 
@@ -47,5 +52,11 @@ public class ItemModule {
     @Named("activity_context")
     Context provideContext(){
         return this.context;
+    }
+
+    @ItemActivityScope
+    @Provides
+    ItemRepository providesItemRepository(Retrofit retrofit, AppDataBase appDataBase, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect networkConnect, SaveImageUtils saveImage){
+        return new ItemRepository(retrofit.create(ItemNetworkInterface.class), appDataBase.getItemDao(), saveImage, sharedPreferenceUtil, networkConnect, appDataBase.getItemSyncDao());
     }
 }

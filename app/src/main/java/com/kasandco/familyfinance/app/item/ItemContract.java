@@ -1,5 +1,6 @@
 package com.kasandco.familyfinance.app.item;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,4 +25,8 @@ public interface ItemContract extends BaseContract {
     long getListId();
 
     void showEmptyText(boolean b);
+
+    ContentResolver getContentResolver();
+
+    long getServerListId();
 }

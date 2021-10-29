@@ -10,14 +10,14 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-public class FragmentItemCreatePresenter extends BasePresenter<FragmentItemCreateContract> {
+public class ItemCreatePresenter extends BasePresenter<FragmentItemCreateContract> {
     @Inject
     public ItemDao itemDao;
     @Inject
     public ItemRepository repository;
 
     @Inject
-    public FragmentItemCreatePresenter() {
+    public ItemCreatePresenter() {
 
     }
 
@@ -26,8 +26,8 @@ public class FragmentItemCreatePresenter extends BasePresenter<FragmentItemCreat
         this.view = view;
     }
 
-    public void create(String name) {
-        repository.create(getQuantity(name));
+    public void create(String name, long listId, long serverListId) {
+        repository.create(getQuantity(name), listId, serverListId);
         view.showToast();
     }
 
@@ -37,7 +37,7 @@ public class FragmentItemCreatePresenter extends BasePresenter<FragmentItemCreat
         if (!itemEdit.getName().equals(name)) {
             itemEdit.setName(name);
             itemEdit.setDateMod(String.valueOf(System.currentTimeMillis()));
-            repository.edit(itemEdit);
+            repository.update(itemEdit);
             view.setEditedItemNull();
         }
     }

@@ -1,7 +1,9 @@
 package com.kasandco.familyfinance.app.item;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.core.BasePresenter;
@@ -13,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemPresenter extends BasePresenter<ItemContract> {
+public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRepository.ItemRepositoryCallback {
 
     ItemDao itemDao;
 
@@ -24,6 +26,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     SaveImageUtils imageUtils;
 
     long listId;
+    long serverListId;
     private List<ItemModel> items;
 
     public ItemPresenter(ItemRepository repository, ItemDao dao, ItemAdapter adapter, SaveImageUtils imageUtils) {
@@ -31,7 +34,6 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
         this.itemDao = dao;
         this.adapter = adapter;
         this.imageUtils = imageUtils;
-        repository.setPresenter(this);
     }
 
     @Override
@@ -42,7 +44,8 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
 
     private void prepare() {
         listId = view.getListId();
-        repository.getAll(listId);
+        serverListId = view.getServerListId();
+        repository.getAll(listId, serverListId,this);
         view.startAdapter(adapter);
     }
 
@@ -81,7 +84,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
         if (photoFile != null) {
             Uri photoURI = imageUtils.getPhotoUri();
             view.showCamera(photoURI);
-        }else {
+        } else {
             view.showToast(R.string.error_todo_photo);
         }
     }
@@ -99,26 +102,28 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     }
 
     public void activityResult(int requestCode, int resultCode, Intent data) throws IOException {
-        if(requestCode== Constants.REQUEST_TAKE_GALLERY){
+        if (requestCode == Constants.REQUEST_TAKE_GALLERY) {
             Uri uri = data.getData();
-            repository.saveImagePath(imageUtils.getRealPathFromURI(uri), adapter.items.get(adapter.getPosition()).getId());
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(view.getContentResolver(), uri);
+            repository.saveImagePath(imageUtils.getRealPathFromURI(uri), bitmap, adapter.items.get(adapter.getPosition()).getId());
         }
-        if(requestCode==Constants.REQUEST_TAKE_PHOTO){
+        if (requestCode == Constants.REQUEST_TAKE_PHOTO) {
             Uri imageUri = imageUtils.copyImageToGallery(imageUtils.getCurrentFilePath());
-            repository.saveImagePath(imageUri.getPath(), adapter.items.get(adapter.getPosition()).getId());
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(view.getContentResolver(), imageUri);
+            repository.saveImagePath(imageUri.getPath(), bitmap, adapter.items.get(adapter.getPosition()).getId());
         }
     }
 
     public void clickShowZoomImage() {
-        if(adapter.items.get(adapter.getPosition()).getImagePath()!=null) {
+        if (adapter.items.get(adapter.getPosition()).getImagePath() != null) {
             view.showZoomFragment(adapter.items.get(adapter.getPosition()).getImagePath());
-        }else{
+        } else {
             view.showToast(R.string.error_show_img);
         }
     }
 
     public void clickRemoveImage() {
-        repository.saveImagePath("", adapter.items.get(adapter.getPosition()).getId());
+        repository.saveImagePath("", null, adapter.items.get(adapter.getPosition()).getId());
         adapter.setPosition(-1);
     }
 
@@ -129,14 +134,14 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
     public void refreshData() {
         items.clear();
         repository.unSubscribe();
-        repository.getAll(listId);
+        repository.getAll(listId, serverListId, this);
     }
 
     public void clickToItem() {
         ItemModel item = items.get(adapter.getPosition());
-        if(item.getStatus()==1){
+        if (item.getStatus() == 1) {
             item.setStatus(0);
-        }else{
+        } else {
             item.setStatus(1);
         }
         item.setDateMod(String.valueOf(System.currentTimeMillis()));
@@ -144,11 +149,13 @@ public class ItemPresenter extends BasePresenter<ItemContract> {
         repository.changeStatus(item);
     }
 
-    public void createNewItem(String textEntered) {
-        repository.create(new String[]{textEntered});
+    public void createNewItem(String textEntered, long listId, long serverId) {
+        repository.create(new String[]{textEntered}, listId, serverId);
     }
 
     public void destroy() {
         repository.unSubscribe();
     }
+
+
 }

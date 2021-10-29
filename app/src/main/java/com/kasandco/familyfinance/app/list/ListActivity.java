@@ -8,6 +8,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -80,10 +83,10 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
 
     @Override
     protected void startNewActivity(Class<?> activityClass) {
-        if(activityClass!=getClass()) {
+        if (activityClass != getClass()) {
             Intent intent = new Intent(this, activityClass);
             startActivity(intent);
-        }else{
+        } else {
             drawerLayout.closeDrawer(Gravity.LEFT);
         }
     }
@@ -169,7 +172,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
 
     @Override
     public void setCategoryId(long financeCategoryId) {
-        if(fragmentCreateItemHistory.isAdded()){
+        if (fragmentCreateItemHistory.isAdded()) {
             fragmentCreateItemHistory.setCategory(financeCategoryId);
         }
     }
@@ -195,8 +198,30 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     }
 
     @Override
+    public void showDialogWithShareCode() {
+        DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
+            if(i==DialogInterface.BUTTON_POSITIVE){
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                String text = String.format(getString(R.string.text_to_share_list), presenter.getShareCode(), getString(R.string.app_name));
+                ClipData clip = ClipData.newPlainText("", text);
+                clipboard.setPrimaryClip(clip);
+            }else{
+                dialogInterface.cancel();
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(R.string.title_share_dialog)
+                .setMessage(R.string.msg_share)
+                .setPositiveButton(R.string.btn_share_copy, dialogListener)
+                .setNegativeButton(R.string.cancel, dialogListener);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.context_menu_list_item_remove:
                 removeList();
                 break;
@@ -224,10 +249,10 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
 
     private void removeList() {
         DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
-            if(i==DialogInterface.BUTTON_POSITIVE){
+            if (i == DialogInterface.BUTTON_POSITIVE) {
                 presenter.selectRemoveList();
 
-            }else{
+            } else {
                 dialogInterface.cancel();
             }
         };
@@ -264,7 +289,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     public void closeFragmentCreate() {
         if (fragmentCreateList.isAdded()) {
             getSupportFragmentManager().beginTransaction().remove(fragmentCreateList).commitNow();
-        }else {
+        } else {
             getSupportFragmentManager().beginTransaction().remove(fragmentEditList).commitNow();
         }
         KeyboardUtil.hideKeyboard(this);

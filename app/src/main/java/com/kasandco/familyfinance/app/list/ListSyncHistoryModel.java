@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import com.kasandco.familyfinance.network.model.NetworkListData;
 
 @Entity(tableName = "list_sync_history")
-public class ListSyncHistory {
+public class ListSyncHistoryModel {
     @PrimaryKey(autoGenerate = true)
     private long id;
 
@@ -18,9 +18,9 @@ public class ListSyncHistory {
     private String dateMod;
 
 
-    public ListSyncHistory(){}
+    public ListSyncHistoryModel(){}
 
-    public ListSyncHistory(NetworkListData networkListData){
+    public ListSyncHistoryModel(NetworkListData networkListData){
         serverId = networkListData.getId();
         dateMod = networkListData.getDateMod();
 

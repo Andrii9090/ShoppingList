@@ -53,7 +53,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
     long listId;
     String listName;
-    long serverId;
+    long serverListId;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -65,7 +65,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         super.onCreate(savedInstanceState);
         listId = getIntent().getLongExtra(LIST_ITEM_ID, 0);
         listName = getIntent().getStringExtra(LIST_NAME);
-        serverId = getIntent().getLongExtra(LIST_SERVER_ID, 0);
+        serverListId = getIntent().getLongExtra(LIST_SERVER_ID, 0);
         App.getItemComponent(this).inject(this);
         setContentView(R.layout.activity_item);
         recyclerView = findViewById(R.id.item_activity_rv);
@@ -213,6 +213,11 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     }
 
     @Override
+    public long getServerListId() {
+        return serverListId;
+    }
+
+    @Override
     public void showLoading() {
         swipeRefreshLayout.setRefreshing(true);
     }
@@ -240,6 +245,10 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     }
 
     private void showCreateFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putLong("listId", listId);
+        bundle.putLong("serverListId", serverListId);
+        createFragment.setArguments(bundle);
         if (getSupportFragmentManager().findFragmentById(R.id.item_activity_fragment) != null) {
             getSupportFragmentManager().beginTransaction().add(R.id.item_activity_fragment, createFragment).commit();
         } else {
@@ -329,7 +338,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String textEntered = Character.toString(matches.get(0).charAt(0)).toUpperCase() + matches.get(0).substring(1);
-            presenter.createNewItem(textEntered);
+            presenter.createNewItem(textEntered, listId, serverListId);
         } else if(requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_TAKE_GALLERY && resultCode == RESULT_OK) {
             try {
                 presenter.activityResult(requestCode, resultCode, data);

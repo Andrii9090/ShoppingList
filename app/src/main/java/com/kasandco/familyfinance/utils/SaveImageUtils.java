@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Base64;
 
 
 import androidx.core.content.FileProvider;
@@ -23,8 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.inject.Inject;
 
 public class SaveImageUtils {
     Context context;
@@ -33,6 +37,7 @@ public class SaveImageUtils {
     private File fileImage;
     private String currentFilePath;
 
+    @Inject
     public SaveImageUtils(Context context) {
         this.context = context;
     }
@@ -127,5 +132,11 @@ public class SaveImageUtils {
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
+    }
+
+    public void saveBase64ToImage(String base64Str) throws IOException {
+        byte[] bytes = Base64.decode(base64Str, Base64.DEFAULT);
+        FileOutputStream os = new FileOutputStream(createImageFile());
+        os.write(bytes);
     }
 }

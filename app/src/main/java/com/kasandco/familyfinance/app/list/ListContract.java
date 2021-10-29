@@ -15,4 +15,6 @@ public interface ListContract extends BaseContract {
     String getStringResource(int resource);
 
     String getDeviceId();
+
+    void showDialogWithShareCode();
 }

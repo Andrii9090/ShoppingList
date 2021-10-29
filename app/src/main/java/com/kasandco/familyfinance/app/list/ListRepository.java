@@ -2,7 +2,6 @@ package com.kasandco.familyfinance.app.list;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 
 
 import com.kasandco.familyfinance.core.Constants;
@@ -13,6 +12,7 @@ import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.network.ListNetworkInterface;
 import com.kasandco.familyfinance.network.model.LastSyncDataModel;
 import com.kasandco.familyfinance.network.model.NetworkListData;
+import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
@@ -44,8 +44,10 @@ public class ListRepository {
 
     private final CompositeDisposable disposable;
 
+    private IsNetworkConnect isNetworkConnect;
+
     @Inject
-    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil) {
+    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect _connect) {
         listDao = _listDao;
         iconDao = _iconDao;
         itemDao = _itemDao;
@@ -53,6 +55,7 @@ public class ListRepository {
         network = retrofit.create(ListNetworkInterface.class);
         sharedPreference = sharedPreferenceUtil;
         disposable = new CompositeDisposable();
+        isNetworkConnect = _connect;
     }
 
     public void setIsLogged(boolean _isLogged) {
@@ -68,7 +71,7 @@ public class ListRepository {
     }
 
     private void networkCreate(ListModel listModel) {
-        if (isLogged) {
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
             NetworkListData networkData = new NetworkListData(listModel);
             Call<NetworkListData> call = network.createNewList(networkData);
             call.enqueue(new Callback<NetworkListData>() {
@@ -97,7 +100,7 @@ public class ListRepository {
     }
 
     private void networkUpdate(ListModel listModel) {
-        if (isLogged) {
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
             NetworkListData networkData = new NetworkListData(listModel);
             Call<NetworkListData> call = network.updateList(networkData);
             call.enqueue(new Callback<NetworkListData>() {
@@ -125,7 +128,7 @@ public class ListRepository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> callback.setListItems(null))
                 .subscribe(callback::setListItems));
-        if (isLogged) {
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
             sync();
         }
     }
@@ -145,9 +148,9 @@ public class ListRepository {
                 }
             }
 
-            List<ListSyncHistory> lastSyncItems = listSyncHistoryDao.getAll();
+            List<ListSyncHistoryModel> lastSyncItems = listSyncHistoryDao.getAll();
             List<LastSyncDataModel> lastSyncData = new ArrayList<>();
-            for (ListSyncHistory item : lastSyncItems) {
+            for (ListSyncHistoryModel item : lastSyncItems) {
                 lastSyncData.add(new LastSyncDataModel(item.getServerId(), item.getDateMod()));
             }
 
@@ -181,7 +184,7 @@ public class ListRepository {
                                     }
                                 }).start();
                             }
-                            ListSyncHistory syncData = new ListSyncHistory(item);
+                            ListSyncHistoryModel syncData = new ListSyncHistoryModel(item);
                             new Thread(() -> listSyncHistoryDao.insert(syncData)).start();
                         }
                         sharedPreference.getEditor().putString(Constants.LAST_SYNC_LIST, lastUpdate).apply();
@@ -197,7 +200,7 @@ public class ListRepository {
     }
 
     public void removeList(ListModel listModel) {
-        if (isLogged) {
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
             listModel.setIsDelete(1);
             new Thread(() -> listDao.update(listModel)).start();
             long serverId = listModel.getServerId();
@@ -223,23 +226,69 @@ public class ListRepository {
     }
 
     public void clearInactiveItems(ListModel listModel) {
-        new Thread(() -> listDao.clearInactiveItems(listModel.getId())).start();
-        deleteInactiveListItems(listModel.getId());
+        if(listModel.getQuantityInactive()>0) {
+            new Thread(() -> listDao.clearInactiveItems(listModel.getId())).start();
+            deleteInactiveListItems(listModel.getId());
+        }
     }
 
     public void clearActiveItems(ListModel listModel) {
-        new Thread(() -> listDao.clearActiveItems(listModel.getId())).start();
-        deleteActiveListItems(listModel.getId());
+        if(listModel.getQuantityActive()>0) {
+            new Thread(() -> listDao.clearActiveItems(listModel.getId())).start();
+            deleteActiveListItems(listModel.getId());
+        }
     }
 
     private void deleteActiveListItems(long listId) {
-        new Thread(() -> listDao.deleteActiveListItem(listId)).start();
-        //@TODO Сделать удаление listItem использую интерфейс айтемов
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            new Thread(() -> {
+                new Thread(() -> itemDao.softDeleteActiveItems(listId)).start();
+                long serverListId = listDao.getServerListId(listId);
+                Call<ResponseBody> call = network.clearListItems(serverListId, 1);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            new Thread(() -> itemDao.deleteActiveItems(listId)).start();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    }
+                });
+            }).start();
+        } else if (isNetworkConnect.isInternetAvailable()) {
+            new Thread(() -> itemDao.softDeleteActiveItems(listId)).start();
+        } else {
+            new Thread(() -> itemDao.deleteActiveItems(listId)).start();
+        }
     }
 
     private void deleteInactiveListItems(long listId) {
-        new Thread(() -> listDao.deleteInactiveListItem(listId)).start();
-        //@TODO Сделать удаление listItem использую интерфейс айтемов
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            new Thread(() -> {
+                new Thread(() -> itemDao.softDeleteInActiveItems(listId)).start();
+                long serverListId = listDao.getServerListId(listId);
+                Call<ResponseBody> call = network.clearListItems(serverListId, 0);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            new Thread(() -> itemDao.deleteInActiveItems(listId)).start();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    }
+                });
+            }).start();
+        } else if (isNetworkConnect.isInternetAvailable()) {
+            new Thread(() -> itemDao.softDeleteInActiveItems(listId)).start();
+        } else {
+            new Thread(() -> itemDao.deleteInActiveItems(listId)).start();
+        }
     }
 
     public void unsubscribe() {
@@ -277,12 +326,14 @@ public class ListRepository {
                     ListModel listModel = new ListModel(response.body());
                     new Thread(() -> listDao.insert(listModel)).start();
                     callback.closeCreateForm();
+                }else {
+                    callback.noSubscribed();
                 }
             }
 
             @Override
             public void onFailure(Call<NetworkListData> call, Throwable t) {
-                callback.closeCreateForm();
+                callback.noSubscribed();
             }
         });
     }
@@ -299,6 +350,8 @@ public class ListRepository {
 
     public interface ListResponseListener {
         void closeCreateForm();
+
+        void noSubscribed();
     }
 
     public interface IconCallback {

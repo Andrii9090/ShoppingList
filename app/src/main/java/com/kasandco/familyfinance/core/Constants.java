@@ -2,7 +2,7 @@ package com.kasandco.familyfinance.core;
 
 public interface Constants {
     String REST_API_VERSION = "/api/v1/";
-    String BASE_URL = "http://b80f-85-86-244-26.ngrok.io";
+    String BASE_URL = "http://461a-85-86-244-26.ngrok.io";
     String API_KEY = "api_key";
     String IS_ADDED_ICONS = "is_added_icons";
 
@@ -28,4 +28,6 @@ public interface Constants {
     String LAST_SYNC = "last_sync_";
     String LAST_SYNC_LIST = LAST_SYNC+"list";
     String EMAIL = "email";
+    String LAST_SYNC_ITEM_LIST = LAST_SYNC+"item";
+    String DEVICE_ID = "device_id";
 }

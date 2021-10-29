@@ -1,11 +1,15 @@
 package com.kasandco.familyfinance.core;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
+import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.io.IOException;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -56,5 +60,11 @@ public class NetworkModule implements Constants {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
         return interceptor;
+    }
+
+    @Provides
+    @Singleton
+    IsNetworkConnect providesIsNetworkConnect(@Named("application.context") Context context){
+        return new IsNetworkConnect(context);
     }
 }

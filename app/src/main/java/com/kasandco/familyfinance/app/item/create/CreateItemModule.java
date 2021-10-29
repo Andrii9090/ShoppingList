@@ -15,7 +15,7 @@ public class CreateItemModule {
 
     @ItemCreateScope
     @Provides
-    FragmentItemCreatePresenter providesPresenter(){
-        return new FragmentItemCreatePresenter();
+    ItemCreatePresenter providesPresenter(){
+        return new ItemCreatePresenter();
     }
 }

@@ -61,15 +61,19 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     @SuppressLint("DefaultLocale")
     @Override
     public void getAllActiveListItems(List<ItemModel> items) {
-        int count = 0;
-        StringBuilder text = new StringBuilder();
-        text.append(view.getStringResource(R.string.text_header_msg)).append(System.lineSeparator());
-        for (ItemModel item : items) {
-            count++;
-            text.append(String.format("%d. %s" + System.lineSeparator(), count, item.getName()));
+        if (items.size() > 0) {
+            int count = 0;
+            StringBuilder text = new StringBuilder();
+            text.append(view.getStringResource(R.string.text_header_msg)).append(System.lineSeparator());
+            for (ItemModel item : items) {
+                count++;
+                text.append(String.format("%d. %s" + System.lineSeparator(), count, item.getName()));
+            }
+            text.append(String.format(view.getStringResource(R.string.text_footer_msg), view.getStringResource(R.string.app_name))).append(System.lineSeparator());
+            view.runSendIntent(text.toString());
+        } else {
+            view.showToast(R.string.not_active_items);
         }
-        text.append(String.format(view.getStringResource(R.string.text_footer_msg), view.getStringResource(R.string.app_name))).append(System.lineSeparator());
-        view.runSendIntent(text.toString());
     }
 
     public void clickShowCreateFragment() {
@@ -129,6 +133,14 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     public void selectShareList() {
+        if (adapter.getItems().get(adapter.getPosition()).getListCode() != null && !adapter.getItems().get(adapter.getPosition()).getListCode().isEmpty()) {
+            view.showDialogWithShareCode();
+        } else {
+            view.showToast(R.string.text_error_to_share);
+        }
+    }
 
+    public String getShareCode() {
+        return adapter.getItems().get(adapter.getPosition()).getListCode();
     }
 }

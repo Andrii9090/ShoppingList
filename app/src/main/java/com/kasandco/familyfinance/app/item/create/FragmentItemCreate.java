@@ -19,12 +19,15 @@ import com.kasandco.familyfinance.utils.ToastUtils;
 public class FragmentItemCreate extends Fragment implements FragmentItemCreateContract {
 
     ClickListenerCreateFragment listener;
-    FragmentItemCreatePresenter presenter;
+    ItemCreatePresenter presenter;
     TextInputEditText name;
     ImageButton btnCreate;
     ItemModel itemEdit;
 
-    public FragmentItemCreate(FragmentItemCreatePresenter presenter){
+    private long serverListId;
+    private long listId;
+
+    public FragmentItemCreate(ItemCreatePresenter presenter){
         App.getItemComponent(getContext()).plus(new CreateItemModule(this)).inject(this);
         this.presenter = presenter;
     }
@@ -39,6 +42,8 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        listId = getArguments() != null ? getArguments().getLong("listId") : 0;
+        serverListId = getArguments() != null ? getArguments().getLong("serverListId") : 0;
         presenter.viewReady(this);
         listener = (ClickListenerCreateFragment)view.getContext();
         name = view.findViewById(R.id.create_item_text);
@@ -46,12 +51,7 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
         name.setFocusableInTouchMode(true);
 
         btnCreate = view.findViewById(R.id.create_item_enter);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.close();
-            }
-        });
+        view.setOnClickListener(view1 -> listener.close());
         btnCreate.setOnClickListener(clickListener);
     }
 
@@ -61,7 +61,7 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
             switch (view.getId()){
                 case R.id.create_item_enter:
                     if (itemEdit == null) {
-                        presenter.create(name.getText().toString());
+                        presenter.create(name.getText().toString(), listId, serverListId);
                     }else {
                         presenter.edit(name.getText().toString(), itemEdit);
                         listener.close();

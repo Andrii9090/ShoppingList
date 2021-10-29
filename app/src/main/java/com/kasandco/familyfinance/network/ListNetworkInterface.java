@@ -1,8 +1,6 @@
 package com.kasandco.familyfinance.network;
 
-import com.kasandco.familyfinance.app.list.ListSyncHistory;
 import com.kasandco.familyfinance.core.Constants;
-import com.kasandco.familyfinance.dao.BaseDao;
 import com.kasandco.familyfinance.network.model.LastSyncDataModel;
 import com.kasandco.familyfinance.network.model.NetworkListData;
 
@@ -13,7 +11,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -33,4 +30,7 @@ public interface ListNetworkInterface {
 
     @GET(Constants.REST_API_VERSION+"lists/subscribe-list/{token}/")
     Call<NetworkListData> subscribeToList(@Path("token") String token);
+
+    @GET(Constants.REST_API_VERSION+"lists/list-items-delete/{status}/{listId}")
+    Call<ResponseBody> clearListItems(@Path("listId") long listId, @Path("status") int status);
 }

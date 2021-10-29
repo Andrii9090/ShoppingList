@@ -37,12 +37,6 @@ public interface ListDao extends BaseDao<ListModel> {
     @Query("UPDATE list SET quantity_active=0 WHERE id=:id")
     void clearActiveItems(long id);
 
-    @Query("DELETE FROM list_item WHERE local_list_id=:localListId AND status=1")
-    void deleteActiveListItem(long localListId);
-
-    @Query("DELETE FROM list_item WHERE local_list_id=:localListId AND status=0")
-    void deleteInactiveListItem(long localListId);
-
     @Query("UPDATE list SET cost_category_id=:categoryId WHERE id=:id")
     void addFinanceCategoryId(long id, long categoryId);
 
@@ -60,4 +54,7 @@ public interface ListDao extends BaseDao<ListModel> {
 
     @Query("DELETE FROM list_item WHERE local_list_id=:localListId OR server_list_id=:serverListId")
     void deleteListItems(long localListId, long serverListId);
+
+    @Query("SELECT server_id FROM list WHERE id=:listId")
+    long getServerListId(long listId);
 }
