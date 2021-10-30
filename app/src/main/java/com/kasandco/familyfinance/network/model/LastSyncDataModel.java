@@ -6,7 +6,7 @@ import androidx.room.Entity;
 import com.google.gson.annotations.SerializedName;
 
 public class LastSyncDataModel {
-    @SerializedName("item_id")
+    @SerializedName("item")
     private long id;
     private String date_mod;
 

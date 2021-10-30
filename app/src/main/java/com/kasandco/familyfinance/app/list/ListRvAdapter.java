@@ -158,29 +158,21 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             quantity.setText(String.format("%d / %d", listItems.get(position).getQuantityActive(), listItems.get(position).getQuantityActive()+listItems.get(position).getQuantityInactive()));
             View.OnClickListener menuListener;
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-            menuListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setPosition(getAbsoluteAdapterPosition());
-                    switch (view.getId()) {
-                        case R.id.list_item_menu:
-                            if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
-                                itemView.showContextMenu(itemView.getWidth(), itemView.getHeight());
-                            } else {
-                                itemView.showContextMenu();
-                            }
-                            break;
-                    }
+            menuListener = view -> {
+                setPosition(getAbsoluteAdapterPosition());
+                switch (view.getId()) {
+                    case R.id.list_item_menu:
+                        if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
+                            itemView.showContextMenu(itemView.getWidth(), itemView.getHeight());
+                        } else {
+                            itemView.showContextMenu();
+                        }
+                        break;
                 }
             };
             menu.setOnClickListener(menuListener);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onClickListener.itemOnClick(ViewHolder.this);
-                }
-            });
+            itemView.setOnClickListener(view -> onClickListener.itemOnClick(ViewHolder.this));
         }
     }
 

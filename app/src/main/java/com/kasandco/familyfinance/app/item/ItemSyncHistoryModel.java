@@ -11,7 +11,7 @@ public class ItemSyncHistoryModel {
     @PrimaryKey(autoGenerate = true)
     private long id;
 
-    @SerializedName("server_id")
+    @SerializedName("item")
     @ColumnInfo(name = "server_id")
     private long serverId;
     @SerializedName("server_list_id")

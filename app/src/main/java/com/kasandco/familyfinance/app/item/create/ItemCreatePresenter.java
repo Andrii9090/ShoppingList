@@ -27,8 +27,12 @@ public class ItemCreatePresenter extends BasePresenter<FragmentItemCreateContrac
     }
 
     public void create(String name, long listId, long serverListId) {
-        repository.create(getQuantity(name), listId, serverListId);
-        view.showToast();
+        if(name.isEmpty()){
+            view.showToast();
+        }else {
+            repository.create(getQuantity(name), listId, serverListId);
+            view.showToast();
+        }
     }
 
     public void edit(String text, ItemModel itemEdit) {

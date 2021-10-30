@@ -250,9 +250,19 @@ public class ItemRepository {
                                             }
                                             itemModel.setId(item.getId());
                                             if (itemResponse.isDelete()) {
+                                                if(itemModel.getStatus()==1){
+                                                    minusActiveItem(itemModel.getLocalListId());
+                                                }else {
+                                                    minusInactiveItem(itemModel.getLocalListId());
+                                                }
                                                 itemDao.delete(itemModel);
                                             } else if (itemDao.update(itemModel) <= 0) {
                                                 itemDao.insert(itemModel);
+                                                if(itemModel.getStatus()==1){
+                                                    plusActiveItem(itemModel.getLocalListId());
+                                                }else {
+                                                    plusInactiveItem(itemModel.getLocalListId());
+                                                }
                                             }
                                         } else {
                                             itemDao.insert(itemModel);

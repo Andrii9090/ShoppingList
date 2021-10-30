@@ -159,7 +159,7 @@ public class ListRepository {
             call.enqueue(new Callback<List<NetworkListData>>() {
                 @Override
                 public void onResponse(Call<List<NetworkListData>> call, Response<List<NetworkListData>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
+                    if (response.isSuccessful() && response.body() != null  && response.body().size()>0) {
                         new Thread(() -> listSyncHistoryDao.clear()).start();
                         String lastUpdate = "0";
                         for (NetworkListData item : response.body()) {
