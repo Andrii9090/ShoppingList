@@ -4,7 +4,6 @@ import androidx.room.Dao;
 import androidx.room.Query;
 
 import com.kasandco.familyfinance.dao.BaseDao;
-import com.kasandco.familyfinance.network.model.ItemModelResponse;
 
 import java.util.List;
 

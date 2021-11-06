@@ -16,9 +16,18 @@ public interface FinanceCategoryDao extends BaseDao<FinanceCategoryModel> {
     @Query("SELECT * FROM finance_category ORDER BY id DESC LIMIT 1")
     Single<FinanceCategoryModel> getLastRow();
 
-    @Query("SELECT *, (SELECT SUM(total) FROM finance_history as h WHERE h.date>=:dateStart AND h.date<=:dateEnd AND h.category_id=fc.id) as total FROM finance_category AS fc WHERE fc.type = :type ORDER BY fc.name DESC")
+    @Query("SELECT *, (SELECT SUM(total) FROM finance_history as h WHERE h.date>=:dateStart AND h.date<=:dateEnd AND h.category_id=fc.id) as total FROM finance_category AS fc WHERE fc.type = :type AND is_delete=0 ORDER BY fc.name DESC")
     Flowable<List<FinanceCategoryWithTotal>> getAll(int type, String dateStart, String dateEnd);
 
     @Query("SELECT * FROM finance_category WHERE type=1")
     List<FinanceCategoryModel> getAllCostCategory();
+
+    @Query("SELECT * FROM finance_category")
+    List<FinanceCategoryModel> getAllCategories();
+
+    @Query("SELECT server_id FROM finance_category WHERE id=:id")
+    long getServerId(long id);
+
+    @Query("SELECT * FROM finance_category WHERE server_id=:serverId")
+    FinanceCategoryModel getCategoryForServerId(long serverId);
 }

@@ -2,14 +2,14 @@ package com.kasandco.familyfinance.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ImageItemModelResponse {
+public class ImageItemApiModel {
     private long id;
     @SerializedName("image_path")
     private String image;
     @SerializedName("image_name")
     private String imageName;
 
-    public ImageItemModelResponse(long _serverId, String _image){
+    public ImageItemApiModel(long _serverId, String _image){
         id = _serverId;
         image = _image;
     }

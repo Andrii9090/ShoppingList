@@ -14,9 +14,12 @@ import io.reactivex.rxjava3.core.Single;
 
 
 @Dao
-public interface FinanceDao extends BaseDao<FinanceModel> {
+public interface FinanceDao extends BaseDao<FinanceHistoryModel> {
     @Query("SELECT * FROM finance_history WHERE type=:type")
-    Flowable<List<FinanceModel>> getAll(int type);
+    Flowable<List<FinanceHistoryModel>> getAllType(int type);
+
+    @Query("SELECT * FROM finance_history")
+    List<FinanceHistoryModel> getAll();
 
     @Query("SELECT SUM(total) FROM finance_history WHERE date>=:dateStart AND date<=:dateEnd and type=:type")
     Single<Double> getTotalToPeriod(int type, String dateStart, String dateEnd);
@@ -28,5 +31,8 @@ public interface FinanceDao extends BaseDao<FinanceModel> {
     List<FinanceStatModel> getAllFromPeriod(int type, String dateStart, String dateEnd);
 
     @Query("SELECT * FROM  finance_history WHERE category_id=:category_id AND date>=:dateStart AND date<=:dateEnd ORDER BY date DESC")
-    List<FinanceModel> getDetailFinance(long category_id, String dateStart, String dateEnd);
+    List<FinanceHistoryModel> getDetailFinance(long category_id, String dateStart, String dateEnd);
+
+    @Query("SELECT * FROM finance_history WHERE server_id=:serverId")
+    FinanceHistoryModel getForServerId(Long serverId);
 }

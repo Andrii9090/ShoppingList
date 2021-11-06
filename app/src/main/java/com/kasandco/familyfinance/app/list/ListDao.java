@@ -57,4 +57,7 @@ public interface ListDao extends BaseDao<ListModel> {
 
     @Query("SELECT server_id FROM list WHERE id=:listId")
     long getServerListId(long listId);
+
+    @Query("SELECT * FROM list WHERE server_id=:serverId")
+    ListModel getListForServerId(long serverId);
 }

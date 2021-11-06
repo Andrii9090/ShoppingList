@@ -1,7 +1,7 @@
 package com.kasandco.familyfinance.app.finance.presenters;
 
 import com.kasandco.familyfinance.app.finance.FinanceRepository;
-import com.kasandco.familyfinance.app.finance.models.FinanceModel;
+import com.kasandco.familyfinance.app.finance.models.FinanceHistoryModel;
 import com.kasandco.familyfinance.core.BasePresenter;
 
 import java.util.GregorianCalendar;
@@ -22,7 +22,7 @@ public class CreateHistoryItemPresenter extends BasePresenter<CreateHistoryItemC
     }
 
     public void createNewItem(int type, long categoryId, String amount, String comment, GregorianCalendar selectedDate) {
-        FinanceModel item = new FinanceModel(String.valueOf(selectedDate.getTime().getTime()), categoryId, Double.parseDouble(amount), comment, type, String.valueOf(System.currentTimeMillis()), "");
+        FinanceHistoryModel item = new FinanceHistoryModel(String.valueOf(selectedDate.getTime().getTime()), categoryId, Double.parseDouble(amount), comment, type, String.valueOf(System.currentTimeMillis()), "");
         repository.createNewHistoryItem(item);
         view.close();
     }

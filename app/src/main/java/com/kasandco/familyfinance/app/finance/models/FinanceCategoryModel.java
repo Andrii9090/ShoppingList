@@ -4,25 +4,37 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
+
+import com.kasandco.familyfinance.core.BaseModel;
+import com.kasandco.familyfinance.network.model.FinanceCategoryApiModel;
 
 @Entity(tableName = "finance_category", indices = {@Index(value = {"name"},
         unique = true)})
-public class FinanceCategoryModel {
-    @PrimaryKey(autoGenerate = true) private long id;
-    private String name;
-    @ColumnInfo(defaultValue = "1") private int type;
-    @ColumnInfo(name = "icon_path") private String iconPath;
-    @ColumnInfo(name = "server_id") private long serverId;
-    @ColumnInfo(name = "is_delete", defaultValue = "0") private int isDelete;
-    @ColumnInfo(name = "date_mod") private String dateMod;
-    @Ignore private String total;
+public class FinanceCategoryModel extends BaseModel {
 
-    public FinanceCategoryModel(String name, String iconPath, int type, String dateMod){
+    private String name;
+    @ColumnInfo(defaultValue = "1")
+    private int type;
+    @ColumnInfo(name = "icon_path")
+    private String iconPath;
+    @Ignore
+    private String total;
+
+    public FinanceCategoryModel(String name, String iconPath, int type, String dateMod) {
         this.name = name;
         this.iconPath = iconPath;
         this.type = type;
         this.dateMod = dateMod;
+    }
+
+    public FinanceCategoryModel(FinanceCategoryApiModel responseModel) {
+        name = responseModel.getName();
+        iconPath = responseModel.getIconPath();
+        type = responseModel.getType();
+        dateMod = responseModel.getDateMod();
+        isDelete = responseModel.getIsDelete() ? 1 : 0;
+        serverId = responseModel.getId();
+        id = responseModel.getLocalId();
     }
 
     public long getId() {

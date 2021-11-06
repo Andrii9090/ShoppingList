@@ -3,27 +3,29 @@ package com.kasandco.familyfinance.app.finance.models;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+
+import com.kasandco.familyfinance.core.BaseModel;
+import com.kasandco.familyfinance.network.model.FinanceHistoryApiModel;
 
 @Entity(tableName = "finance_history")
-public class FinanceModel {
+public class FinanceHistoryModel extends BaseModel {
 
-    @PrimaryKey(autoGenerate = true) private long id;
-    @ColumnInfo(name = "server_id") private long serverId;
     private String date;
     private String comment;
-    @ColumnInfo(name = "category_id") private long categoryId;
-    @ColumnInfo(name = "server_category_id") private long serverCategoryId;
+    @ColumnInfo(name = "category_id")
+    private long categoryId;
+    @ColumnInfo(name = "server_category_id")
+    private long serverCategoryId;
     private double total;
-    @ColumnInfo(name = "is_delete", defaultValue = "0")private int isDelete;
-    @ColumnInfo(defaultValue = "1") private int type;
-    @ColumnInfo(name = "date_mod") private String dateMod;
-    @ColumnInfo(name = "user_email", defaultValue = "") private String userEmail;
+    @ColumnInfo(defaultValue = "1")
+    private int type;
+    @ColumnInfo(name = "user_email", defaultValue = "")
+    private String userEmail;
 
-    public FinanceModel(){}
+    public FinanceHistoryModel(){}
 
     @Ignore
-    public FinanceModel(String date, long categoryId, double total, String  comment, int type, String dateMod, String  userEmail){
+    public FinanceHistoryModel(String date, long categoryId, double total, String  comment, int type, String dateMod, String  userEmail){
         this.date = date;
         this.categoryId = categoryId;
         this.total = total;
@@ -31,6 +33,17 @@ public class FinanceModel {
         this.dateMod = dateMod;
         this.comment = comment;
         this.userEmail = userEmail;
+    }
+    public FinanceHistoryModel(FinanceHistoryApiModel responseModel){
+        date = responseModel.getDate_create();
+        serverCategoryId = responseModel.getFinance_category();
+        total = responseModel.getTotal();
+        type = responseModel.getType();
+        dateMod = responseModel.getDate_mod();
+        comment = responseModel.getComment();
+        userEmail = responseModel.getEmail();
+        dateModServer = responseModel.getDate_mod();
+        serverId = responseModel.getId();
     }
 
     public long getId() {

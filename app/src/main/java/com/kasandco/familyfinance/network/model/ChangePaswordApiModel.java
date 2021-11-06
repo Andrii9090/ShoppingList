@@ -2,7 +2,7 @@ package com.kasandco.familyfinance.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ModelChangePassword {
+public class ChangePaswordApiModel {
 
 
         @SerializedName("re_new_password")
@@ -14,7 +14,7 @@ public class ModelChangePassword {
         @SerializedName("current_password")
         private String password;
 
-        public ModelChangePassword(String _newPassword, String _newPassword2, String _password){
+        public ChangePaswordApiModel(String _newPassword, String _newPassword2, String _password){
             newPassword = _newPassword;
             newPassword2 = _newPassword2;
             password = _password;

@@ -3,24 +3,17 @@ package com.kasandco.familyfinance.app.item;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
 
-import com.kasandco.familyfinance.network.model.ItemModelResponse;
+import com.kasandco.familyfinance.core.BaseModel;
+import com.kasandco.familyfinance.network.model.ItemApiModel;
 
 @Entity(tableName = "list_item")
-public class ItemModel implements Cloneable{
-    @PrimaryKey(autoGenerate = true)
-    private long id;
-    @ColumnInfo(name = "server_id", defaultValue = "0")
-    private long serverId;
+public class ItemModel extends BaseModel {
+
     private String name;
-    @ColumnInfo(name = "date_mod")
-    private String dateMod;
     @ColumnInfo(name = "image_path")
     private String imagePath;
     private int status;
-    @ColumnInfo(name = "is_delete", defaultValue = "0")
-    private int isDelete;
     @ColumnInfo(name = "server_list_id", defaultValue = "0")
     private long serverListId;
     @ColumnInfo(name="local_list_id")
@@ -39,11 +32,12 @@ public class ItemModel implements Cloneable{
         this.dateMod = String.valueOf(System.currentTimeMillis());
     }
 
-    public ItemModel(ItemModelResponse response) {
+    public ItemModel(ItemApiModel response) {
         id = response.getLocalId();
         serverId = response.getId();
         name = response.getName();
         dateMod = response.getDateMod();
+        dateModServer = response.getDateMod();
         isDelete = response.isDelete() ? 1 : 0;
         status = response.isStatus() ? 1 : 0;
         serverListId = response.getServerListId();

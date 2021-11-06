@@ -15,11 +15,14 @@ import com.kasandco.familyfinance.app.finance.presenters.PresenterFinanceHistory
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.core.Constants;
+import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 @Module
 public class FinanceModule {
@@ -66,8 +69,8 @@ public class FinanceModule {
 
     @FinanceActivityScope
     @Provides
-    FinanceRepository providesFinanceRepository(FinanceCategoryDao dao, FinanceDao financeDao, AppDataBase appDataBase) {
-        return new FinanceRepository(dao, financeDao, appDataBase.getListDao());
+    FinanceRepository providesFinanceRepository(AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect networkConnect) {
+        return new FinanceRepository(appDataBase, retrofit, sharedPreferenceUtil, networkConnect);
     }
 
     @Named("cost_history_fragment")

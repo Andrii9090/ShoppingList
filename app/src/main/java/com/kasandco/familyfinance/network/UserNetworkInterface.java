@@ -1,15 +1,13 @@
 package com.kasandco.familyfinance.network;
 
 import com.kasandco.familyfinance.core.Constants;
-import com.kasandco.familyfinance.network.model.ModelChangePassword;
-import com.kasandco.familyfinance.network.model.ModelUpdateEmail;
-import com.kasandco.familyfinance.network.model.NetworkListData;
-import com.kasandco.familyfinance.network.model.ResponseUserTokenModel;
-import com.kasandco.familyfinance.network.model.UserRegisterModel;
+import com.kasandco.familyfinance.network.model.ChangePaswordApiModel;
+import com.kasandco.familyfinance.network.model.UpdateEmailApiModel;
+import com.kasandco.familyfinance.network.model.UserTokenApiModel;
+import com.kasandco.familyfinance.network.model.UserRegisterApiModel;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -17,16 +15,16 @@ import retrofit2.http.POST;
 
 public interface UserNetworkInterface {
     @POST("auth/users/")
-    Call<UserRegisterModel> createUser(@Body UserRegisterModel user);
+    Call<UserRegisterApiModel> createUser(@Body UserRegisterApiModel user);
 
     @POST("auth/token/login/")
-    Call<ResponseUserTokenModel> login(@Body UserRegisterModel user);
+    Call<UserTokenApiModel> login(@Body UserRegisterApiModel user);
 
     @POST("auth/users/set_email/")
-    Call<ResponseBody> updateEmail(@Body ModelUpdateEmail model);
+    Call<ResponseBody> updateEmail(@Body UpdateEmailApiModel model);
 
     @POST("auth/users/set_password/")
-    Call<ResponseBody> changePassword(@Body ModelChangePassword model);
+    Call<ResponseBody> changePassword(@Body ChangePaswordApiModel model);
 
     @GET(Constants.REST_API_VERSION+"clear-history/")
     Call<ResponseBody> clearAllHistory(@Header("device-id") String deviceId);

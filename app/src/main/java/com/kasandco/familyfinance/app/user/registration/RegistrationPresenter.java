@@ -2,7 +2,7 @@ package com.kasandco.familyfinance.app.user.registration;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.core.BasePresenter;
-import com.kasandco.familyfinance.network.model.UserRegisterModel;
+import com.kasandco.familyfinance.network.model.UserRegisterApiModel;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +37,7 @@ public class RegistrationPresenter extends BasePresenter<RegistrationContract.Vi
 
     private void registration() {
         if(validation()){
-            UserRegisterModel user = new UserRegisterModel(email, password);
+            UserRegisterApiModel user = new UserRegisterApiModel(email, password);
             repository.createUser(user, this);
         }else {
             view.showToast(R.string.text_error_password_or_email);

@@ -13,11 +13,14 @@ import com.kasandco.familyfinance.app.list.createEditList.EditListPresenter;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;
 import com.kasandco.familyfinance.core.AppDataBase;
+import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 @Module
 public class ListModule {
@@ -77,8 +80,8 @@ public class ListModule {
 
     @Provides
     @ListActivityScope
-    FinanceRepository providesFinanceRepository(AppDataBase appDataBase){
-        return new FinanceRepository(appDataBase.getFinanceCategoryDao(), appDataBase.getFinanceDao(), appDataBase.getListDao());
+    FinanceRepository providesFinanceRepository(AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreference, IsNetworkConnect networkConnect){
+        return new FinanceRepository(appDataBase, retrofit, sharedPreference, networkConnect);
     }
 
     @Provides

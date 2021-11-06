@@ -2,8 +2,8 @@ package com.kasandco.familyfinance.app.user;
 
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
-import com.kasandco.familyfinance.network.model.ResponseUserTokenModel;
-import com.kasandco.familyfinance.network.model.UserRegisterModel;
+import com.kasandco.familyfinance.network.model.UserTokenApiModel;
+import com.kasandco.familyfinance.network.model.UserRegisterApiModel;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Inject;
@@ -22,11 +22,11 @@ public class LoginRepository {
         sharedPreference = sharedPreferenceUtil;
     }
 
-    public void login(UserRegisterModel user, LoginCallback callback){
-        Call<ResponseUserTokenModel> call = network.login(user);
-        call.enqueue(new Callback<ResponseUserTokenModel>() {
+    public void login(UserRegisterApiModel user, LoginCallback callback){
+        Call<UserTokenApiModel> call = network.login(user);
+        call.enqueue(new Callback<UserTokenApiModel>() {
             @Override
-            public void onResponse(Call<ResponseUserTokenModel> call, Response<ResponseUserTokenModel> response) {
+            public void onResponse(Call<UserTokenApiModel> call, Response<UserTokenApiModel> response) {
                 if(response.isSuccessful()){
                     callback.logged(true, response.body().getToken());
                 }else {
@@ -35,7 +35,7 @@ public class LoginRepository {
             }
 
             @Override
-            public void onFailure(Call<ResponseUserTokenModel> call, Throwable t) {
+            public void onFailure(Call<UserTokenApiModel> call, Throwable t) {
                 callback.logged(false, null);
             }
         });

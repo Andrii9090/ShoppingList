@@ -2,10 +2,9 @@ package com.kasandco.familyfinance.app.finance.presenters;
 
 import com.kasandco.familyfinance.app.finance.FinanceDetailRepository;
 import com.kasandco.familyfinance.app.finance.FinanceDetailView;
-import com.kasandco.familyfinance.app.finance.FinanceRepository;
 import com.kasandco.familyfinance.app.finance.helpers.ConverterFinanceModelToFinanceDetailModel;
 import com.kasandco.familyfinance.app.finance.models.FinanceDetailModel;
-import com.kasandco.familyfinance.app.finance.models.FinanceModel;
+import com.kasandco.familyfinance.app.finance.models.FinanceHistoryModel;
 import com.kasandco.familyfinance.core.BasePresenter;
 import com.kasandco.familyfinance.utils.DateHelper;
 
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class FinanceDetailPresenter extends BasePresenter<FinanceDetailView.View> implements FinanceDetailView.Presenter, FinanceDetailRepository.FinanceDetailCallback {
     private List<FinanceDetailModel> items;
@@ -53,7 +50,7 @@ public class FinanceDetailPresenter extends BasePresenter<FinanceDetailView.View
     }
 
     @Override
-    public void setFinanceItems(List<FinanceModel> items) {
+    public void setFinanceItems(List<FinanceHistoryModel> items) {
         ConverterFinanceModelToFinanceDetailModel converter = new ConverterFinanceModelToFinanceDetailModel(items);
         this.items = converter.convert();
         view.addAdapterToRV(this.items);

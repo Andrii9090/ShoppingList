@@ -1,18 +1,18 @@
 package com.kasandco.familyfinance.app.finance.helpers;
 
 import com.kasandco.familyfinance.app.finance.models.FinanceDetailModel;
-import com.kasandco.familyfinance.app.finance.models.FinanceModel;
+import com.kasandco.familyfinance.app.finance.models.FinanceHistoryModel;
 import com.kasandco.familyfinance.utils.DateHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConverterFinanceModelToFinanceDetailModel {
-    private List<FinanceModel> financeModel;
+    private List<FinanceHistoryModel> financeModel;
     private List<FinanceDetailModel> financeDetailModel;
     private String currentDate;
 
-    public ConverterFinanceModelToFinanceDetailModel(List<FinanceModel> _financeModel){
+    public ConverterFinanceModelToFinanceDetailModel(List<FinanceHistoryModel> _financeModel){
         financeModel = new ArrayList<>();
         financeDetailModel = new ArrayList<>();
         financeModel.addAll(_financeModel);

@@ -89,7 +89,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                 try {
                     int timeStart = 600;
                     if (sharedPreferenceUtil.getSharedPreferences().getInt(Constants.IS_ADDED_ICONS, 0) == 0) {
-                        timeStart = 1500;
+                        timeStart = 2000;
                     }
                     Thread.sleep(timeStart);
                     startActivity(intent);

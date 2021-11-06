@@ -3,50 +3,32 @@ package com.kasandco.familyfinance.app.list;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
-import com.kasandco.familyfinance.network.model.NetworkListData;
+import com.kasandco.familyfinance.core.BaseModel;
+import com.kasandco.familyfinance.network.model.ListDataApiModel;
 
 import java.io.Serializable;
 
 @Entity(tableName = "list")
-public class ListModel implements Serializable {
-
-    @SerializedName("local_id")
-    @PrimaryKey(autoGenerate = true) private long id;
+public class ListModel extends BaseModel implements Serializable {
 
     private String name;
 
     @ColumnInfo(name = "is_owner", defaultValue = "1")
-    //@TODO Удалить
     private int isOwner;
-    @ColumnInfo(name = "icon_id", defaultValue = "0")
 
+    @ColumnInfo(name = "icon_id", defaultValue = "0")
     private String icon;
 
     @ColumnInfo(name = "is_cost", defaultValue = "0")
     private int isCost;
 
-    @SerializedName("finance_category")
     @ColumnInfo(name = "cost_category_id", defaultValue = "0")
     private Long financeCategoryId;
 
-    @SerializedName("shared_token")
     @ColumnInfo(name = "list_code", defaultValue = "")
     private String listCode;
-
-    @ColumnInfo(name = "server_id", defaultValue = "0")
-    @SerializedName("id")
-    private long serverId;
-
-    @SerializedName("date_mod")
-    @ColumnInfo(name = "date_mod")
-    private String dateMod;
-
-    @SerializedName("is_delete")
-    @ColumnInfo(name = "is_delete", defaultValue = "0")
-    private int isDelete;
 
     @SerializedName("active_quantity")
     @ColumnInfo(name = "quantity_active", defaultValue = "0")
@@ -68,11 +50,12 @@ public class ListModel implements Serializable {
         this.financeCategoryId = financeCategoryId;
     }
 
-    public ListModel(NetworkListData listData){
+    public ListModel(ListDataApiModel listData){
         id = listData.getLocalId();
         serverId = listData.getId();
         name = listData.getName();
         dateMod = listData.getDateMod();
+        dateModServer = listData.getDateMod();
         quantityActive = listData.getQuantityActive();
         quantityInactive = listData.getQuantityInactive();
         isDelete = listData.isDelete()?1:0;

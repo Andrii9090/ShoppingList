@@ -8,8 +8,8 @@ import android.util.Log;
 
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.ItemNetworkInterface;
-import com.kasandco.familyfinance.network.model.ImageItemModelResponse;
-import com.kasandco.familyfinance.network.model.ItemModelResponse;
+import com.kasandco.familyfinance.network.model.ImageItemApiModel;
+import com.kasandco.familyfinance.network.model.ItemApiModel;
 import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SaveImageUtils;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
@@ -18,13 +18,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -69,11 +67,11 @@ public class ItemRepository {
 
     private void networkCreate(ItemModel item) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            ItemModelResponse body = new ItemModelResponse(item);
-            Call<ItemModelResponse> call = network.create(body);
-            call.enqueue(new Callback<ItemModelResponse>() {
+            ItemApiModel body = new ItemApiModel(item);
+            Call<ItemApiModel> call = network.create(body);
+            call.enqueue(new Callback<ItemApiModel>() {
                 @Override
-                public void onResponse(Call<ItemModelResponse> call, Response<ItemModelResponse> response) {
+                public void onResponse(Call<ItemApiModel> call, Response<ItemApiModel> response) {
                     if (response.isSuccessful()) {
                         ItemModel itemResp = new ItemModel(response.body());
                         itemResp.setLocalListId(item.getLocalListId());
@@ -82,7 +80,7 @@ public class ItemRepository {
                 }
 
                 @Override
-                public void onFailure(Call<ItemModelResponse> call, Throwable t) {
+                public void onFailure(Call<ItemApiModel> call, Throwable t) {
 
                 }
             });
@@ -166,14 +164,14 @@ public class ItemRepository {
 
     private void networkUpdate(ItemModel item) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            List<ItemModelResponse> array = new ArrayList<>();
-            array.add(new ItemModelResponse(item));
-            Call<List<ItemModelResponse>> call = network.update(array);
-            call.enqueue(new Callback<List<ItemModelResponse>>() {
+            List<ItemApiModel> array = new ArrayList<>();
+            array.add(new ItemApiModel(item));
+            Call<List<ItemApiModel>> call = network.update(array);
+            call.enqueue(new Callback<List<ItemApiModel>>() {
                 @Override
-                public void onResponse(Call<List<ItemModelResponse>> call, Response<List<ItemModelResponse>> response) {
+                public void onResponse(Call<List<ItemApiModel>> call, Response<List<ItemApiModel>> response) {
                     if (response.isSuccessful()) {
-                        for (ItemModelResponse item : response.body()) {
+                        for (ItemApiModel item : response.body()) {
                             ItemModel itemModel = new ItemModel(item);
                             new Thread(() -> itemDao.update(itemModel));
                         }
@@ -181,7 +179,7 @@ public class ItemRepository {
                 }
 
                 @Override
-                public void onFailure(Call<List<ItemModelResponse>> call, Throwable t) {
+                public void onFailure(Call<List<ItemApiModel>> call, Throwable t) {
 
                 }
             });
@@ -206,7 +204,7 @@ public class ItemRepository {
                     if (item.getServerId() == 0) {
                         networkCreate(item);
                     }
-                    if (item.getImagePath() != null && !item.getImagePath().isEmpty() && item.getServerImageName().isEmpty()) {
+                    if (item.getImagePath() != null && !item.getImagePath().isEmpty() && item.getServerImageName()!=null && item.getServerImageName().isEmpty()) {
                         Bitmap bitmap = BitmapFactory.decodeFile(item.getImagePath());
                         saveImageFromServer(bitmap, item);
                     }
@@ -219,17 +217,17 @@ public class ItemRepository {
                 }
                 List<ItemSyncHistoryModel> syncHistory = itemSyncDao.getAll(serverListId);
 
-                Call<List<ItemModelResponse>> call = network.sync(syncHistory, deviceId, serverListId);
-                call.enqueue(new Callback<List<ItemModelResponse>>() {
+                Call<List<ItemApiModel>> call = network.sync(syncHistory, deviceId, serverListId);
+                call.enqueue(new Callback<List<ItemApiModel>>() {
                     @Override
-                    public void onResponse(Call<List<ItemModelResponse>> call, Response<List<ItemModelResponse>> response) {
+                    public void onResponse(Call<List<ItemApiModel>> call, Response<List<ItemApiModel>> response) {
                         if (response.isSuccessful()) {
                             new Thread(() -> {
                                 itemSyncDao.deleteAll(Long.parseLong(response.headers().get("server-list-id")));
                             }).start();
                             if (response.body() != null && response.body().size() > 0) {
                                 String lastUpdate = null;
-                                for (ItemModelResponse itemResponse : response.body()) {
+                                for (ItemApiModel itemResponse : response.body()) {
                                     ItemModel itemModel = new ItemModel(itemResponse);
                                     new Thread(() -> {
                                         itemSyncDao.insert(new ItemSyncHistoryModel(itemResponse.getId(), itemResponse.getDateMod(), itemResponse.getServerListId()));
@@ -284,7 +282,7 @@ public class ItemRepository {
                     }
 
                     @Override
-                    public void onFailure(Call<List<ItemModelResponse>> call, Throwable t) {
+                    public void onFailure(Call<List<ItemApiModel>> call, Throwable t) {
 
                     }
                 });
@@ -293,10 +291,10 @@ public class ItemRepository {
     }
 
     private void downloadImageFromServer(long serverId) {
-        Call<ImageItemModelResponse> call = network.downloadImage(serverId);
-        call.enqueue(new Callback<ImageItemModelResponse>() {
+        Call<ImageItemApiModel> call = network.downloadImage(serverId);
+        call.enqueue(new Callback<ImageItemApiModel>() {
             @Override
-            public void onResponse(Call<ImageItemModelResponse> call, Response<ImageItemModelResponse> response) {
+            public void onResponse(Call<ImageItemApiModel> call, Response<ImageItemApiModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         if (response.body().getImage() != null && !response.body().getImage().isEmpty()) {
@@ -316,7 +314,7 @@ public class ItemRepository {
             }
 
             @Override
-            public void onFailure(Call<ImageItemModelResponse> call, Throwable t) {
+            public void onFailure(Call<ImageItemApiModel> call, Throwable t) {
 
             }
         });
@@ -359,18 +357,18 @@ public class ItemRepository {
             String encodedBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
             new Thread(() -> {
                 ItemModel item = itemDao.getItem(id);
-                ImageItemModelResponse imageBody = new ImageItemModelResponse(item.getServerId(), encodedBase64);
-                Call<ImageItemModelResponse> call = network.sendImage(imageBody);
-                call.enqueue(new Callback<ImageItemModelResponse>() {
+                ImageItemApiModel imageBody = new ImageItemApiModel(item.getServerId(), encodedBase64);
+                Call<ImageItemApiModel> call = network.sendImage(imageBody);
+                call.enqueue(new Callback<ImageItemApiModel>() {
                     @Override
-                    public void onResponse(Call<ImageItemModelResponse> call, Response<ImageItemModelResponse> response) {
+                    public void onResponse(Call<ImageItemApiModel> call, Response<ImageItemApiModel> response) {
                         if (response.isSuccessful()) {
                             new Thread(() -> itemDao.setServerImageName(id, response.body().getImage())).start();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ImageItemModelResponse> call, Throwable t) {
+                    public void onFailure(Call<ImageItemApiModel> call, Throwable t) {
 
                     }
                 });
@@ -385,18 +383,18 @@ public class ItemRepository {
             byte[] byteArray = byteArrayOutputStream.toByteArray();
             String encodedBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
             new Thread(() -> {
-                ImageItemModelResponse imageBody = new ImageItemModelResponse(item.getServerId(), encodedBase64);
-                Call<ImageItemModelResponse> call = network.sendImage(imageBody);
-                call.enqueue(new Callback<ImageItemModelResponse>() {
+                ImageItemApiModel imageBody = new ImageItemApiModel(item.getServerId(), encodedBase64);
+                Call<ImageItemApiModel> call = network.sendImage(imageBody);
+                call.enqueue(new Callback<ImageItemApiModel>() {
                     @Override
-                    public void onResponse(Call<ImageItemModelResponse> call, Response<ImageItemModelResponse> response) {
+                    public void onResponse(Call<ImageItemApiModel> call, Response<ImageItemApiModel> response) {
                         if (response.isSuccessful()) {
                             new Thread(() -> itemDao.setServerImageName(item.getId(), response.body().getImage())).start();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ImageItemModelResponse> call, Throwable t) {
+                    public void onFailure(Call<ImageItemApiModel> call, Throwable t) {
 
                     }
                 });

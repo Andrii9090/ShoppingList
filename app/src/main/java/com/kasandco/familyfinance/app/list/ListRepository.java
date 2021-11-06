@@ -10,8 +10,8 @@ import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.network.ListNetworkInterface;
-import com.kasandco.familyfinance.network.model.LastSyncDataModel;
-import com.kasandco.familyfinance.network.model.NetworkListData;
+import com.kasandco.familyfinance.network.model.LastSyncApiDataModel;
+import com.kasandco.familyfinance.network.model.ListDataApiModel;
 import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -72,22 +72,23 @@ public class ListRepository {
 
     private void networkCreate(ListModel listModel) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            NetworkListData networkData = new NetworkListData(listModel);
-            Call<NetworkListData> call = network.createNewList(networkData);
-            call.enqueue(new Callback<NetworkListData>() {
+            ListDataApiModel networkData = new ListDataApiModel(listModel);
+            Call<ListDataApiModel> call = network.createNewList(networkData);
+            call.enqueue(new Callback<ListDataApiModel>() {
                 @Override
-                public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
+                public void onResponse(Call<ListDataApiModel> call, Response<ListDataApiModel> response) {
                     if (response.isSuccessful()) {
                         if (networkData.equals(response.body())) {
                             listModel.setServerId(response.body().getId());
                             listModel.setDateMod(response.body().getDateMod());
+                            listModel.setDateModServer(response.body().getDateMod());
                             new Thread(() -> listDao.update(listModel)).start();
                         }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<NetworkListData> call, Throwable t) {
+                public void onFailure(Call<ListDataApiModel> call, Throwable t) {
 
                 }
             });
@@ -101,11 +102,11 @@ public class ListRepository {
 
     private void networkUpdate(ListModel listModel) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            NetworkListData networkData = new NetworkListData(listModel);
-            Call<NetworkListData> call = network.updateList(networkData);
-            call.enqueue(new Callback<NetworkListData>() {
+            ListDataApiModel networkData = new ListDataApiModel(listModel);
+            Call<ListDataApiModel> call = network.updateList(networkData);
+            call.enqueue(new Callback<ListDataApiModel>() {
                 @Override
-                public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
+                public void onResponse(Call<ListDataApiModel> call, Response<ListDataApiModel> response) {
                     if (response.isSuccessful()) {
                         if (networkData.equals(response.body())) {
                             ListModel responseItem = new ListModel(response.body());
@@ -115,7 +116,7 @@ public class ListRepository {
                 }
 
                 @Override
-                public void onFailure(Call<NetworkListData> call, Throwable t) {
+                public void onFailure(Call<ListDataApiModel> call, Throwable t) {
 
                 }
             });
@@ -143,60 +144,58 @@ public class ListRepository {
                 }
                 if (item.getServerId() == 0) {
                     networkCreate(item);
-                } else if (Long.parseLong(sharedPreference.getSharedPreferences().getString(Constants.LAST_SYNC_LIST, "0")) < Long.parseLong(item.getDateMod().substring(0, 10))) {
+                } else if (Long.parseLong(item.getDateMod().substring(0, 10)) > Long.parseLong(item.getDateModServer().substring(0, 10))) {
                     networkUpdate(item);
                 }
             }
 
             List<ListSyncHistoryModel> lastSyncItems = listSyncHistoryDao.getAll();
-            List<LastSyncDataModel> lastSyncData = new ArrayList<>();
+            List<LastSyncApiDataModel> lastSyncData = new ArrayList<>();
             for (ListSyncHistoryModel item : lastSyncItems) {
-                lastSyncData.add(new LastSyncDataModel(item.getServerId(), item.getDateMod()));
+                lastSyncData.add(new LastSyncApiDataModel(item.getServerId(), item.getDateMod()));
             }
 
-            Call<List<NetworkListData>> call = network.syncData(lastSyncData, deviceId);
+            Call<List<ListDataApiModel>> call = network.syncData(lastSyncData, deviceId);
 
-            call.enqueue(new Callback<List<NetworkListData>>() {
+            call.enqueue(new Callback<List<ListDataApiModel>>() {
                 @Override
-                public void onResponse(Call<List<NetworkListData>> call, Response<List<NetworkListData>> response) {
-                    if (response.isSuccessful() && response.body() != null  && response.body().size()>0) {
+                public void onResponse(Call<List<ListDataApiModel>> call, Response<List<ListDataApiModel>> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().size() > 0) {
                         new Thread(() -> listSyncHistoryDao.clear()).start();
-                        String lastUpdate = "0";
-                        for (NetworkListData item : response.body()) {
-                            if (lastUpdate.isEmpty()) {
-                                lastUpdate = item.getDateMod();
-                            } else {
-                                if (Long.parseLong(lastUpdate) < Long.parseLong(item.getDateMod())) {
-                                    lastUpdate = item.getDateMod();
-                                }
-                            }
+                        for (ListDataApiModel item : response.body()) {
                             if (item.isDelete()) {
                                 new Thread(() -> {
                                     listDao.delete(item.getLocalId(), item.getId());
                                     listDao.deleteListItems(item.getLocalId(), item.getId());
                                 });
                             } else {
-                                ListModel list = new ListModel(item);
+                                ListModel listModel = listDao.getListForServerId(item.getId());
                                 new Thread(() -> {
-                                    list.setId(listDao.getId(list.getServerId()));
-                                    if (listDao.update(list) == 0) {
-                                        listDao.insert(list);
+                                    if (listModel != null) {
+                                        ListModel listModify = new ListModel(item);
+                                        listModify.setId(listModel.getId());
+                                        listModify.setId(listDao.getId(listModify.getServerId()));
+                                        listDao.update(listModify);
+                                    } else {
+                                        listDao.insert(new ListModel(item));
                                     }
                                 }).start();
                             }
+
                             ListSyncHistoryModel syncData = new ListSyncHistoryModel(item);
                             new Thread(() -> listSyncHistoryDao.insert(syncData)).start();
                         }
-                        sharedPreference.getEditor().putString(Constants.LAST_SYNC_LIST, lastUpdate).apply();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<List<NetworkListData>> call, Throwable t) {
+                public void onFailure(Call<List<ListDataApiModel>> call, Throwable t) {
 
                 }
             });
-        }).start();
+        }).
+
+                start();
     }
 
     public void removeList(ListModel listModel) {
@@ -226,14 +225,14 @@ public class ListRepository {
     }
 
     public void clearInactiveItems(ListModel listModel) {
-        if(listModel.getQuantityInactive()>0) {
+        if (listModel.getQuantityInactive() > 0) {
             new Thread(() -> listDao.clearInactiveItems(listModel.getId())).start();
             deleteInactiveListItems(listModel.getId());
         }
     }
 
     public void clearActiveItems(ListModel listModel) {
-        if(listModel.getQuantityActive()>0) {
+        if (listModel.getQuantityActive() > 0) {
             new Thread(() -> listDao.clearActiveItems(listModel.getId())).start();
             deleteActiveListItems(listModel.getId());
         }
@@ -318,21 +317,21 @@ public class ListRepository {
     }
 
     public void subscribeToList(String token, ListResponseListener callback) {
-        Call<NetworkListData> call = network.subscribeToList(token);
-        call.enqueue(new Callback<NetworkListData>() {
+        Call<ListDataApiModel> call = network.subscribeToList(token);
+        call.enqueue(new Callback<ListDataApiModel>() {
             @Override
-            public void onResponse(Call<NetworkListData> call, Response<NetworkListData> response) {
+            public void onResponse(Call<ListDataApiModel> call, Response<ListDataApiModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ListModel listModel = new ListModel(response.body());
                     new Thread(() -> listDao.insert(listModel)).start();
                     callback.closeCreateForm();
-                }else {
+                } else {
                     callback.noSubscribed();
                 }
             }
 
             @Override
-            public void onFailure(Call<NetworkListData> call, Throwable t) {
+            public void onFailure(Call<ListDataApiModel> call, Throwable t) {
                 callback.noSubscribed();
             }
         });

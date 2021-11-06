@@ -34,7 +34,7 @@ public class PresenterCreateFinanceCategory extends BasePresenter<CreateCategory
                         editItem.setDateMod(String.valueOf(System.currentTimeMillis()));
                         editItem.setIconPath(iconPath);
                         editItem.setName(name);
-                        repository.edit(editItem, this);
+                        repository.updateFinanceCategory(editItem, this);
                     }
                 }
             }

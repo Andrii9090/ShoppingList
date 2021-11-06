@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 public class ItemCreatePresenter extends BasePresenter<FragmentItemCreateContract> {
-    @Inject
-    public ItemDao itemDao;
+//    @Inject
+//    public ItemDao itemDao;
     @Inject
     public ItemRepository repository;
 

@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.list.ListActivityScope;
 import com.kasandco.familyfinance.app.list.ListModel;
 public class FragmentEditList extends BaseFragmentCreateEdit implements EditListContract.View{
     private ListModel editItem;
@@ -48,7 +47,7 @@ public class FragmentEditList extends BaseFragmentCreateEdit implements EditList
 
     @Override
     public void setIconPosition(int iconPosition) {
-        recyclerView.scrollToPosition(iconPosition);
+        recyclerViewIcons.scrollToPosition(iconPosition);
     }
 
 

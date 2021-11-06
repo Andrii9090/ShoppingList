@@ -1,11 +1,14 @@
 package com.kasandco.familyfinance.app.finance;
 
 import com.kasandco.familyfinance.app.finance.models.FinanceDao;
+import com.kasandco.familyfinance.app.finance.models.FinanceHistorySyncDao;
 import com.kasandco.familyfinance.app.finance.presenters.FinanceDetailPresenter;
 import com.kasandco.familyfinance.core.AppDataBase;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 @Module
 public class FinanceDetailModule {
@@ -18,8 +21,8 @@ public class FinanceDetailModule {
 
     @Provides
     @FinanceDetailScope
-    FinanceDetailRepository providesFinanceDetailRepository(FinanceDao financeDao){
-        return new FinanceDetailRepository(financeDao);
+    FinanceDetailRepository providesFinanceDetailRepository(FinanceDao financeDao, AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil){
+        return new FinanceDetailRepository(financeDao, appDataBase.getFinanceHistorySyncDao(), retrofit, sharedPreferenceUtil);
     }
 
     @FinanceDetailScope

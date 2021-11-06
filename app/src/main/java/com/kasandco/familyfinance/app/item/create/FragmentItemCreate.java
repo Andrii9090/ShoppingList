@@ -18,11 +18,11 @@ import com.kasandco.familyfinance.utils.ToastUtils;
 
 public class FragmentItemCreate extends Fragment implements FragmentItemCreateContract {
 
-    ClickListenerCreateFragment listener;
-    ItemCreatePresenter presenter;
-    TextInputEditText name;
-    ImageButton btnCreate;
-    ItemModel itemEdit;
+    private ClickListenerCreateFragment listener;
+    private ItemCreatePresenter presenter;
+    private TextInputEditText name;
+    private ImageButton btnCreate;
+    private ItemModel itemEdit;
 
     private long serverListId;
     private long listId;

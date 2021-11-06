@@ -2,14 +2,11 @@ package com.kasandco.familyfinance.app.user.registration;
 
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
-import com.kasandco.familyfinance.network.model.UserRegisterModel;
+import com.kasandco.familyfinance.network.model.UserRegisterApiModel;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
-
-import java.util.ResourceBundle;
 
 import javax.inject.Inject;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,11 +22,11 @@ public class RegistrationRepository {
         sharedPreference = sharedPreferenceUtil;
     }
 
-    public void createUser(UserRegisterModel user, UserRepositoryCallback callback){
-        Call<UserRegisterModel> call = network.createUser(user);
-        call.enqueue(new Callback<UserRegisterModel>() {
+    public void createUser(UserRegisterApiModel user, UserRepositoryCallback callback){
+        Call<UserRegisterApiModel> call = network.createUser(user);
+        call.enqueue(new Callback<UserRegisterApiModel>() {
             @Override
-            public void onResponse(Call<UserRegisterModel> call, Response<UserRegisterModel> response) {
+            public void onResponse(Call<UserRegisterApiModel> call, Response<UserRegisterApiModel> response) {
                 if(response.isSuccessful()){
                     sharedPreference.getEditor().putString(Constants.EMAIL, user.getEmail()).apply();
                     callback.createdUser(true);
@@ -39,7 +36,7 @@ public class RegistrationRepository {
             }
 
             @Override
-            public void onFailure(Call<UserRegisterModel> call, Throwable t) {
+            public void onFailure(Call<UserRegisterApiModel> call, Throwable t) {
                 callback.createdUser(false);
             }
         });

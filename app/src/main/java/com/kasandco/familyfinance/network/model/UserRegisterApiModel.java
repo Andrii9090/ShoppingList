@@ -1,10 +1,10 @@
 package com.kasandco.familyfinance.network.model;
 
-public class UserRegisterModel {
+public class UserRegisterApiModel {
     private String email;
     private String password;
 
-    public UserRegisterModel(String _email, String _password){
+    public UserRegisterApiModel(String _email, String _password){
         email = _email;
         password = _password;
     }

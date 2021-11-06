@@ -4,7 +4,7 @@ import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.user.LoginRepository;
 import com.kasandco.familyfinance.app.user.registration.RegistrationPresenter;
 import com.kasandco.familyfinance.core.BasePresenter;
-import com.kasandco.familyfinance.network.model.UserRegisterModel;
+import com.kasandco.familyfinance.network.model.UserRegisterApiModel;
 
 import javax.inject.Inject;
 
@@ -50,7 +50,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
     }
 
     private void login() {
-        repository.login(new UserRegisterModel(email, password), this);
+        repository.login(new UserRegisterApiModel(email, password), this);
     }
 
     @Override

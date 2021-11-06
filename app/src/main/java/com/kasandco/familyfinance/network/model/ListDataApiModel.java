@@ -1,14 +1,11 @@
 package com.kasandco.familyfinance.network.model;
 
-import androidx.room.ColumnInfo;
-import androidx.room.PrimaryKey;
-
 import com.google.gson.annotations.SerializedName;
 import com.kasandco.familyfinance.app.list.ListModel;
 
 import java.util.Objects;
 
-public class NetworkListData {
+public class ListDataApiModel {
     private long id;
 
     private String name;
@@ -37,7 +34,7 @@ public class NetworkListData {
     @SerializedName("no_active_quantity")
     private int quantityInactive;
 
-    public NetworkListData(ListModel listModel){
+    public ListDataApiModel(ListModel listModel){
         id = listModel.getServerId();
         name = listModel.getName();
         icon = listModel.getIcon();
@@ -138,7 +135,7 @@ public class NetworkListData {
 
     @Override
     public boolean equals(Object o) {
-        NetworkListData that = (NetworkListData) o;
+        ListDataApiModel that = (ListDataApiModel) o;
         return id == that.id || localId == that.localId;
     }
 

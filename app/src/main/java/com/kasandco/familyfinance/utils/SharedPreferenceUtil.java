@@ -1,5 +1,7 @@
 package com.kasandco.familyfinance.utils;
 
+import static com.kasandco.familyfinance.core.Constants.TOKEN;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -20,5 +22,9 @@ public class SharedPreferenceUtil {
 
     public SharedPreferences getSharedPreferences(){
         return sharedPreferences;
+    }
+
+    public boolean isLogged(){
+        return getSharedPreferences().getString(TOKEN, null) != null;
     }
 }

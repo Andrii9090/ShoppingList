@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import com.kasandco.familyfinance.app.item.ItemModel;
 
-public class ItemModelResponse {
+public class ItemApiModel {
     private String name;
     private boolean status;
     @SerializedName("is_delete")
@@ -23,9 +23,9 @@ public class ItemModelResponse {
     @SerializedName("has_image")
     private boolean hasImage;
 
-    public ItemModelResponse(){}
+    public ItemApiModel(){}
 
-    public ItemModelResponse(@NonNull ItemModel item){
+    public ItemApiModel(@NonNull ItemModel item){
         localId = item.getId();
         id = item.getServerId()>0?item.getServerId():0;
         name = item.getName();

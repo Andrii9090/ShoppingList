@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.kasandco.familyfinance.network.model.NetworkListData;
+import com.kasandco.familyfinance.network.model.ListDataApiModel;
 
 @Entity(tableName = "list_sync_history")
 public class ListSyncHistoryModel {
@@ -20,7 +20,7 @@ public class ListSyncHistoryModel {
 
     public ListSyncHistoryModel(){}
 
-    public ListSyncHistoryModel(NetworkListData networkListData){
+    public ListSyncHistoryModel(ListDataApiModel networkListData){
         serverId = networkListData.getId();
         dateMod = networkListData.getDateMod();
 

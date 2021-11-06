@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.R;
@@ -36,7 +35,7 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
     protected Button btnCreate;
     protected EditText name;
     protected Spinner financeCategorySpinner;
-    protected RecyclerView recyclerView;
+    protected RecyclerView recyclerViewIcons;
     protected TextView textSpinner;
     protected String iconPath;
 
@@ -52,7 +51,7 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
         createListener = (CreateListListener) view.getContext();
         initElement(view);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 7));
+        recyclerViewIcons.setLayoutManager(new GridLayoutManager(getContext(), 7));
 
         name.setFocusable(true);
         name.requestFocus();
@@ -64,7 +63,7 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
         name = view.findViewById(R.id.fragment_create_list_input);
         textSpinner = view.findViewById(R.id.fragment_create_list_text_stat);
         financeCategorySpinner = view.findViewById(R.id.fragment_create_list_statistic);
-        recyclerView = view.findViewById(R.id.fragment_create_list_recycler_view);
+        recyclerViewIcons = view.findViewById(R.id.fragment_create_list_recycler_view);
     }
 
     @Override
@@ -116,7 +115,7 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
 
     @Override
     public void setRecyclerViewAdapter(AdapterIcon adapterIcon) {
-        recyclerView.setAdapter(adapterIcon);
+        recyclerViewIcons.setAdapter(adapterIcon);
     }
 
     @Override

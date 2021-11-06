@@ -2,10 +2,13 @@ package com.kasandco.familyfinance.app.user.settings;
 
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.core.Constants;
+import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
-import com.kasandco.familyfinance.network.model.ModelChangePassword;
-import com.kasandco.familyfinance.network.model.ModelUpdateEmail;
+import com.kasandco.familyfinance.network.model.ChangePaswordApiModel;
+import com.kasandco.familyfinance.network.model.UpdateEmailApiModel;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
+
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -30,10 +33,17 @@ public class UserSettingsRepository {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     sharedPreference.getEditor().putString(Constants.EMAIL, null).apply();
                     sharedPreference.getEditor().putString(Constants.TOKEN, null).apply();
-                    new Thread(()->appDataBase.clearAllTables()).start();
+                    new Thread(() -> {
+                        List<IconModel> icons = appDataBase.getIconDao().getAllIcon();
+                        appDataBase.clearAllTables();
+                        for (IconModel icon:icons) {
+                            appDataBase.getIconDao().insert(icon);
+                        }
+                    }).start();
+                    sharedPreference.getEditor().putInt(Constants.IS_ADDED_ICONS, 0).apply();
                     callback.dataCleared();
                 }
             }
@@ -47,14 +57,14 @@ public class UserSettingsRepository {
     }
 
     public void updateEmail(String emailNew, String password, UserSettingsRepositoryCallback callback) {
-        Call<ResponseBody> call = network.updateEmail(new ModelUpdateEmail(sharedPreference.getSharedPreferences().getString(Constants.EMAIL, ""), emailNew, password));
+        Call<ResponseBody> call = network.updateEmail(new UpdateEmailApiModel(sharedPreference.getSharedPreferences().getString(Constants.EMAIL, ""), emailNew, password));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.emailUpdated();
                     sharedPreference.getEditor().putString(Constants.EMAIL, emailNew).apply();
-                }else {
+                } else {
                     callback.errorToChangeEmail();
                 }
             }
@@ -67,13 +77,13 @@ public class UserSettingsRepository {
     }
 
     public void changePassword(String oldPassword, String newPassword, String newPassword2, UserSettingsRepositoryCallback callback) {
-        Call<ResponseBody> call = network.changePassword(new ModelChangePassword(newPassword, newPassword2, oldPassword));
+        Call<ResponseBody> call = network.changePassword(new ChangePaswordApiModel(newPassword, newPassword2, oldPassword));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.passwordChanged(true);
-                }else {
+                } else {
                     callback.passwordChanged(false);
                 }
             }
@@ -89,10 +99,13 @@ public class UserSettingsRepository {
         this.deviceId = deviceId;
     }
 
-    public interface UserSettingsRepositoryCallback{
+    public interface UserSettingsRepositoryCallback {
         void errorToChangeEmail();
+
         void emailUpdated();
+
         void dataCleared();
+
         void passwordChanged(boolean success);
     }
 }
