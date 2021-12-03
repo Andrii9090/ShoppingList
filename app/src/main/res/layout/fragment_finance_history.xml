@@ -67,13 +67,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".08"
+        style="@style/ExpensiveFragmentButtonRight"
         app:layout_constraintTop_toBottomOf="@+id/fragment_expensive_recycler_view">
-
-        <ImageButton
-            android:id="@+id/fragment_expensive_btn_add_amount"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="@style/ExpensiveFragmentButtonRight"
-            android:src="@drawable/ic_plus_white" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,7 +27,7 @@ public class PresenterCreateFinanceCategory extends BasePresenter<CreateCategory
                 view.showToast(R.string.text_name_length);
             } else {
                 if (editItem == null) {
-                    category = new FinanceCategoryModel(name, iconPath, type, String.valueOf(System.currentTimeMillis()));
+                    category = new FinanceCategoryModel(name, iconPath, type, String.valueOf(System.currentTimeMillis()), String.valueOf(System.currentTimeMillis()));
                     repository.createNewCategory(category, this, checked);
                 } else {
                     if (!editItem.getName().equals(name) || !editItem.getIconPath().equals(iconPath)) {

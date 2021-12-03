@@ -3,8 +3,11 @@ package com.kasandco.familyfinance.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.kasandco.familyfinance.R;
+
 
 public class IsNetworkConnect {
     Context context;
@@ -22,7 +25,8 @@ public class IsNetworkConnect {
         if (isConnect) {
             return true;
         } else {
-            ToastUtils.showToast(context.getString(R.string.text_error_connect_to_internet), context);
+            Handler handler = new android.os.Handler(Looper.getMainLooper());
+            handler.post(() -> ToastUtils.showToast(context.getString(R.string.text_error_connect_to_internet), context));
             return false;
         }
     }

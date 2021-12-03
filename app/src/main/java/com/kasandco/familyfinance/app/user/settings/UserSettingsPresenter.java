@@ -20,7 +20,6 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> imple
     @Override
     public void viewReady(UserSettingsView view) {
         this.view = view;
-        repository.setDeviceId(view.getDeviceId());
     }
 
     public void clickLogOut() {

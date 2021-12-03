@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 
 import com.google.gson.annotations.SerializedName;
 import com.kasandco.familyfinance.core.BaseModel;
-import com.kasandco.familyfinance.network.model.ListDataApiModel;
+import com.kasandco.familyfinance.network.model.ListApiModel;
 
 import java.io.Serializable;
 
@@ -50,7 +50,7 @@ public class ListModel extends BaseModel implements Serializable {
         this.financeCategoryId = financeCategoryId;
     }
 
-    public ListModel(ListDataApiModel listData){
+    public ListModel(ListApiModel listData){
         id = listData.getLocalId();
         serverId = listData.getId();
         name = listData.getName();
@@ -60,6 +60,7 @@ public class ListModel extends BaseModel implements Serializable {
         quantityInactive = listData.getQuantityInactive();
         isDelete = listData.isDelete()?1:0;
         icon = listData.getIcon();
+        listCode = listData.getToken();
     }
 
     public String getName() {

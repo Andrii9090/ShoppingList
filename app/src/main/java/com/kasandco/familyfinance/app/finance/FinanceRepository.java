@@ -16,13 +16,15 @@ import com.kasandco.familyfinance.app.finance.models.FinanceHistorySyncDao;
 import com.kasandco.familyfinance.app.list.ListDao;
 import com.kasandco.familyfinance.app.list.ListModel;
 import com.kasandco.familyfinance.core.AppDataBase;
+import com.kasandco.familyfinance.core.BaseRepository;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.FinanceNetworkInterface;
 import com.kasandco.familyfinance.network.ListNetworkInterface;
+import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.model.FinanceCategoryApiModel;
 import com.kasandco.familyfinance.network.model.FinanceHistoryApiModel;
 import com.kasandco.familyfinance.network.model.LastSyncApiDataModel;
-import com.kasandco.familyfinance.network.model.ListDataApiModel;
+import com.kasandco.familyfinance.network.model.ListApiModel;
 import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -39,19 +41,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FinanceRepository {
-    private ListDao listDao;
-    private FinanceCategoryDao financeCategoryDao;
-    private FinanceDao financeHistoryDao;
+public class FinanceRepository extends BaseRepository {
+    private final ListDao listDao;
+    private final FinanceCategoryDao financeCategoryDao;
+    private final FinanceDao financeHistoryDao;
     private CompositeDisposable disposable;
-    private SharedPreferenceUtil sharedPreference;
     private FinanceNetworkInterface network;
-    private Retrofit retrofit;
-    private IsNetworkConnect networkConnect;
-    private FinanceCategorySyncDao financeCategorySyncDao;
-    private FinanceHistorySyncDao financeHistorySyncDao;
+    private final Retrofit retrofit;
+    private final FinanceCategorySyncDao financeCategorySyncDao;
+    private final FinanceHistorySyncDao financeHistorySyncDao;
 
     public FinanceRepository(AppDataBase appDataBase, Retrofit _retrofit, SharedPreferenceUtil _sharedPreference, IsNetworkConnect _isNetworkConnect) {
+        super(_sharedPreference, _isNetworkConnect);
         disposable = new CompositeDisposable();
 
         financeHistoryDao = appDataBase.getFinanceDao();
@@ -62,8 +63,6 @@ public class FinanceRepository {
 
         network = _retrofit.create(FinanceNetworkInterface.class);
         retrofit = _retrofit;
-        sharedPreference = _sharedPreference;
-        networkConnect = _isNetworkConnect;
     }
 
     public void createNewCategory(FinanceCategoryModel category, FinanceRepositoryCallback callback, boolean checked) {
@@ -81,78 +80,74 @@ public class FinanceRepository {
     }
 
     private void createNewCategoryNetwork(FinanceCategoryModel category) {
-        FinanceCategoryApiModel responseModel = new FinanceCategoryApiModel(category);
-        Call<FinanceCategoryApiModel> call = network.createCategory(responseModel);
-        call.enqueue(new Callback<FinanceCategoryApiModel>() {
-            @Override
-            public void onResponse(Call<FinanceCategoryApiModel> call, Response<FinanceCategoryApiModel> response) {
-                if (response.isSuccessful()) {
-                    category.setServerId(response.body().getId());
-                    category.setDateMod(response.body().getDateMod());
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            FinanceCategoryApiModel responseModel = new FinanceCategoryApiModel(category);
+            Requests.RequestsInterface<FinanceCategoryApiModel> callbackResponse = new Requests.RequestsInterface<FinanceCategoryApiModel>() {
+                @Override
+                public void success(FinanceCategoryApiModel responseObj) {
+                    category.setServerId(responseObj.getId());
+                    category.setDateMod(responseObj.getDateMod());
+                    category.setDateModServer(responseObj.getDateMod());
                     new Thread(() -> financeCategoryDao.update(category)).start();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<FinanceCategoryApiModel> call, Throwable t) {
+                @Override
+                public void error() {
 
-            }
-        });
+                }
+            };
+
+            Call<FinanceCategoryApiModel> call = network.createCategory(responseModel);
+            Requests.request(call, callbackResponse);
+        }
     }
 
     public void createNewList(long categoryId, FinanceCategoryModel category) {
         ListModel list = new ListModel(category.getName(), String.valueOf(System.currentTimeMillis()), category.getIconPath(), categoryId);
         new Thread(() -> {
             list.setId(listDao.insert(list));
-
             createNetworkNewList(list);
         }).start();
     }
 
     private void createNetworkNewList(ListModel list) {
-        ListNetworkInterface listNetwork = retrofit.create(ListNetworkInterface.class);
-        ListDataApiModel listData = new ListDataApiModel(list);
-        Call<ListDataApiModel> call = listNetwork.createNewList(listData);
-        call.enqueue(new Callback<ListDataApiModel>() {
-            @Override
-            public void onResponse(Call<ListDataApiModel> call, Response<ListDataApiModel> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    list.setServerId(response.body().getId());
-                    list.setDateMod(response.body().getDateMod());
-                    new Thread(() -> listDao.update(list)).start();
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            ListNetworkInterface listNetwork = retrofit.create(ListNetworkInterface.class);
+            ListApiModel listData = new ListApiModel(list);
+
+            Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
+                @Override
+                public void success(ListApiModel responseObj) {
+                    if (responseObj != null) {
+                        list.setServerId(responseObj.getId());
+                        list.setDateMod(responseObj.getDateMod());
+                        new Thread(() -> listDao.update(list)).start();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ListDataApiModel> call, Throwable t) {
+                @Override
+                public void error() {
 
-            }
-        });
+                }
+            };
+
+            Call<ListApiModel> call = listNetwork.createNewList(listData);
+            Requests.request(call, callbackResponse);
+        }
     }
 
     public void getAllData(int type, String dateStart, String dateEnd, FinanceHistoryCallback callback) {
         disposable.add(financeCategoryDao.getAll(type, dateStart, dateEnd)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .doOnError(throwable -> {
-                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::setAllItems));
         sync();
     }
 
     private void sync() {
-        if (sharedPreference.isLogged() && networkConnect.isInternetAvailable()) {
-            new Thread(() -> {
-                List<FinanceCategorySync> financeCategorySyncs = financeCategorySyncDao.getAll();
-                List<LastSyncApiDataModel> syncData = new ArrayList<>();
-                for (FinanceCategorySync item : financeCategorySyncs) {
-                    syncData.add(new LastSyncApiDataModel(item.getServerId(), item.getDateMod()));
-                }
-                Call<List<FinanceCategoryApiModel>> call = network.syncCategory(syncData, sharedPreference.getSharedPreferences().getString(Constants.DEVICE_ID, ""));
-
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            Thread updateLocal = new Thread(() -> {
                 List<FinanceCategoryModel> allCategories = financeCategoryDao.getAllCategories();
-
                 for (FinanceCategoryModel category : allCategories) {
                     if (category.getIsDelete() == 1) {
                         remove(category);
@@ -162,15 +157,21 @@ public class FinanceRepository {
                         createNewCategoryNetwork(category);
                     }
                 }
-
-                call.enqueue(new Callback<List<FinanceCategoryApiModel>>() {
+            });
+            new Thread(() -> {
+                List<FinanceCategorySync> financeCategorySyncs = financeCategorySyncDao.getAll();
+                List<LastSyncApiDataModel> syncData = new ArrayList<>();
+                for (FinanceCategorySync item : financeCategorySyncs) {
+                    syncData.add(new LastSyncApiDataModel(item.getServerId(), item.getDateMod()));
+                }
+                Requests.RequestsInterface<List<FinanceCategoryApiModel>> callbackResponse = new Requests.RequestsInterface<List<FinanceCategoryApiModel>>() {
                     @Override
-                    public void onResponse(Call<List<FinanceCategoryApiModel>> call, Response<List<FinanceCategoryApiModel>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().size() > 0) {
+                    public void success(List<FinanceCategoryApiModel> responseObj) {
+                        if (responseObj != null && responseObj.size() > 0) {
                             new Thread(() -> {
-                                for (FinanceCategoryApiModel responseItem : response.body()) {
-                                    financeCategorySyncDao.clearAll();
-                                    new Thread(() -> financeCategorySyncDao.insert(new FinanceCategorySync(responseItem))).start();
+                                financeCategorySyncDao.clearAll();
+                                for (FinanceCategoryApiModel responseItem : responseObj) {
+                                    financeCategorySyncDao.insert(new FinanceCategorySync(responseItem));
                                     FinanceCategoryModel categoryModel = financeCategoryDao.getCategoryForServerId(responseItem.getId());
                                     if (categoryModel != null) {
                                         FinanceCategoryModel categoryModelModify = new FinanceCategoryModel(responseItem);
@@ -186,82 +187,94 @@ public class FinanceRepository {
                                 }
                             }).start();
                         }
+                        updateLocal.start();
+                        syncFinanceHistoryItems();
                     }
 
                     @Override
-                    public void onFailure(Call<List<FinanceCategoryApiModel>> call, Throwable t) {
-
+                    public void error() {
+                        updateLocal.start();
                     }
-                });
-            }).start();
+                };
+                Call<List<FinanceCategoryApiModel>> call = network.syncCategory(syncData, deviceId);
 
-            syncItems();
+                Requests.request(call, callbackResponse);
+            }).start();
         }
     }
 
-    private void syncItems() {
-        new Thread(() -> {
+
+    private void syncFinanceHistoryItems() {
+
+        Thread updateLocalThread = new Thread(() -> {
             List<FinanceHistoryModel> items = financeHistoryDao.getAll();
-            List<FinanceHistorySync> lastSyncData = financeHistorySyncDao.getAll();
+
             for (FinanceHistoryModel modelItem : items) {
                 if (modelItem.getIsDelete() == 1) {
+                    Requests.RequestsInterface<ResponseBody> callbackDelete = new Requests.RequestsInterface<ResponseBody>() {
+                        @Override
+                        public void success(ResponseBody responseObj) {
+                            new Thread(() -> financeHistoryDao.delete(modelItem)).start();
+                        }
+
+                        @Override
+                        public void error() {
+
+                        }
+                    };
                     Call<ResponseBody> call = network.removeHistoryItem(modelItem.getServerId());
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if (response.isSuccessful()) {
-                                new Thread(() -> {
-                                    financeHistoryDao.delete(modelItem);
-                                }).start();
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                        }
-                    });
+                    Requests.request(call, callbackDelete);
                 }
             }
+        });
+
+        new Thread(() -> {
+            List<FinanceHistorySync> lastSyncData = financeHistorySyncDao.getAll();
 
             Call<List<FinanceHistoryApiModel>> call = network.syncHistory(lastSyncData, sharedPreference.getSharedPreferences().getString(Constants.DEVICE_ID, ""));
-            call.enqueue(new Callback<List<FinanceHistoryApiModel>>() {
-                @Override
-                public void onResponse(Call<List<FinanceHistoryApiModel>> call, Response<List<FinanceHistoryApiModel>> response) {
-                    if (response.isSuccessful()) {
-                        new Thread(() -> {
-                            financeHistorySyncDao.clear();
-                        }).start();
 
-                        if (response.body() != null && response.body().size() > 0) {
-                            new Thread(() -> {
-                                for (FinanceHistoryApiModel item : response.body()) {
-                                    financeHistorySyncDao.insert(new FinanceHistorySync(0, item.getId(), item.getDate_mod()));
-                                    FinanceHistoryModel historyModel = financeHistoryDao.getForServerId(item.getId());
-                                    FinanceHistoryModel modelModify = new FinanceHistoryModel(item);
-                                    if (historyModel != null) {
-                                        modelModify.setId(historyModel.getId());
-                                        modelModify.setCategoryId(historyModel.getCategoryId());
-                                        if (item.is_delete()) {
-                                            financeHistoryDao.delete(modelModify);
-                                        } else {
-                                            financeHistoryDao.update(modelModify);
-                                        }
+            Requests.RequestsInterface<List<FinanceHistoryApiModel>> callbackResponse = new Requests.RequestsInterface<List<FinanceHistoryApiModel>>() {
+                @Override
+                public void success(List<FinanceHistoryApiModel> responseObj) {
+                    new Thread(financeHistorySyncDao::clear).start();
+                    if (responseObj != null && responseObj.size() > 0) {
+                        new Thread(() -> {
+                            for (FinanceHistoryApiModel item : responseObj) {
+                                financeHistorySyncDao.insert(new FinanceHistorySync(0, item.getId(), item.getDate_mod()));
+                                FinanceHistoryModel historyModel = financeHistoryDao.getForServerId(item.getId());
+                                FinanceHistoryModel modelModify = new FinanceHistoryModel(item);
+                                if (historyModel != null) {
+                                    modelModify.setId(historyModel.getId());
+                                    modelModify.setCategoryId(historyModel.getCategoryId());
+                                    if (item.is_delete()) {
+                                        financeHistoryDao.delete(modelModify);
                                     } else {
-                                        financeHistoryDao.insert(new FinanceHistoryModel(item));
+                                        financeHistoryDao.update(modelModify);
+                                    }
+                                } else {
+                                    FinanceCategoryModel financeCategory = financeCategoryDao.getCategoryForServerId(item.getFinance_category());
+                                    if (financeCategory != null) {
+                                        FinanceHistoryModel model = new FinanceHistoryModel(item);
+                                        model.setCategoryId(financeCategory.getId());
+                                        model.setIsDelete(item.is_delete()?1:0);
+                                        financeHistoryDao.insert(model);
                                     }
                                 }
-                            }).start();
-                        }
+                            }
+                        }).start();
                     }
+                    updateLocalThread.start();
                 }
 
                 @Override
-                public void onFailure(Call<List<FinanceHistoryApiModel>> call, Throwable t) {
-
+                public void error() {
+                    updateLocalThread.start();
                 }
-            });
+            };
+            Requests.request(call, callbackResponse);
         }).start();
+
     }
 
     public void getAllCostCategory(AllCostCategoryCallback callback) {
@@ -289,46 +302,66 @@ public class FinanceRepository {
 
     private void updateNetworkCategory(FinanceCategoryModel item) {
         FinanceCategoryApiModel categoryNetworkModel = new FinanceCategoryApiModel(item);
-        Call<FinanceCategoryApiModel> call = network.updateCategory(categoryNetworkModel);
-        call.enqueue(new Callback<FinanceCategoryApiModel>() {
+        Requests.RequestsInterface<FinanceCategoryApiModel> callbackResponse = new Requests.RequestsInterface<FinanceCategoryApiModel>() {
             @Override
-            public void onResponse(Call<FinanceCategoryApiModel> call, Response<FinanceCategoryApiModel> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    item.setDateMod(response.body().getDateMod());
+            public void success(FinanceCategoryApiModel responseObj) {
+                if (responseObj != null) {
+                    item.setDateMod(responseObj.getDateMod());
+                    item.setDateModServer(responseObj.getDateMod());
                     new Thread(() -> financeCategoryDao.update(item));
                 }
             }
 
             @Override
-            public void onFailure(Call<FinanceCategoryApiModel> call, Throwable t) {
+            public void error() {
 
             }
-        });
+        };
+
+        Call<FinanceCategoryApiModel> call = network.updateCategory(categoryNetworkModel);
+        Requests.request(call, callbackResponse);
     }
 
     public void remove(FinanceCategoryModel financeCategory) {
-        if (networkConnect.isInternetAvailable() && financeCategory.getServerId() > 0) {
-            Call<ResponseBody> call = network.removeCategory(financeCategory.getServerId());
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response.isSuccessful()) {
-                        new Thread(() -> financeCategoryDao.delete(financeCategory)).start();
-                    } else {
-                        financeCategory.setIsDelete(1);
-                        financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
-                        new Thread(() -> financeCategoryDao.update(financeCategory)).start();
+        if (isLogged) {
+            if (isNetworkConnect.isInternetAvailable() && financeCategory.getServerId() > 0) {
+                Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                    @Override
+                    public void success(ResponseBody responseObj) {
+                        new Thread(() -> {
+                            financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
+                            financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+                            financeCategoryDao.delete(financeCategory);
+                        }).start();
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    financeCategory.setIsDelete(1);
-                    financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
-                    new Thread(() -> financeCategoryDao.update(financeCategory)).start();
-                }
-            });
+                    @Override
+                    public void error() {
+                        softRemove(financeCategory);
+                    }
+                };
+
+                Call<ResponseBody> call = network.removeCategory(financeCategory.getServerId());
+                Requests.request(call, callbackResponse);
+            } else {
+                softRemove(financeCategory);
+            }
+        } else {
+            new Thread(() -> {
+                financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+                financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
+                financeCategoryDao.delete(financeCategory);
+            }).start();
         }
+    }
+
+    private void softRemove(FinanceCategoryModel financeCategory) {
+        financeCategory.setIsDelete(1);
+        financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+        new Thread(() -> {
+            financeHistoryDao.softDeleteFinanceHistory(financeCategory.getId());
+            financeCategoryDao.update(financeCategory);
+        }).start();
     }
 
     public void createNewHistoryItem(FinanceHistoryModel item) {
@@ -336,24 +369,26 @@ public class FinanceRepository {
             item.setId(financeHistoryDao.insert(item));
             long serverFinanceCategory = financeCategoryDao.getServerId(item.getCategoryId());
             FinanceHistoryApiModel apiModel = new FinanceHistoryApiModel(null, item.getComment(), item.getTotal(), item.getDate(), item.getUserEmail(), item.getType(), serverFinanceCategory, item.getId(), item.getIsDelete() == 1, item.getDateMod());
-
-            Call<FinanceHistoryApiModel> call = network.createItemHistory(apiModel);
-            call.enqueue(new Callback<FinanceHistoryApiModel>() {
+            Requests.RequestsInterface<FinanceHistoryApiModel> callbackResponse = new Requests.RequestsInterface<FinanceHistoryApiModel>() {
                 @Override
-                public void onResponse(Call<FinanceHistoryApiModel> call, Response<FinanceHistoryApiModel> response) {
-                    if (response.isSuccessful()) {
-                        assert response.body() != null;
-                        item.setDateMod(response.body().getDate_mod());
-                        item.setDateModServer(response.body().getDate_mod());
+                public void success(FinanceHistoryApiModel responseObj) {
+                    if (responseObj != null) {
+                        item.setDateMod(responseObj.getDate_mod());
+                        item.setDateModServer(responseObj.getDate_mod());
+                        item.setServerCategoryId(responseObj.getFinance_category());
+                        item.setServerId(responseObj.getId());
                         new Thread(() -> financeHistoryDao.update(item)).start();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<FinanceHistoryApiModel> call, Throwable t) {
+                public void error() {
 
                 }
-            });
+            };
+
+            Call<FinanceHistoryApiModel> call = network.createItemHistory(apiModel);
+            Requests.request(call, callbackResponse);
         }).start();
     }
 

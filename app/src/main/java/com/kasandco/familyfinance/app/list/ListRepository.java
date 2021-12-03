@@ -4,14 +4,17 @@ import android.os.Handler;
 import android.os.Looper;
 
 
-import com.kasandco.familyfinance.core.Constants;
+import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
+import com.kasandco.familyfinance.app.finance.models.FinanceDao;
+import com.kasandco.familyfinance.core.BaseRepository;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.network.ListNetworkInterface;
+import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.model.LastSyncApiDataModel;
-import com.kasandco.familyfinance.network.model.ListDataApiModel;
+import com.kasandco.familyfinance.network.model.ListApiModel;
 import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -29,37 +32,31 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-@ListActivityScope
-public class ListRepository {
+public class ListRepository extends BaseRepository {
     private ListDao listDao;
     private ItemDao itemDao;
+    private FinanceCategoryDao financeDao;
     private ListRepositoryInterface callback;
     private ListNetworkInterface network;
-    private SharedPreferenceUtil sharedPreference;
-    private boolean isLogged;
     private ListSyncHistoryDao listSyncHistoryDao;
-    private String deviceId;
 
     private IconDao iconDao;
 
     private final CompositeDisposable disposable;
 
-    private IsNetworkConnect isNetworkConnect;
 
     @Inject
-    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect _connect) {
+    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, FinanceCategoryDao _financeDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect _connect) {
+        super(sharedPreferenceUtil, _connect);
         listDao = _listDao;
         iconDao = _iconDao;
         itemDao = _itemDao;
+        financeDao = _financeDao;
         listSyncHistoryDao = _listSyncHistoryDao;
-        network = retrofit.create(ListNetworkInterface.class);
-        sharedPreference = sharedPreferenceUtil;
+        if (isLogged) {
+            network = retrofit.create(ListNetworkInterface.class);
+        }
         disposable = new CompositeDisposable();
-        isNetworkConnect = _connect;
-    }
-
-    public void setIsLogged(boolean _isLogged) {
-        isLogged = _isLogged;
     }
 
     public void create(ListModel listModel) {
@@ -72,26 +69,33 @@ public class ListRepository {
 
     private void networkCreate(ListModel listModel) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            ListDataApiModel networkData = new ListDataApiModel(listModel);
-            Call<ListDataApiModel> call = network.createNewList(networkData);
-            call.enqueue(new Callback<ListDataApiModel>() {
-                @Override
-                public void onResponse(Call<ListDataApiModel> call, Response<ListDataApiModel> response) {
-                    if (response.isSuccessful()) {
-                        if (networkData.equals(response.body())) {
-                            listModel.setServerId(response.body().getId());
-                            listModel.setDateMod(response.body().getDateMod());
-                            listModel.setDateModServer(response.body().getDateMod());
+            new Thread(() -> {
+                ListApiModel networkData = new ListApiModel(listModel);
+                if (listModel.getFinanceCategoryId() != 0) {
+                    long categoryId = financeDao.getServerId(listModel.getFinanceCategoryId());
+                    networkData.setFinanceCategoryId(categoryId);
+                }
+                Call<ListApiModel> call = network.createNewList(networkData);
+                Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
+                    @Override
+                    public void success(ListApiModel obj) {
+                        if (networkData.equals(obj)) {
+                            listModel.setServerId(obj.getId());
+                            listModel.setDateMod(obj.getDateMod());
+                            listModel.setDateModServer(obj.getDateMod());
+                            listModel.setListCode(obj.getToken());
                             new Thread(() -> listDao.update(listModel)).start();
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ListDataApiModel> call, Throwable t) {
+                    @Override
+                    public void error() {
 
-                }
-            });
+                    }
+                };
+                Requests.request(call, callbackResponse);
+            }).start();
+
         }
     }
 
@@ -102,24 +106,23 @@ public class ListRepository {
 
     private void networkUpdate(ListModel listModel) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            ListDataApiModel networkData = new ListDataApiModel(listModel);
-            Call<ListDataApiModel> call = network.updateList(networkData);
-            call.enqueue(new Callback<ListDataApiModel>() {
+            ListApiModel networkData = new ListApiModel(listModel);
+            Call<ListApiModel> call = network.updateList(networkData);
+            Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
                 @Override
-                public void onResponse(Call<ListDataApiModel> call, Response<ListDataApiModel> response) {
-                    if (response.isSuccessful()) {
-                        if (networkData.equals(response.body())) {
-                            ListModel responseItem = new ListModel(response.body());
-                            new Thread(() -> listDao.update(responseItem)).start();
-                        }
+                public void success(ListApiModel obj) {
+                    if (networkData.equals(obj)) {
+                        ListModel responseItem = new ListModel(obj);
+                        new Thread(() -> listDao.update(responseItem)).start();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ListDataApiModel> call, Throwable t) {
+                public void error() {
 
                 }
-            });
+            };
+            Requests.request(call, callbackResponse);
         }
     }
 
@@ -136,33 +139,20 @@ public class ListRepository {
 
     private void sync() {
         new Thread(() -> {
-            List<ListModel> listModels = listDao.getAllList();
-            for (ListModel item : listModels) {
-                if (item.getIsDelete() == 1) {
-                    removeList(item);
-                    continue;
-                }
-                if (item.getServerId() == 0) {
-                    networkCreate(item);
-                } else if (Long.parseLong(item.getDateMod().substring(0, 10)) > Long.parseLong(item.getDateModServer().substring(0, 10))) {
-                    networkUpdate(item);
-                }
-            }
-
             List<ListSyncHistoryModel> lastSyncItems = listSyncHistoryDao.getAll();
             List<LastSyncApiDataModel> lastSyncData = new ArrayList<>();
             for (ListSyncHistoryModel item : lastSyncItems) {
                 lastSyncData.add(new LastSyncApiDataModel(item.getServerId(), item.getDateMod()));
             }
 
-            Call<List<ListDataApiModel>> call = network.syncData(lastSyncData, deviceId);
+            Call<List<ListApiModel>> call = network.syncData(lastSyncData, deviceId);
 
-            call.enqueue(new Callback<List<ListDataApiModel>>() {
+            Requests.RequestsInterface<List<ListApiModel>> callbackResponse = new Requests.RequestsInterface<List<ListApiModel>>() {
                 @Override
-                public void onResponse(Call<List<ListDataApiModel>> call, Response<List<ListDataApiModel>> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().size() > 0) {
+                public void success(List<ListApiModel> responseObj) {
+                    if (responseObj != null && responseObj.size() > 0) {
                         new Thread(() -> listSyncHistoryDao.clear()).start();
-                        for (ListDataApiModel item : response.body()) {
+                        for (ListApiModel item : responseObj) {
                             if (item.isDelete()) {
                                 new Thread(() -> {
                                     listDao.delete(item.getLocalId(), item.getId());
@@ -175,49 +165,65 @@ public class ListRepository {
                                         ListModel listModify = new ListModel(item);
                                         listModify.setId(listModel.getId());
                                         listModify.setId(listDao.getId(listModify.getServerId()));
+                                        listModify.setFinanceCategoryId(listModel.getFinanceCategoryId());
+                                        listModify.setListCode(listModel.getListCode());
                                         listDao.update(listModify);
                                     } else {
                                         listDao.insert(new ListModel(item));
                                     }
                                 }).start();
                             }
-
                             ListSyncHistoryModel syncData = new ListSyncHistoryModel(item);
                             new Thread(() -> listSyncHistoryDao.insert(syncData)).start();
                         }
                     }
+
                 }
 
                 @Override
-                public void onFailure(Call<List<ListDataApiModel>> call, Throwable t) {
+                public void error() {
 
                 }
-            });
-        }).
-
-                start();
+            };
+            Requests.request(call, callbackResponse);
+        }).start();
+        new Thread(() -> {
+            List<ListModel> listModels = listDao.getAllList();
+            for (ListModel item : listModels) {
+                if (item.getIsDelete() == 1) {
+                    removeList(item);
+                    continue;
+                }
+                if (item.getServerId() == 0) {
+                    networkCreate(item);
+                } else if (item.getDateModServer() != null && Long.parseLong(item.getDateMod().substring(0, 10)) > Long.parseLong(item.getDateModServer().substring(0, 10))) {
+                    networkUpdate(item);
+                }
+            }
+        }).start();
     }
 
     public void removeList(ListModel listModel) {
-        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+        if (isLogged) {
             listModel.setIsDelete(1);
             new Thread(() -> listDao.update(listModel)).start();
-            long serverId = listModel.getServerId();
-            if (serverId > 0) {
-                Call<ResponseBody> call = network.removeList(serverId);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
+            if (isNetworkConnect.isInternetAvailable()) {
+                long serverId = listModel.getServerId();
+                if (serverId > 0) {
+                    Call<ResponseBody> call = network.removeList(serverId);
+                    Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                        @Override
+                        public void success(ResponseBody responseObj) {
                             new Thread(() -> listDao.delete(listModel)).start();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        @Override
+                        public void error() {
 
-                    }
-                });
+                        }
+                    };
+                    Requests.request(call, callbackResponse);
+                }
             }
         } else {
             new Thread(() -> listDao.delete(listModel)).start();
@@ -227,64 +233,68 @@ public class ListRepository {
     public void clearInactiveItems(ListModel listModel) {
         if (listModel.getQuantityInactive() > 0) {
             new Thread(() -> listDao.clearInactiveItems(listModel.getId())).start();
-            deleteInactiveListItems(listModel.getId());
+            networkClearInactiveListItems(listModel.getId());
         }
     }
 
     public void clearActiveItems(ListModel listModel) {
         if (listModel.getQuantityActive() > 0) {
             new Thread(() -> listDao.clearActiveItems(listModel.getId())).start();
-            deleteActiveListItems(listModel.getId());
+            networkClearActiveListItems(listModel.getId());
         }
     }
 
-    private void deleteActiveListItems(long listId) {
-        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+    private void networkClearActiveListItems(long listId) {
+        if (isLogged) {
             new Thread(() -> {
-                new Thread(() -> itemDao.softDeleteActiveItems(listId)).start();
+                itemDao.softDeleteActiveItems(listId);
+            if (isNetworkConnect.isInternetAvailable()) {
                 long serverListId = listDao.getServerListId(listId);
-                Call<ResponseBody> call = network.clearListItems(serverListId, 1);
-                call.enqueue(new Callback<ResponseBody>() {
+                Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            new Thread(() -> itemDao.deleteActiveItems(listId)).start();
-                        }
+                    public void success(ResponseBody responseObj) {
+                        new Thread(() -> itemDao.deleteActiveItems(listId)).start();
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    public void error() {
+
                     }
-                });
+                };
+
+                Call<ResponseBody> call = network.clearListItems(serverListId, 1);
+                Requests.request(call, callbackResponse);
+            }
             }).start();
-        } else if (isNetworkConnect.isInternetAvailable()) {
-            new Thread(() -> itemDao.softDeleteActiveItems(listId)).start();
         } else {
             new Thread(() -> itemDao.deleteActiveItems(listId)).start();
         }
     }
 
-    private void deleteInactiveListItems(long listId) {
-        if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            new Thread(() -> {
-                new Thread(() -> itemDao.softDeleteInActiveItems(listId)).start();
-                long serverListId = listDao.getServerListId(listId);
-                Call<ResponseBody> call = network.clearListItems(serverListId, 0);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
+    private void networkClearInactiveListItems(long listId) {
+        if (isLogged) {
+            new Thread(() -> itemDao.softDeleteInActiveItems(listId)).start();
+            if (isNetworkConnect.isInternetAvailable()) {
+                new Thread(() -> {
+                    long serverListId = listDao.getServerListId(listId);
+
+                    Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                        @Override
+                        public void success(ResponseBody responseObj) {
                             new Thread(() -> itemDao.deleteInActiveItems(listId)).start();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    }
-                });
-            }).start();
-        } else if (isNetworkConnect.isInternetAvailable()) {
-            new Thread(() -> itemDao.softDeleteInActiveItems(listId)).start();
+                        @Override
+                        public void error() {
+
+                        }
+                    };
+
+                    Call<ResponseBody> call = network.clearListItems(serverListId, 0);
+                    Requests.request(call, callbackResponse);
+                }).start();
+
+            }
         } else {
             new Thread(() -> itemDao.deleteInActiveItems(listId)).start();
         }
@@ -317,28 +327,25 @@ public class ListRepository {
     }
 
     public void subscribeToList(String token, ListResponseListener callback) {
-        Call<ListDataApiModel> call = network.subscribeToList(token);
-        call.enqueue(new Callback<ListDataApiModel>() {
+        Call<ListApiModel> call = network.subscribeToList(token);
+
+        Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
             @Override
-            public void onResponse(Call<ListDataApiModel> call, Response<ListDataApiModel> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    ListModel listModel = new ListModel(response.body());
+            public void success(ListApiModel responseObj) {
+                if (responseObj != null) {
+                    ListModel listModel = new ListModel(responseObj);
                     new Thread(() -> listDao.insert(listModel)).start();
                     callback.closeCreateForm();
-                } else {
-                    callback.noSubscribed();
                 }
             }
 
             @Override
-            public void onFailure(Call<ListDataApiModel> call, Throwable t) {
+            public void error() {
                 callback.noSubscribed();
             }
-        });
-    }
+        };
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+        Requests.request(call, callbackResponse);
     }
 
     public interface ListRepositoryInterface {

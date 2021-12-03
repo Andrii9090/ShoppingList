@@ -19,7 +19,9 @@ public class FinanceCategoryModel extends BaseModel {
     private String iconPath;
     @Ignore
     private String total;
+    private String date;
 
+    @Ignore
     public FinanceCategoryModel(String name, String iconPath, int type, String dateMod) {
         this.name = name;
         this.iconPath = iconPath;
@@ -27,11 +29,20 @@ public class FinanceCategoryModel extends BaseModel {
         this.dateMod = dateMod;
     }
 
+    public FinanceCategoryModel(String name, String iconPath, int type, String dateMod, String date) {
+        this.name = name;
+        this.iconPath = iconPath;
+        this.type = type;
+        this.dateMod = dateMod;
+        this.date = date;
+    }
+
     public FinanceCategoryModel(FinanceCategoryApiModel responseModel) {
         name = responseModel.getName();
         iconPath = responseModel.getIconPath();
         type = responseModel.getType();
         dateMod = responseModel.getDateMod();
+        dateModServer = responseModel.getDateMod();
         isDelete = responseModel.getIsDelete() ? 1 : 0;
         serverId = responseModel.getId();
         id = responseModel.getLocalId();
@@ -91,5 +102,21 @@ public class FinanceCategoryModel extends BaseModel {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 }

@@ -55,7 +55,7 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         String currency = sharedPreferenceUtil.getSharedPreferences().getString(Constants.SHP_DEFAULT_CURRENCY, Constants.DEFAULT_CURRENCY_VALUE);
         if(holder instanceof ItemViewHolder){
-            ((ItemViewHolder) holder).bind(items.get(position).getComment(), items.get(position).getUserEmail(), items.get(position).getTotal(), items.get(position).getTime(), currency);
+            ((ItemViewHolder) holder).bind(items.get(position).getComment(), items.get(position).getUserEmail()!=null?items.get(position).getUserEmail():"", items.get(position).getTotal(), items.get(position).getTime(), currency);
         }else {
             ((HeaderViewHolder) holder).bind(items.get(position).getDate());
         }

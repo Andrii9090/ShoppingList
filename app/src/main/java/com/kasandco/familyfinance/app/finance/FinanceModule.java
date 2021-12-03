@@ -6,12 +6,12 @@ import com.kasandco.familyfinance.app.finance.adapters.FinanceCategoryAdapter;
 import com.kasandco.familyfinance.app.finance.core.FinanceActivityScope;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateCategory;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateItemHistory;
-import com.kasandco.familyfinance.app.finance.fragments.FragmentFinanceHistory;
+import com.kasandco.familyfinance.app.finance.fragments.FragmentFinanceCategory;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
 import com.kasandco.familyfinance.app.finance.models.FinanceDao;
 import com.kasandco.familyfinance.app.finance.presenters.CreateHistoryItemPresenter;
 import com.kasandco.familyfinance.app.finance.presenters.FinanceActivityPresenter;
-import com.kasandco.familyfinance.app.finance.presenters.PresenterFinanceHistory;
+import com.kasandco.familyfinance.app.finance.presenters.PresenterFinanceCategory;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.core.Constants;
@@ -76,15 +76,15 @@ public class FinanceModule {
     @Named("cost_history_fragment")
     @FinanceActivityScope
     @Provides
-    FragmentFinanceHistory providesFinanceHistory(@Named("cost_presenter") PresenterFinanceHistory presenter) {
-        return new FragmentFinanceHistory(Constants.TYPE_COSTS, presenter);
+    FragmentFinanceCategory providesFinanceHistory(@Named("cost_presenter") PresenterFinanceCategory presenter) {
+        return new FragmentFinanceCategory(Constants.TYPE_COSTS, presenter);
     }
 
     @Named("income_history_fragment")
     @FinanceActivityScope
     @Provides
-    FragmentFinanceHistory providesIncomeHistory(@Named("income_presenter") PresenterFinanceHistory presenter) {
-        return new FragmentFinanceHistory(Constants.TYPE_INCOME, presenter);
+    FragmentFinanceCategory providesIncomeHistory(@Named("income_presenter") PresenterFinanceCategory presenter) {
+        return new FragmentFinanceCategory(Constants.TYPE_INCOME, presenter);
     }
 
     @FinanceActivityScope
@@ -96,15 +96,15 @@ public class FinanceModule {
     @Named("cost_presenter")
     @Provides
     @FinanceActivityScope
-    PresenterFinanceHistory providesPresenter(FinanceRepository financeRepository, @Named("cost_adapter")FinanceCategoryAdapter adapter) {
-        return new PresenterFinanceHistory(financeRepository, adapter);
+    PresenterFinanceCategory providesPresenter(FinanceRepository financeRepository, @Named("cost_adapter")FinanceCategoryAdapter adapter) {
+        return new PresenterFinanceCategory(financeRepository, adapter);
     }
 
     @Named("income_presenter")
     @Provides
     @FinanceActivityScope
-    PresenterFinanceHistory providesPresenterIncome(FinanceRepository financeRepository, @Named("income_adapter") FinanceCategoryAdapter adapter) {
-        return new PresenterFinanceHistory(financeRepository, adapter);
+    PresenterFinanceCategory providesPresenterIncome(FinanceRepository financeRepository, @Named("income_adapter") FinanceCategoryAdapter adapter) {
+        return new PresenterFinanceCategory(financeRepository, adapter);
     }
 
     @Named("income_adapter")

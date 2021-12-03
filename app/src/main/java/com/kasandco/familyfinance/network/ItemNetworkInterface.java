@@ -20,7 +20,7 @@ public interface ItemNetworkInterface {
     Call<ItemApiModel> create(@Body ItemApiModel item);
 
     @POST(Constants.REST_API_VERSION+"lists/items/update/")
-    Call<List<ItemApiModel>> update(@Body List<ItemApiModel> items);
+    Call<ItemApiModel> update(@Body ItemApiModel item);
 
     @POST(Constants.REST_API_VERSION+"lists/items/image/upload/")
     Call<ImageItemApiModel> sendImage(@Body ImageItemApiModel item);

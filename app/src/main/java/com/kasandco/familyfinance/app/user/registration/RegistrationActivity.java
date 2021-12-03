@@ -52,11 +52,15 @@ public class RegistrationActivity extends BaseActivity implements RegistrationCo
         password = findViewById(R.id.login_input_password);
         password2 = findViewById(R.id.login_input_password2);
         btnEnter = findViewById(R.id.login_btn_enter);
+        btnEnter.setText(R.string.register_text);
         frameLayout = findViewById(R.id.login_frame_layout);
         btnStartRegister = findViewById(R.id.login_btn_registration);
 
         registrationTextView = findViewById(R.id.login_registration_text);
-        btnStartRegister.setVisibility(View.GONE);
+        btnStartRegister.setText(R.string.login_btn);
+        btnStartRegister.setOnClickListener((view)->{
+            startNewActivity(LoginActivity.class);
+        });
         registrationTextView.setVisibility(View.GONE);
 
         btnEnter.setOnClickListener(btnClickListener);

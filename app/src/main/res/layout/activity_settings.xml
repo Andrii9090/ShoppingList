@@ -16,11 +16,6 @@
             layout="@layout/toolbar_main"
             />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/setting_fragment"
-            />
         <LinearLayout
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
@@ -77,6 +72,12 @@
                 />
 
         </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/setting_fragment"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include

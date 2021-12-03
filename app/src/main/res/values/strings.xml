@@ -155,4 +155,5 @@
     <string name="text_error_connect_to_internet">Проверьте подключения к интернету</string>
     <string name="not_active_items">Список пустой или нет активных элементов</string>
     <string name="error_no_added_subscribe_list">"Ошибка! Вы указали не корректный токен "</string>
+    <string name="register_text">Регистрация</string>
 </resources>

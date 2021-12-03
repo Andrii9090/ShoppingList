@@ -29,7 +29,7 @@ import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateCategory;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateItemHistory;
-import com.kasandco.familyfinance.app.finance.fragments.FragmentFinanceHistory;
+import com.kasandco.familyfinance.app.finance.fragments.FragmentFinanceCategory;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
 import com.kasandco.familyfinance.app.finance.presenters.FinanceActivityPresenter;
 import com.kasandco.familyfinance.app.finance.presenters.FinanceViewContract;
@@ -42,17 +42,17 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-public class FinanceActivity extends BaseActivity implements FragmentFinanceHistory.ClickFragmentHistory, FragmentCreateItemHistory.ClickListener, FinanceViewContract, FragmentCreateCategory.CreateFinanceCategoryListener {
+public class FinanceActivity extends BaseActivity implements FragmentFinanceCategory.ClickFragmentHistory, FragmentCreateItemHistory.ClickListener, FinanceViewContract, FragmentCreateCategory.CreateFinanceCategoryListener {
     TabLayout tabLayout;
     TabLayout dateTabLayout;
 
     @Named("cost_history_fragment")
     @Inject
-    FragmentFinanceHistory fragmentFinanceHistory;
+    FragmentFinanceCategory fragmentFinanceCategory;
 
     @Named("income_history_fragment")
     @Inject
-    FragmentFinanceHistory fragmentIncomeHistory;
+    FragmentFinanceCategory fragmentIncomeHistory;
 
 
     @Named("cost_history")
@@ -186,6 +186,11 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
     }
 
     @Override
+    public void reloadTotal() {
+        presenter.getTotalToPeriod();
+    }
+
+    @Override
     public void showCreateCategoryFragment(int type) {
         if (type == TYPE_COSTS) {
             showFragment(fragmentCreateCostCategory);
@@ -229,7 +234,7 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
 
     @Override
     public void sendPeriodToFragment(String startDate, String endDate) {
-        fragmentFinanceHistory.setPeriod(startDate, endDate);
+        fragmentFinanceCategory.setPeriod(startDate, endDate);
         fragmentIncomeHistory.setPeriod(startDate, endDate);
     }
 
@@ -339,15 +344,15 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceHist
         }
 
         private Fragment showIncomeFragment() {
-            fragmentFinanceHistory.setPeriod(presenter.getDateStart(), presenter.getDateEnd());
+            fragmentIncomeHistory.setPeriod(presenter.getDateStart(), presenter.getDateEnd());
             presenter.selectIncomeFragment();
             return fragmentIncomeHistory;
         }
 
         private Fragment showCostHistoryFragment() {
-            fragmentIncomeHistory.setPeriod(presenter.getDateStart(), presenter.getDateEnd());
+            fragmentFinanceCategory.setPeriod(presenter.getDateStart(), presenter.getDateEnd());
             presenter.selectCostFragment();
-            return fragmentFinanceHistory;
+            return fragmentFinanceCategory;
         }
 
         @Override

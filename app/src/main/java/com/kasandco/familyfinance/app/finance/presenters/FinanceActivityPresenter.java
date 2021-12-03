@@ -60,7 +60,7 @@ public class FinanceActivityPresenter extends BasePresenter<FinanceViewContract>
         getTotalToPeriod();
     }
 
-    private void getTotalToPeriod() {
+    public void getTotalToPeriod() {
         repository.getTotalToPeriod(startDate, endDate, this);
     }
 

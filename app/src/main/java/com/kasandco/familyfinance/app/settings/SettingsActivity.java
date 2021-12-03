@@ -9,19 +9,29 @@ import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
+import com.kasandco.familyfinance.app.user.settings.UserSettingsRepository;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
+
+import java.util.Objects;
+
+import javax.inject.Inject;
 
 public class SettingsActivity extends BaseActivity implements FragmentColorThemeSetting.ColorThemeListener, FragmentSelectCurrency.SelectCurrencyListener {
     private Toolbar toolbar;
     private Button btnSelectCurrency, btnSelectColorTheme;
     private SharedPreferenceUtil sharedPreferenceUtil;
 
+    @Inject
+    SettingsRepository repository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.getAppComponent().plus(new SettingsModule()).inject(this);
         setContentView(R.layout.activity_settings);
         navigationView = findViewById(R.id.nav_view);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -40,6 +50,7 @@ public class SettingsActivity extends BaseActivity implements FragmentColorTheme
     protected void startNewActivity(Class<?> activityClass) {
         if(activityClass!=getClass()) {
             Intent intent = new Intent(this, activityClass);
+            repository.saveSettingsToServer();
             startActivity(intent);
         }else{
             drawerLayout.closeDrawer(Gravity.LEFT);
@@ -69,7 +80,7 @@ public class SettingsActivity extends BaseActivity implements FragmentColorTheme
     @Override
     public void onClickClose() {
         if(getSupportFragmentManager().findFragmentByTag("colorTheme")!=null) {
-            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("colorTheme")).commitNow();
+            getSupportFragmentManager().beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag("colorTheme"))).commitNow();
         }
         recreate();
     }
@@ -77,7 +88,7 @@ public class SettingsActivity extends BaseActivity implements FragmentColorTheme
     @Override
     public void closeCurrencyFragment() {
         if(getSupportFragmentManager().findFragmentByTag("currency")!=null) {
-            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("currency")).commitNow();
+            getSupportFragmentManager().beginTransaction().remove(Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag("currency"))).commitNow();
         }
     }
 

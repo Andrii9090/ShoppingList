@@ -11,11 +11,13 @@ public interface HistoryContract extends BaseContract {
 
     void showEditForm(int type, FinanceCategoryModel financeCategoryModel);
 
-    void unblockButtons();
-
     void showToast(int text_error_set_history_category);
 
     void showCreateHistoryItemForm(long id, int type);
 
     void startFinanceDetailActivity(FinanceCategoryModel category);
+
+    void showDialogRemove(int position);
+
+    void reloadTotal();
 }

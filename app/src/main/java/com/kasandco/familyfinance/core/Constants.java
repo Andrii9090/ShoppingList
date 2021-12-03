@@ -1,8 +1,10 @@
 package com.kasandco.familyfinance.core;
 
+import com.kasandco.familyfinance.R;
+
 public interface Constants {
     String REST_API_VERSION = "/api/v1/";
-    String BASE_URL = "http://d3e1-85-86-244-26.ngrok.io";
+    String BASE_URL = "http://42e6-85-86-244-26.ngrok.io";
     String API_KEY = "api_key";
     String IS_ADDED_ICONS = "is_added_icons";
 
@@ -25,9 +27,7 @@ public interface Constants {
     String FINANCE_CATEGORY_ID = "finance_category_id";
     String IS_FIRST_START = "is_first_start";
     String TOKEN = "token";
-    String LAST_SYNC = "last_sync_";
-    String LAST_SYNC_LIST = LAST_SYNC+"list";
     String EMAIL = "email";
-    String LAST_SYNC_ITEM_LIST = LAST_SYNC+"item";
     String DEVICE_ID = "device_id";
+    int THEME_DEFAULT = R.style.Theme_FamilyFinanceBlue;
 }

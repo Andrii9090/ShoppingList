@@ -38,7 +38,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferenceUtil = new SharedPreferenceUtil(this);
-        int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, R.style.Theme_FamilyFinanceBlue);
+        int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, Constants.THEME_DEFAULT);
         setTheme(themeResource);
         setContentView(R.layout.activity_splash);
         App.appComponent.plus(new SplashModule()).inject(this);

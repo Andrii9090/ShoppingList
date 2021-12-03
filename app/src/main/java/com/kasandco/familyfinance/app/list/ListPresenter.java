@@ -29,11 +29,6 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
         listItems = new ArrayList<>();
     }
 
-    @Inject
-    public void setIsLogged(SharedPreferenceUtil sharedPreferenceUtil) {
-        repository.setIsLogged(sharedPreferenceUtil.getSharedPreferences().getString(TOKEN, null) != null);
-    }
-
     private void getListItems() {
         view.showLoading();
         repository.getAll(this);
@@ -48,7 +43,6 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     @Override
     public void viewReady(ListActivity view) {
         this.view = view;
-        repository.setDeviceId(view.getDeviceId());
         getListItems();
     }
 

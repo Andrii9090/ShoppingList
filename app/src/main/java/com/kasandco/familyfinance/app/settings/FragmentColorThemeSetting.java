@@ -11,16 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.app.user.settings.UserSettingsModule;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 public class FragmentColorThemeSetting extends Fragment {
     private ImageButton btnDefault, btnRose, btnGreen, btnOrange, btnBlue, btnBordo;
 
+    @Inject
+    public SharedPreferenceUtil sharedPreferenceUtil;
+
     public FragmentColorThemeSetting() {
+        App.appComponent.plus(new UserSettingsModule()).inject(this);
     }
 
     @Override
@@ -45,13 +53,10 @@ public class FragmentColorThemeSetting extends Fragment {
         btnBordo.setOnClickListener(clickListener);
         btnRose.setOnClickListener(clickListener);
         ColorThemeListener callback = (ColorThemeListener) view.getContext();
-        view.setOnClickListener((View v)->{
-            callback.onClickClose();
-        });
+        view.setOnClickListener((View v)-> callback.onClickClose());
     }
 
     private void saveColorTheme(int themeResource,  View view){
-        SharedPreferenceUtil sharedPreferenceUtil = new SharedPreferenceUtil(view.getContext());
         sharedPreferenceUtil.getEditor().putInt(Constants.COLOR_THEME, themeResource).apply();
     }
 

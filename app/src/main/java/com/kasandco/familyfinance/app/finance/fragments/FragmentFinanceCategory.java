@@ -1,5 +1,7 @@
 package com.kasandco.familyfinance.app.finance.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,22 +19,22 @@ import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.finance.adapters.FinanceCategoryAdapter;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
 import com.kasandco.familyfinance.app.finance.presenters.HistoryContract;
-import com.kasandco.familyfinance.app.finance.presenters.PresenterFinanceHistory;
+import com.kasandco.familyfinance.app.finance.presenters.PresenterFinanceCategory;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
 import javax.inject.Inject;
 
-public class FragmentFinanceHistory extends Fragment implements HistoryContract, FinanceCategoryAdapter.OnClickItemListener {
-    private ImageButton btnAddCategory, btnAddAmount;
+public class FragmentFinanceCategory extends Fragment implements HistoryContract, FinanceCategoryAdapter.OnClickItemListener {
+    private ImageButton btnAddCategory;
     private RecyclerView recyclerView;
 
-    private PresenterFinanceHistory presenter;
+    private PresenterFinanceCategory presenter;
 
     private ClickFragmentHistory callback;
     private int type;
 
     @Inject
-    public FragmentFinanceHistory(int type, PresenterFinanceHistory presenter) {
+    public FragmentFinanceCategory(int type, PresenterFinanceCategory presenter) {
         this.type = type;
         this.presenter = presenter;
     }
@@ -44,9 +46,6 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
         View view = inflater.inflate(R.layout.fragment_finance_history, container, false);
         btnAddCategory = view.findViewById(R.id.fragment_expensive_btn_add_category);
         btnAddCategory.setOnClickListener(clickListener);
-
-        btnAddAmount = view.findViewById(R.id.fragment_expensive_btn_add_amount);
-        btnAddAmount.setOnClickListener(addHistoryItemListener);
 
         recyclerView = view.findViewById(R.id.fragment_expensive_recycler_view);
 
@@ -111,11 +110,6 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     }
 
     @Override
-    public void unblockButtons() {
-        btnAddAmount.setEnabled(true);
-    }
-
-    @Override
     public void showToast(int resource) {
         ToastUtils.showToast(getString(resource), getContext());
     }
@@ -131,8 +125,31 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
     }
 
     @Override
+    public void showDialogRemove(int position) {
+        DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
+            if (i == DialogInterface.BUTTON_POSITIVE) {
+                presenter.selectRemoveList(position);
+
+            } else {
+                dialogInterface.cancel();
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setMessage(R.string.delete_dialog)
+                .setPositiveButton(R.string.text_positive_btn, dialogListener)
+                .setNegativeButton(R.string.text_negative_btn, dialogListener);
+
+        builder.show();
+    }
+
+    @Override
+    public void reloadTotal() {
+        callback.reloadTotal();
+    }
+
+    @Override
     public void clickToItem() {
-        presenter.clickToCategoryItem();
+        presenter.clickToCreateNewHistoryItem();
     }
 
     private View.OnClickListener addHistoryItemListener = new View.OnClickListener() {
@@ -160,5 +177,6 @@ public class FragmentFinanceHistory extends Fragment implements HistoryContract,
         void onClickEdit(int type, FinanceCategoryModel financeCategoryModel);
 
         void onclickShowFinanceDetailActivity(long categoryId);
+        void reloadTotal();
     }
 }

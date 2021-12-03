@@ -20,7 +20,7 @@ public class CreatePresenter extends BaseCreateEditPresenter<CreateListContract.
 
     @Override
     public void create() {
-        if (name.toLowerCase(Locale.ROOT).startsWith("token")) {
+        if (name.toLowerCase(Locale.ROOT).startsWith("token ")) {
             String[] path = name.split(" ");
             listRepository.subscribeToList(path[1], this);
         } else {

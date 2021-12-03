@@ -8,7 +8,7 @@ import com.kasandco.familyfinance.core.BasePresenter;
 
 import java.util.List;
 
-public class PresenterFinanceHistory extends BasePresenter<HistoryContract> implements FinanceRepository.FinanceHistoryCallback {
+public class PresenterFinanceCategory extends BasePresenter<HistoryContract> implements FinanceRepository.FinanceHistoryCallback {
     private int type;
     private FinanceCategoryAdapter adapter;
     private String startDate;
@@ -16,7 +16,7 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
 
     private FinanceRepository repository;
 
-    public PresenterFinanceHistory(FinanceRepository repository, FinanceCategoryAdapter adapter) {
+    public PresenterFinanceCategory(FinanceRepository repository, FinanceCategoryAdapter adapter) {
         this.repository = repository;
         this.adapter = adapter;
     }
@@ -24,8 +24,8 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
     @Override
     public void viewReady(HistoryContract view) {
         this.view = view;
-        type = view.getHistoryType();
-        getData();
+        type = this.view.getHistoryType();
+        setNewPeriod(startDate, endDate);
     }
 
     private void getData() {
@@ -39,11 +39,9 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
     }
 
     @Override
-    public void setAllItems(List<FinanceCategoryWithTotal> historyList) {
-        if (historyList.size() > 0) {
-            adapter.setItems(historyList);
-            view.setAdapter(adapter);
-        }
+    public void setAllItems(List<FinanceCategoryWithTotal> categoryList) {
+        adapter.setItems(categoryList);
+        view.setAdapter(adapter);
     }
 
     public void contextMenuClick(int itemId) {
@@ -56,14 +54,10 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
                 view.startFinanceDetailActivity(adapter.getItems().get(position).getCategory());
                 break;
             case R.id.context_finance_category_remove:
-                repository.remove(adapter.getItems().get(position).getCategory());
+                view.showDialogRemove(position);
                 break;
         }
         adapter.nullingPosition();
-    }
-
-    public void clickToCategoryItem() {
-        view.unblockButtons();
     }
 
     public void clickToCreateNewHistoryItem() {
@@ -75,15 +69,19 @@ public class PresenterFinanceHistory extends BasePresenter<HistoryContract> impl
     }
 
     public void periodSet(String startDate, String endDate) {
-        if (this.startDate != null) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        if (type != 0) {
             setNewPeriod(startDate, endDate);
-        } else {
-            this.startDate = startDate;
-            this.endDate = endDate;
         }
     }
 
     public void destroy() {
         repository.clearDisposable();
+    }
+
+    public void selectRemoveList(int position) {
+        repository.remove(adapter.getItems().get(position).getCategory());
+        view.reloadTotal();
     }
 }

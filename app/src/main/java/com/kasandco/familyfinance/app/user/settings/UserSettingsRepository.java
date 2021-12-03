@@ -1,11 +1,13 @@
 package com.kasandco.familyfinance.app.user.settings;
 
 import com.kasandco.familyfinance.core.AppDataBase;
+import com.kasandco.familyfinance.core.BaseRepository;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
 import com.kasandco.familyfinance.network.model.ChangePaswordApiModel;
 import com.kasandco.familyfinance.network.model.UpdateEmailApiModel;
+import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.List;
@@ -15,14 +17,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UserSettingsRepository {
+public class UserSettingsRepository extends BaseRepository {
     private SharedPreferenceUtil sharedPreference;
     private AppDataBase appDataBase;
     private UserNetworkInterface network;
 
-    private String deviceId;
-
-    public UserSettingsRepository(SharedPreferenceUtil _sharedPreferenceUtil, AppDataBase _appDataBase, UserNetworkInterface _network) {
+    public UserSettingsRepository(SharedPreferenceUtil _sharedPreferenceUtil, AppDataBase _appDataBase, UserNetworkInterface _network, IsNetworkConnect _isNetworkConnect) {
+        super(_sharedPreferenceUtil, _isNetworkConnect);
         sharedPreference = _sharedPreferenceUtil;
         appDataBase = _appDataBase;
         network = _network;
@@ -93,10 +94,6 @@ public class UserSettingsRepository {
                 callback.passwordChanged(false);
             }
         });
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
     }
 
     public interface UserSettingsRepositoryCallback {

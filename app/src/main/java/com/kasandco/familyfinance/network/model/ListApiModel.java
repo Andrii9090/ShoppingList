@@ -5,7 +5,7 @@ import com.kasandco.familyfinance.app.list.ListModel;
 
 import java.util.Objects;
 
-public class ListDataApiModel {
+public class ListApiModel {
     private long id;
 
     private String name;
@@ -34,11 +34,10 @@ public class ListDataApiModel {
     @SerializedName("no_active_quantity")
     private int quantityInactive;
 
-    public ListDataApiModel(ListModel listModel){
+    public ListApiModel(ListModel listModel){
         id = listModel.getServerId();
         name = listModel.getName();
         icon = listModel.getIcon();
-        financeCategoryId = null;
         token = listModel.getListCode();
         localId = listModel.getId();
         if(listModel.getDateMod().length()==10) {
@@ -135,7 +134,7 @@ public class ListDataApiModel {
 
     @Override
     public boolean equals(Object o) {
-        ListDataApiModel that = (ListDataApiModel) o;
+        ListApiModel that = (ListApiModel) o;
         return id == that.id || localId == that.localId;
     }
 
