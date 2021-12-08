@@ -1,6 +1,5 @@
 package com.kasandco.familyfinance.utils;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,13 +17,8 @@ import androidx.exifinterface.media.ExifInterface;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

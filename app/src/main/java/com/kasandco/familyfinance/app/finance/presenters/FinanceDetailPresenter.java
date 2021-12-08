@@ -1,7 +1,7 @@
 package com.kasandco.familyfinance.app.finance.presenters;
 
 import com.kasandco.familyfinance.app.finance.FinanceDetailRepository;
-import com.kasandco.familyfinance.app.finance.FinanceDetailView;
+import com.kasandco.familyfinance.app.finance.core.FinanceDetailView;
 import com.kasandco.familyfinance.app.finance.helpers.ConverterFinanceModelToFinanceDetailModel;
 import com.kasandco.familyfinance.app.finance.models.FinanceDetailModel;
 import com.kasandco.familyfinance.app.finance.models.FinanceHistoryModel;
@@ -54,5 +54,10 @@ public class FinanceDetailPresenter extends BasePresenter<FinanceDetailView.View
         ConverterFinanceModelToFinanceDetailModel converter = new ConverterFinanceModelToFinanceDetailModel(items);
         this.items = converter.convert();
         view.addAdapterToRV(this.items);
+    }
+
+    public void clickDeleteItem(int position) {
+        repository.removeItem(items.get(position));
+        view.deleteViewItem(position);
     }
 }

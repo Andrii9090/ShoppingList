@@ -6,7 +6,8 @@ import static com.kasandco.familyfinance.utils.DateHelper.formatTimeToStr;
 import androidx.room.ColumnInfo;
 
 public class FinanceDetailModel {
-
+    private long id;
+    private long serverId;
     private String date;
     private String comment;
     @ColumnInfo(name = "category_id")
@@ -21,7 +22,7 @@ public class FinanceDetailModel {
     public FinanceDetailModel() {
     }
 
-    public FinanceDetailModel(String _userEmail, String _date, long _categoryId, double _total, String _comment, int _type) {
+    public FinanceDetailModel(long _id, long _serverId, String _userEmail, String _date, long _categoryId, double _total, String _comment, int _type) {
         date = formatDateToStr(_date);
         time = formatTimeToStr(_date);
         categoryId = _categoryId;
@@ -29,6 +30,8 @@ public class FinanceDetailModel {
         type = _type;
         comment = _comment;
         userEmail = _userEmail;
+        serverId = _serverId;
+        id = _id;
     }
 
     public FinanceDetailModel(String _date, int _type) {
@@ -90,5 +93,21 @@ public class FinanceDetailModel {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(long serverId) {
+        this.serverId = serverId;
     }
 }

@@ -152,12 +152,6 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
         presenter.clickToCreateNewHistoryItem();
     }
 
-    private View.OnClickListener addHistoryItemListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            presenter.clickToCreateNewHistoryItem();
-        }
-    };
 
     public void setPeriod(String startDate, String endDate) {
         presenter.periodSet(startDate, endDate);

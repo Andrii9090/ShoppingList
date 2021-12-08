@@ -5,7 +5,7 @@ import android.os.Looper;
 
 
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
-import com.kasandco.familyfinance.app.finance.models.FinanceDao;
+import com.kasandco.familyfinance.app.item.ItemRepository;
 import com.kasandco.familyfinance.core.BaseRepository;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.icon.IconModel;
@@ -28,8 +28,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ListRepository extends BaseRepository {
@@ -39,6 +37,7 @@ public class ListRepository extends BaseRepository {
     private ListRepositoryInterface callback;
     private ListNetworkInterface network;
     private ListSyncHistoryDao listSyncHistoryDao;
+    private ItemRepository itemRepository;
 
     private IconDao iconDao;
 
@@ -46,13 +45,14 @@ public class ListRepository extends BaseRepository {
 
 
     @Inject
-    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, FinanceCategoryDao _financeDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect _connect) {
+    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, FinanceCategoryDao _financeDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect _connect, ItemRepository _itemRepository) {
         super(sharedPreferenceUtil, _connect);
         listDao = _listDao;
         iconDao = _iconDao;
         itemDao = _itemDao;
         financeDao = _financeDao;
         listSyncHistoryDao = _listSyncHistoryDao;
+        itemRepository = _itemRepository;
         if (isLogged) {
             network = retrofit.create(ListNetworkInterface.class);
         }
@@ -128,13 +128,12 @@ public class ListRepository extends BaseRepository {
 
     public void getAll(ListRepositoryInterface callback) {
         this.callback = callback;
-        disposable.add(listDao.getAllActiveList().subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(throwable -> callback.setListItems(null))
-                .subscribe(callback::setListItems));
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
             sync();
         }
+        disposable.add(listDao.getAllActiveList().subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(callback::setListItems, throwable -> callback.setListItems(null)));
     }
 
     private void sync() {
@@ -144,7 +143,6 @@ public class ListRepository extends BaseRepository {
             for (ListSyncHistoryModel item : lastSyncItems) {
                 lastSyncData.add(new LastSyncApiDataModel(item.getServerId(), item.getDateMod()));
             }
-
             Call<List<ListApiModel>> call = network.syncData(lastSyncData, deviceId);
 
             Requests.RequestsInterface<List<ListApiModel>> callbackResponse = new Requests.RequestsInterface<List<ListApiModel>>() {
@@ -177,7 +175,13 @@ public class ListRepository extends BaseRepository {
                             new Thread(() -> listSyncHistoryDao.insert(syncData)).start();
                         }
                     }
-
+                    new Thread(() -> {
+                        List<ListModel> listModels = listDao.getAllList();
+                        for (ListModel item : listModels) {
+                            itemRepository.setServerListId(item.getServerId());
+                            itemRepository.sync(item.getId());
+                        }
+                    }).start();
                 }
 
                 @Override
@@ -200,7 +204,9 @@ public class ListRepository extends BaseRepository {
                     networkUpdate(item);
                 }
             }
+
         }).start();
+
     }
 
     public void removeList(ListModel listModel) {
@@ -248,23 +254,23 @@ public class ListRepository extends BaseRepository {
         if (isLogged) {
             new Thread(() -> {
                 itemDao.softDeleteActiveItems(listId);
-            if (isNetworkConnect.isInternetAvailable()) {
-                long serverListId = listDao.getServerListId(listId);
-                Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
-                    @Override
-                    public void success(ResponseBody responseObj) {
-                        new Thread(() -> itemDao.deleteActiveItems(listId)).start();
-                    }
+                if (isNetworkConnect.isInternetAvailable()) {
+                    long serverListId = listDao.getServerListId(listId);
+                    Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                        @Override
+                        public void success(ResponseBody responseObj) {
+                            new Thread(() -> itemDao.deleteActiveItems(listId)).start();
+                        }
 
-                    @Override
-                    public void error() {
+                        @Override
+                        public void error() {
 
-                    }
-                };
+                        }
+                    };
 
-                Call<ResponseBody> call = network.clearListItems(serverListId, 1);
-                Requests.request(call, callbackResponse);
-            }
+                    Call<ResponseBody> call = network.clearListItems(serverListId, 1);
+                    Requests.request(call, callbackResponse);
+                }
             }).start();
         } else {
             new Thread(() -> itemDao.deleteActiveItems(listId)).start();

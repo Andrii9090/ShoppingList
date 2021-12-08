@@ -1,5 +1,7 @@
-package com.kasandco.familyfinance.app.finance;
+package com.kasandco.familyfinance.app.finance.core;
 
+import com.kasandco.familyfinance.app.finance.FinanceActivity;
+import com.kasandco.familyfinance.app.finance.FinanceModule;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateComponent;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateModule;
 

@@ -30,7 +30,7 @@
             android:padding="3dp"
             android:paddingStart="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+            app:layout_constraintEnd_toStartOf="@+id/rv_finance_detail_remove"
             app:layout_constraintStart_toEndOf="@id/rv_finance_detail_time"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent=".45"
@@ -49,7 +49,7 @@
             tools:text="89000 UAH" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/rv_finance_detail_remove"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/ic_remove"

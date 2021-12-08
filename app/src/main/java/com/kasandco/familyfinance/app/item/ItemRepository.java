@@ -50,7 +50,6 @@ public class ItemRepository extends BaseRepository {
     public void create(String[] arrayText, long listId, long serverListId) {
         new Thread(() -> {
             long itemId = itemDao.insert(new ItemModel(arrayText[0], listId, serverListId));
-            plusActiveItem(this.listId);
             ItemModel item = itemDao.getItem(itemId);
             networkCreate(item);
         }).start();
@@ -78,33 +77,12 @@ public class ItemRepository extends BaseRepository {
         }
     }
 
-    public void plusActiveItem(long listId) {
-        itemDao.plusActiveItemsInList(listId);
-    }
-
-    public void minusActiveItem(long listId) {
-        itemDao.minusActiveItemsInList(listId);
-    }
-
-    public void plusInactiveItem(long listId) {
-        itemDao.plusInactiveItemsInList(listId);
-    }
-
-    public void minusInactiveItem(long listId) {
-        itemDao.minusInactiveItemsInList(listId);
-    }
-
     public void remove(ItemModel item) {
         if (isLogged) {
             networkRemove(item);
         } else {
             new Thread(() -> {
                 itemDao.delete(item);
-                if (item.getStatus() == 1) {
-                    itemDao.minusActiveItemsInList(listId);
-                } else {
-                    itemDao.minusInactiveItemsInList(listId);
-                }
             }).start();
         }
 
@@ -116,11 +94,6 @@ public class ItemRepository extends BaseRepository {
             if (item.getIsDelete() != 1) {
                 new Thread(() -> {
                     itemDao.update(item);
-                    if (item.getStatus() == 1) {
-                        itemDao.minusActiveItemsInList(listId);
-                    } else {
-                        itemDao.minusInactiveItemsInList(listId);
-                    }
                 }).start();
             }
         } else {
@@ -181,9 +154,8 @@ public class ItemRepository extends BaseRepository {
         sync(listId);
     }
 
-    private void sync(long listId) {
+    public void sync(long listId) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-
             new Thread(()->{
                 List<ItemSyncHistoryModel> syncHistory = itemSyncDao.getAll(serverListId);
 
@@ -217,11 +189,6 @@ public class ItemRepository extends BaseRepository {
                                             }
                                         }
                                         if (itemResponse.isDelete()) {
-                                            if (itemModel.getStatus() == 1) {
-                                                minusActiveItem(itemModel.getLocalListId());
-                                            } else {
-                                                minusInactiveItem(itemModel.getLocalListId());
-                                            }
                                             itemDao.delete(itemModel);
                                         } else {
                                             itemDao.update(itemModel);
@@ -230,12 +197,8 @@ public class ItemRepository extends BaseRepository {
                                             downloadImageFromServer(itemResponse.getId());
                                         }
                                     } else {
+                                        itemModel.setLocalListId(listId);
                                         itemDao.insert(itemModel);
-                                        if (itemModel.getStatus() == 1) {
-                                            plusActiveItem(itemModel.getLocalListId());
-                                        } else {
-                                            plusInactiveItem(itemModel.getLocalListId());
-                                        }
                                         if (itemResponse.getHasImage()) {
                                             downloadImageFromServer(itemResponse.getId());
                                         }
@@ -243,6 +206,7 @@ public class ItemRepository extends BaseRepository {
 
                                 }).start();
                             }
+
                         }
                     }
 
@@ -364,16 +328,13 @@ public class ItemRepository extends BaseRepository {
 
     public void changeStatus(ItemModel item) {
         new Thread(() -> {
-            if (item.getStatus() == 0) {
-                plusInactiveItem(listId);
-                minusActiveItem(listId);
-            } else {
-                plusActiveItem(listId);
-                minusInactiveItem(listId);
-            }
             itemDao.update(item);
             networkUpdate(item);
         }).start();
+    }
+
+    public void setServerListId(long serverId) {
+        serverListId = serverId;
     }
 
     public interface ItemRepositoryCallback {

@@ -56,11 +56,10 @@ public class ListModel extends BaseModel implements Serializable {
         name = listData.getName();
         dateMod = listData.getDateMod();
         dateModServer = listData.getDateMod();
-        quantityActive = listData.getQuantityActive();
-        quantityInactive = listData.getQuantityInactive();
         isDelete = listData.isDelete()?1:0;
         icon = listData.getIcon();
         listCode = listData.getToken();
+        financeCategoryId = listData.getFinanceCategoryId();
     }
 
     public String getName() {

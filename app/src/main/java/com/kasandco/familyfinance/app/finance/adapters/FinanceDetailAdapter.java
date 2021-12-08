@@ -1,9 +1,12 @@
 package com.kasandco.familyfinance.app.finance.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,10 +23,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DialogInterface.OnClickListener {
     private List<FinanceDetailModel> items;
     private SharedPreferenceUtil sharedPreferenceUtil;
-
+    private int currentPosition;
+    private OnClickDetailAdapterListener callback;
     @Inject
     public FinanceDetailAdapter(){
         items = new ArrayList<>();
@@ -34,6 +38,10 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         items.clear();
         items.addAll(_items);
         notifyDataSetChanged();
+    }
+
+    public void setCallbackListener(OnClickDetailAdapterListener _callback){
+        callback = _callback;
     }
 
     @NonNull
@@ -55,7 +63,7 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         String currency = sharedPreferenceUtil.getSharedPreferences().getString(Constants.SHP_DEFAULT_CURRENCY, Constants.DEFAULT_CURRENCY_VALUE);
         if(holder instanceof ItemViewHolder){
-            ((ItemViewHolder) holder).bind(items.get(position).getComment(), items.get(position).getUserEmail()!=null?items.get(position).getUserEmail():"", items.get(position).getTotal(), items.get(position).getTime(), currency);
+            ((ItemViewHolder) holder).bind(holder.getAbsoluteAdapterPosition(),items.get(position).getComment(), items.get(position).getUserEmail()!=null?items.get(position).getUserEmail():"", items.get(position).getTotal(), items.get(position).getTime(), currency);
         }else {
             ((HeaderViewHolder) holder).bind(items.get(position).getDate());
         }
@@ -74,24 +82,43 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-
     @Override
     public int getItemCount() {
-        return items.size();
+        return items. size();
+    }
+
+
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        if (i==DialogInterface.BUTTON_POSITIVE){
+            callback.removeItem(currentPosition);
+        }
+        if (i==DialogInterface.BUTTON_NEGATIVE){
+            dialogInterface.cancel();
+        }
+        currentPosition = 0;
+    }
+
+    public void deleteItem(int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder{
-        private TextView comment, userEmail, total, time;
+        private TextView comment, total, time;
         private View lineView;
+        private ImageButton btnRemove;
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             comment = itemView.findViewById(R.id.rv_finance_detail_comment);
             total = itemView.findViewById(R.id.rv_finance_detail_total);
             lineView = itemView.findViewById(R.id.rv_finance_detail_view_line);
             time = itemView.findViewById(R.id.rv_finance_detail_time);
+            btnRemove = itemView.findViewById(R.id.rv_finance_detail_remove);
         }
 
-        public void bind(String _comment, String _userEmail, double _total, String _time, String currency){
+        public void bind(int position, String _comment, String _userEmail, double _total, String _time, String currency){
+            currentPosition = position;
             if(_comment !=null){
                 String textComment = itemView.getContext().getString(R.string.pattern_finance_comment,_userEmail.isEmpty()?"":_userEmail+":", _comment);
 
@@ -102,10 +129,21 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
             time.setText(_time);
             total.setText(String.format(itemView.getContext().getString(R.string.text_currency_format), _total, currency));
+            View.OnClickListener clickListener = view -> {
+                if (view.getId()==R.id.rv_finance_detail_remove){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext())
+                            .setMessage(R.string.delete_dialog)
+                            .setPositiveButton(R.string.text_positive_btn, FinanceDetailAdapter.this)
+                            .setNegativeButton(R.string.text_negative_btn, FinanceDetailAdapter.this);
+
+                    builder.show();
+                }
+            };
+            btnRemove.setOnClickListener(clickListener);
         }
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder{
+    static class HeaderViewHolder extends RecyclerView.ViewHolder{
         private TextView dateHeader;
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -115,5 +153,10 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         public void bind(String date){
             dateHeader.setText(date);
         }
+    }
+
+
+    public interface OnClickDetailAdapterListener{
+        void removeItem(int position);
     }
 }

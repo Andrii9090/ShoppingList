@@ -1,4 +1,4 @@
-package com.kasandco.familyfinance.app.finance;
+package com.kasandco.familyfinance.app.finance.core;
 
 import com.kasandco.familyfinance.app.finance.models.FinanceDetailModel;
 import com.kasandco.familyfinance.core.BaseContract;
@@ -15,6 +15,8 @@ public interface FinanceDetailView {
         long getCategoryId();
 
         void addAdapterToRV(List<FinanceDetailModel> items);
+
+        void deleteViewItem(int position);
     }
     
     interface Presenter{

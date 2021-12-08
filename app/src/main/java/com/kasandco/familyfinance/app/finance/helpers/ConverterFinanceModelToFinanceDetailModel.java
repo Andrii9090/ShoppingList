@@ -31,7 +31,7 @@ public class ConverterFinanceModelToFinanceDetailModel {
                     currentDate = dateItem;
                 }
             }
-            financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getUserEmail(), financeModel.get(i).getDate(), financeModel.get(i).getCategoryId(), financeModel.get(i).getTotal(), financeModel.get(i).getComment(), financeModel.get(i).getType()));
+            financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getId(), financeModel.get(i).getServerId(), financeModel.get(i).getUserEmail(), financeModel.get(i).getDate(), financeModel.get(i).getCategoryId(), financeModel.get(i).getTotal(), financeModel.get(i).getComment(), financeModel.get(i).getType()));
 
         }
         return financeDetailModel;

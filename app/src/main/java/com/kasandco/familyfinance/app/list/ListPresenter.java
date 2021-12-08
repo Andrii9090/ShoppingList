@@ -5,6 +5,7 @@ import android.provider.Settings;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.item.ItemModel;
+import com.kasandco.familyfinance.app.item.ItemRepository;
 import com.kasandco.familyfinance.core.BasePresenter;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 

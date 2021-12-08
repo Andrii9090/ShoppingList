@@ -37,8 +37,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class FinanceRepository extends BaseRepository {
@@ -182,7 +180,9 @@ public class FinanceRepository extends BaseRepository {
                                             financeCategoryDao.update(categoryModelModify);
                                         }
                                     } else {
-                                        financeCategoryDao.insert(new FinanceCategoryModel(responseItem));
+                                        if (!responseItem.getIsDelete()) {
+                                            financeCategoryDao.insert(new FinanceCategoryModel(responseItem));
+                                        }
                                     }
                                 }
                             }).start();
@@ -323,6 +323,7 @@ public class FinanceRepository extends BaseRepository {
     }
 
     public void remove(FinanceCategoryModel financeCategory) {
+        softRemove(financeCategory);
         if (isLogged) {
             if (isNetworkConnect.isInternetAvailable() && financeCategory.getServerId() > 0) {
                 Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
@@ -343,8 +344,6 @@ public class FinanceRepository extends BaseRepository {
 
                 Call<ResponseBody> call = network.removeCategory(financeCategory.getServerId());
                 Requests.request(call, callbackResponse);
-            } else {
-                softRemove(financeCategory);
             }
         } else {
             new Thread(() -> {
@@ -359,7 +358,7 @@ public class FinanceRepository extends BaseRepository {
         financeCategory.setIsDelete(1);
         financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
         new Thread(() -> {
-            financeHistoryDao.softDeleteFinanceHistory(financeCategory.getId());
+            financeHistoryDao.softDeleteFinanceHistories(financeCategory.getId());
             financeCategoryDao.update(financeCategory);
         }).start();
     }

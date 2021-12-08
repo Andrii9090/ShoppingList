@@ -24,18 +24,6 @@ public interface ItemDao extends BaseDao<ItemModel> {
     @Query("UPDATE list_item SET server_image_name='', image_path=:path WHERE id=:id")
     void saveImagePath(String path, long id);
 
-    @Query("UPDATE list SET quantity_active=quantity_active+1 WHERE id=:listId")
-    void plusActiveItemsInList(long listId);
-
-    @Query("UPDATE list SET quantity_active=quantity_active-1 WHERE id=:listId")
-    void minusActiveItemsInList(long listId);
-
-    @Query("UPDATE list SET quantity_inactive=quantity_inactive+1 WHERE id=:listId")
-    void plusInactiveItemsInList(long listId);
-
-    @Query("UPDATE list SET quantity_inactive=quantity_inactive-1 WHERE id=:listId")
-    void minusInactiveItemsInList(long listId);
-
     @Query("DELETE FROM list_item WHERE local_list_id = :localListId AND status=1")
     void deleteActiveItems(long localListId);
 

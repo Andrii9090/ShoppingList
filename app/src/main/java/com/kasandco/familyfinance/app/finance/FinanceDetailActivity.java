@@ -18,6 +18,7 @@ import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.finance.adapters.FinanceDetailAdapter;
+import com.kasandco.familyfinance.app.finance.core.FinanceDetailView;
 import com.kasandco.familyfinance.app.finance.models.FinanceDetailModel;
 import com.kasandco.familyfinance.app.finance.presenters.FinanceDetailPresenter;
 import com.kasandco.familyfinance.core.Constants;
@@ -28,7 +29,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class FinanceDetailActivity extends BaseActivity implements FinanceDetailView.View {
+public class FinanceDetailActivity extends BaseActivity implements FinanceDetailView.View, FinanceDetailAdapter.OnClickDetailAdapterListener {
 
     private RecyclerView recyclerView;
     private ContentLoadingProgressBar loader;
@@ -122,5 +123,16 @@ public class FinanceDetailActivity extends BaseActivity implements FinanceDetail
     public void addAdapterToRV(List<FinanceDetailModel> items) {
         adapter.setItems(items);
         recyclerView.setAdapter(adapter);
+        adapter.setCallbackListener(this);
+    }
+
+    @Override
+    public void deleteViewItem(int position) {
+        adapter.deleteItem(position);
+    }
+
+    @Override
+    public void removeItem(int position) {
+        presenter.clickDeleteItem(position);
     }
 }

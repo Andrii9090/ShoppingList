@@ -33,7 +33,7 @@ public interface FinanceDao extends BaseDao<FinanceHistoryModel> {
     @Query("SELECT SUM(fh.total) AS total, fc.name AS name FROM finance_history AS fh INNER JOIN finance_category AS fc ON (fh.category_id==fc.id) WHERE fh.date>=:dateStart AND fh.date<=:dateEnd AND fh.type=:type AND fh.is_delete=0 GROUP BY fc.name ORDER BY fh.total DESC")
     List<FinanceStatModel> getAllFromPeriod(int type, String dateStart, String dateEnd);
 
-    @Query("SELECT * FROM  finance_history WHERE category_id=:category_id AND date>=:dateStart AND date<=:dateEnd ORDER BY date DESC")
+    @Query("SELECT * FROM  finance_history WHERE category_id=:category_id AND date>=:dateStart AND date<=:dateEnd AND is_delete=0 ORDER BY date DESC")
     List<FinanceHistoryModel> getDetailFinance(long category_id, String dateStart, String dateEnd);
 
     @Query("SELECT * FROM finance_history WHERE server_id=:serverId")
@@ -43,5 +43,8 @@ public interface FinanceDao extends BaseDao<FinanceHistoryModel> {
     void deleteFinanceHistory(long categoryId);
 
     @Query("UPDATE finance_history SET is_delete=1 WHERE category_id=:categoryId")
-    void softDeleteFinanceHistory(long categoryId);
+    void softDeleteFinanceHistories(long categoryId);
+
+    @Query("UPDATE finance_history SET is_delete=1 WHERE id=:id")
+    void softDeleteFinanceHistory(long id);
 }

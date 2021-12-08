@@ -14,7 +14,7 @@ public class ListApiModel {
     private String icon;
 
     @SerializedName("finance_category")
-    private Long financeCategoryId;
+    private long financeCategoryId;
 
     @SerializedName("shared_token")
     private String token;
@@ -28,12 +28,6 @@ public class ListApiModel {
     @SerializedName("is_delete")
     private boolean isDelete;
 
-    @SerializedName("active_quantity")
-    private int quantityActive;
-
-    @SerializedName("no_active_quantity")
-    private int quantityInactive;
-
     public ListApiModel(ListModel listModel){
         id = listModel.getServerId();
         name = listModel.getName();
@@ -45,10 +39,8 @@ public class ListApiModel {
         }else {
             dateMod = listModel.getDateMod().substring(0,10);
         }
-
+        financeCategoryId = listModel.getFinanceCategoryId();
         isDelete = listModel.getIsDelete() == 1;
-        quantityActive = listModel.getQuantityActive();
-        quantityInactive = listModel.getQuantityInactive();
     }
 
 
@@ -116,22 +108,6 @@ public class ListApiModel {
         isDelete = delete;
     }
 
-    public int getQuantityActive() {
-        return quantityActive;
-    }
-
-    public void setQuantityActive(int quantityActive) {
-        this.quantityActive = quantityActive;
-    }
-
-    public int getQuantityInactive() {
-        return quantityInactive;
-    }
-
-    public void setQuantityInactive(int quantityInactive) {
-        this.quantityInactive = quantityInactive;
-    }
-
     @Override
     public boolean equals(Object o) {
         ListApiModel that = (ListApiModel) o;
@@ -140,6 +116,6 @@ public class ListApiModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, icon, financeCategoryId, token, localId, dateMod, isDelete, quantityActive, quantityInactive);
+        return Objects.hash(id, name, icon, financeCategoryId, token, localId, dateMod, isDelete);
     }
 }
