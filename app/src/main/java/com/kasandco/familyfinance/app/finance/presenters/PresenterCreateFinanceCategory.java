@@ -20,6 +20,11 @@ public class PresenterCreateFinanceCategory extends BasePresenter<CreateCategory
         this.view = view;
     }
 
+    @Override
+    public void swipeRefresh() {
+
+    }
+
     public void inputData(FinanceCategoryModel editItem, String name, String iconPath, int type, boolean checked) {
         this.checked = checked;
         if (name != null && iconPath != null) {

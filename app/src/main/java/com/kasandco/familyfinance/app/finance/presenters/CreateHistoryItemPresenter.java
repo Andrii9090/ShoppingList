@@ -21,6 +21,11 @@ public class CreateHistoryItemPresenter extends BasePresenter<CreateHistoryItemC
         this.view =  view;
     }
 
+    @Override
+    public void swipeRefresh() {
+
+    }
+
     public void createNewItem(int type, long categoryId, String amount, String comment, GregorianCalendar selectedDate) {
         FinanceHistoryModel item = new FinanceHistoryModel(String.valueOf(selectedDate.getTime().getTime()), categoryId, Double.parseDouble(amount), comment, type, String.valueOf(System.currentTimeMillis()), "");
         repository.createNewHistoryItem(item);

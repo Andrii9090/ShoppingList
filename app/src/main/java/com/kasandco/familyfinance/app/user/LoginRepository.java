@@ -12,8 +12,11 @@ import com.kasandco.familyfinance.network.model.UserTokenApiModel;
 import com.kasandco.familyfinance.network.model.UserRegisterApiModel;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,6 +24,7 @@ import retrofit2.Response;
 public class LoginRepository {
     private SharedPreferenceUtil sharedPreference;
     private UserNetworkInterface network;
+
 
     @Inject
     public LoginRepository(UserNetworkInterface userNetworkInterface, SharedPreferenceUtil sharedPreferenceUtil) {
@@ -49,6 +53,8 @@ public class LoginRepository {
                                 handler.post(() -> {
                                     callback.logged(true, response.body().getToken());
                                 });
+                            } else {
+                                saveSettingsToServer();
                             }
                         }
 
@@ -62,7 +68,7 @@ public class LoginRepository {
                     };
                     Requests.request(callSettings, callbackResponse);
                 } else {
-                    handler.post(()->{
+                    handler.post(() -> {
                         callback.logged(false, null);
                     });
                 }
@@ -73,6 +79,24 @@ public class LoginRepository {
                 callback.logged(false, null);
             }
         });
+    }
+
+
+    public void saveSettingsToServer() {
+        Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+            @Override
+            public void success(ResponseBody responseObj) {
+            }
+            @Override
+            public void error() {
+            }
+        };
+        HashMap<String, String> settings = new HashMap<>();
+        settings.put("theme", String.valueOf(sharedPreference.getSharedPreferences().getInt(Constants.COLOR_THEME, Constants.THEME_DEFAULT)));
+        settings.put("currency", sharedPreference.getSharedPreferences().getString(Constants.SHP_DEFAULT_CURRENCY, Constants.DEFAULT_CURRENCY_VALUE));
+        UserSettingsApiModel settingsBody = new UserSettingsApiModel(settings);
+        Call<ResponseBody> call = network.saveSettings(settingsBody, sharedPreference.getDeviceId());
+        Requests.request(call, callbackResponse);
     }
 
     public void saveToken(String token, String email) {

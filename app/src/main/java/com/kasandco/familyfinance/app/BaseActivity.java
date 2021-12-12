@@ -1,9 +1,6 @@
 package com.kasandco.familyfinance.app;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.kasandco.familyfinance.BuildConfig;
@@ -23,19 +21,23 @@ import com.kasandco.familyfinance.app.finance.FinanceActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.app.settings.SettingsActivity;
 import com.kasandco.familyfinance.app.statistic.StatisticActivity;
+import com.kasandco.familyfinance.app.user.group.UserGroupActivity;
 import com.kasandco.familyfinance.app.user.login.LoginActivity;
 import com.kasandco.familyfinance.app.user.settings.UserSettingsActivity;
+import com.kasandco.familyfinance.core.BaseContract;
+import com.kasandco.familyfinance.core.BasePresenter;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
-public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BaseContract {
     protected NavigationView navigationView;
     protected DrawerLayout drawerLayout;
     protected ImageButton btnUserSetting;
     protected Button btnLogin;
     protected TextView userEmail;
     protected SharedPreferenceUtil sharedPreferenceUtil;
+    protected SwipeRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,16 +55,16 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         btnLogin = navigationView.getHeaderView(0).findViewById(R.id.nav_header_login);
 
         userEmail = navigationView.getHeaderView(0).findViewById(R.id.navigation_drawer_email);
-        if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN,null)!=null){
+        if (sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN, null) != null) {
             btnLogin.setText(R.string.settings_user);
             userEmail.setText(sharedPreferenceUtil.getSharedPreferences().getString(Constants.EMAIL, ""));
         }
-        if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.USER_NAME,"").isEmpty()){
+        if (sharedPreferenceUtil.getSharedPreferences().getString(Constants.USER_NAME, "").isEmpty()) {
             btnUserSetting.setVisibility(View.GONE);
             userEmail.setVisibility(View.GONE);
             btnLogin.setVisibility(View.VISIBLE);
             btnLogin.setOnClickListener(clickListener);
-        }else{
+        } else {
             btnUserSetting.setVisibility(View.VISIBLE);
             userEmail.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.GONE);
@@ -72,7 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_drawer_lists:
                 startNewActivity(ListActivity.class);
                 break;
@@ -91,7 +93,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             case R.id.menu_drawer_mail:
                 startEmailIntent();
                 break;
-            case R.id.menu_drawer_pro:
+            case R.id.menu_drawer_group:
+                startNewActivity(UserGroupActivity.class);
+                break;
             case R.id.menu_drawer_feed:
                 ToastUtils.showToast("Скоро...", this);
                 break;
@@ -109,19 +113,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     protected void startStatActivity(int type) {
-            Intent intent = new Intent(this, StatisticActivity.class);
-            intent.putExtra(Constants.STAT_TYPE, type);
-            startActivity(intent);
+        Intent intent = new Intent(this, StatisticActivity.class);
+        intent.putExtra(Constants.STAT_TYPE, type);
+        startActivity(intent);
     }
 
     protected abstract void startNewActivity(Class<?> activityClass);
 
     private View.OnClickListener clickListener = (view -> {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.nav_header_login:
-                if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN,null)!=null) {
+                if (sharedPreferenceUtil.getSharedPreferences().getString(Constants.TOKEN, null) != null) {
                     startNewActivity(UserSettingsActivity.class);
-                }else {
+                } else {
                     startNewActivity(LoginActivity.class);
                 }
                 break;
@@ -129,4 +133,21 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 break;
         }
     });
+
+    @Override
+    public void showToastNoInternet() {
+        ToastUtils.showToast(getString(R.string.internet_connection_error), this);
+    }
+
+
+    @Override
+    public void showLoading() {
+        refreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void hideLoading() {
+        refreshLayout.setRefreshing(false);
+    }
+
 }

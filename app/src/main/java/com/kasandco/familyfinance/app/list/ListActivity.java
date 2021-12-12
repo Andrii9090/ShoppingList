@@ -40,15 +40,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ListActivity extends BaseActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener, FragmentCreateItemHistory.ClickListener {
+
     @Inject
-    ListPresenter presenter;
+    public ListPresenter presenter;
     @Inject
     FragmentCreateList fragmentCreateList;
-
     @Inject
     FragmentEditList fragmentEditList;
 
-    SwipeRefreshLayout refreshLayout;
     RecyclerView recyclerView;
     TextView emptyText;
     @BindView(R.id.activity_list_toolbar)
@@ -63,7 +62,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
         App.getListActivityComponent(this).inject(this);
-        refreshLayout = findViewById(R.id.activity_list_swipe_container);
+        refreshLayout = findViewById(R.id.swipe_container);
         recyclerView = findViewById(R.id.activity_list_rv_items);
         emptyText = findViewById(R.id.activity_list_text_empty);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -94,16 +93,6 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     @Override
     public void itemOnClick(ListRvAdapter.ViewHolder holder) {
         presenter.clickItem(holder);
-    }
-
-    @Override
-    public void showLoading() {
-        refreshLayout.setRefreshing(true);
-    }
-
-    @Override
-    public void hideLoading() {
-        refreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -198,28 +187,6 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     }
 
     @Override
-    public void showDialogWithShareCode() {
-        DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
-            if(i==DialogInterface.BUTTON_POSITIVE){
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                String text = String.format(getString(R.string.text_to_share_list), presenter.getShareCode(), getString(R.string.app_name));
-                ClipData clip = ClipData.newPlainText("", text);
-                clipboard.setPrimaryClip(clip);
-            }else{
-                dialogInterface.cancel();
-            }
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle(R.string.title_share_dialog)
-                .setMessage(R.string.msg_share)
-                .setPositiveButton(R.string.btn_share_copy, dialogListener)
-                .setNegativeButton(R.string.cancel, dialogListener);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_list_item_remove:
@@ -240,8 +207,8 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
             case R.id.context_menu_list_item_send_list:
                 presenter.selectSendListToMessage();
                 break;
-            case R.id.context_menu_list_item_share_list:
-                presenter.selectShareList();
+            case R.id.context_menu_list_item_private_list:
+                presenter.selectPrivateList();
                 break;
         }
         return true;
@@ -295,13 +262,6 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         KeyboardUtil.hideKeyboard(this);
     }
 
-    private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            presenter.swipeRefresh();
-        }
-    };
-
     @Override
     public void closeCreateItemHistory() {
         getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).remove(fragmentCreateItemHistory).commitNow();
@@ -313,4 +273,11 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         presenter.onDetach();
         presenter = null;
     }
+
+    protected SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            presenter.swipeRefresh();
+        }
+    };
 }

@@ -26,6 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FamilyFinance">
         <activity
+            android:name=".app.user.group.UserGroupActivity"
+            android:exported="false" />
+        <activity
             android:name=".app.user.settings.UserSettingsActivity"
             android:exported="true" />
         <activity

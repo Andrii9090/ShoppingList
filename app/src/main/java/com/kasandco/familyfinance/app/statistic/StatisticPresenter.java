@@ -121,4 +121,9 @@ public class StatisticPresenter extends BasePresenter<StatisticContract> impleme
         super.destroy();
         repository = null;
     }
+
+    @Override
+    public void swipeRefresh() {
+
+    }
 }

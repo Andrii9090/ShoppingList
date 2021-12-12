@@ -24,6 +24,11 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
     }
 
     @Override
+    public void swipeRefresh() {
+
+    }
+
+    @Override
     public void clickEnterBtn() {
         String[] data = view.getEnteredData();
         if (data!=null && data.length==2){
@@ -57,7 +62,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
     public void logged(boolean isLogged, String token) {
         if (isLogged){
             if(token!=null){
-                repository.saveToken(token,email);
+                repository.saveToken(token, email);
                 view.startListActivity();
             }else {
                 view.showToast(R.string.text_login_error);

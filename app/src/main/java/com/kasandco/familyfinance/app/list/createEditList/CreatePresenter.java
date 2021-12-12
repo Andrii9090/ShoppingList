@@ -54,4 +54,14 @@ public class CreatePresenter extends BaseCreateEditPresenter<CreateListContract.
     public void noSubscribed() {
         view.showToast(R.string.error_no_added_subscribe_list);
     }
+
+    @Override
+    public void viewReady(CreateListContract.View view) {
+
+    }
+
+    @Override
+    public void swipeRefresh() {
+
+    }
 }

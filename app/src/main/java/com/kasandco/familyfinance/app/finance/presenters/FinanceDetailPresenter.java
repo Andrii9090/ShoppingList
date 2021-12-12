@@ -30,6 +30,11 @@ public class FinanceDetailPresenter extends BasePresenter<FinanceDetailView.View
         setDefaultPeriod();
     }
 
+    @Override
+    public void swipeRefresh() {
+
+    }
+
     private void setDefaultPeriod() {
         GregorianCalendar now = new GregorianCalendar();
         now.setTime(new Date());

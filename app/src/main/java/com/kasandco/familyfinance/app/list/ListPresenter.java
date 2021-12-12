@@ -1,13 +1,10 @@
 package com.kasandco.familyfinance.app.list;
 
 import android.annotation.SuppressLint;
-import android.provider.Settings;
 
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.item.ItemModel;
-import com.kasandco.familyfinance.app.item.ItemRepository;
 import com.kasandco.familyfinance.core.BasePresenter;
-import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +30,6 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     private void getListItems() {
         view.showLoading();
         repository.getAll(this);
-        showEmptyText();
         view.addAdapter(adapter);
     }
 
@@ -49,8 +45,14 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
 
     public void setListItems(List<ListModel> listModels) {
         listItems = listModels;
+        showEmptyText();
         adapter.updateItems(listModels);
         view.hideLoading();
+    }
+
+    @Override
+    public void noConnectionToInternet() {
+        view.showToastNoInternet();
     }
 
     @SuppressLint("DefaultLocale")
@@ -86,21 +88,18 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
 
     public void selectClearBought() {
         adapter.getItems().get(adapter.getPosition()).setDateMod(String.valueOf(System.currentTimeMillis()));
-        repository.clearInactiveItems(adapter.getItems().get(adapter.getPosition()));
     }
 
     public void selectClearAll() {
         adapter.getItems().get(adapter.getPosition()).setDateMod(String.valueOf(System.currentTimeMillis()));
-        repository.clearInactiveItems(adapter.getItems().get(adapter.getPosition()));
-        repository.clearActiveItems(adapter.getItems().get(adapter.getPosition()));
     }
 
     public void clickItem(ListRvAdapter.ViewHolder holder) {
         view.showActivityDetails(adapter.getItems().get(holder.getAbsoluteAdapterPosition()));
     }
 
+    @Override
     public void swipeRefresh() {
-        repository.unsubscribe();
         getListItems();
     }
 
@@ -127,15 +126,7 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
         repository.getAllListActiveItem(listItems.get(adapter.getPosition()).getId(), this);
     }
 
-    public void selectShareList() {
-        if (adapter.getItems().get(adapter.getPosition()).getListCode() != null && !adapter.getItems().get(adapter.getPosition()).getListCode().isEmpty()) {
-            view.showDialogWithShareCode();
-        } else {
-            view.showToast(R.string.text_error_to_share);
-        }
-    }
-
-    public String getShareCode() {
-        return adapter.getItems().get(adapter.getPosition()).getListCode();
+    public void selectPrivateList() {
+        repository.setPrivate(adapter.getItems().get(adapter.getPosition()));
     }
 }

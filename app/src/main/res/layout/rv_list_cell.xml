@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="3dp"
@@ -34,18 +35,16 @@
             app:layout_constraintStart_toEndOf="@+id/list_item_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/list_item_quantity"
-            style="@style/StyleText"
-            android:layout_width="0dp"
-            android:textSize="@dimen/SizeSecond"
+        <ImageView
+            android:id="@+id/list_item_private"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0/90"
-            android:textAlignment="center"
+            android:src="@drawable/ic_private"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/list_item_menu"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent=".13" />
+            app:layout_constraintStart_toEndOf="@+id/list_item_name"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/list_item_menu"

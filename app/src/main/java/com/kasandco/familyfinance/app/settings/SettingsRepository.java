@@ -1,6 +1,5 @@
 package com.kasandco.familyfinance.app.settings;
 
-import android.util.Log;
 
 import com.kasandco.familyfinance.core.BaseRepository;
 import com.kasandco.familyfinance.core.Constants;
@@ -19,7 +18,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 
 public class SettingsRepository extends BaseRepository {
-    UserNetworkInterface userNetworkInterface;
+    private UserNetworkInterface userNetworkInterface;
 
     @Inject
     public SettingsRepository(SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect isNetworkConnect, Retrofit retrofit) {

@@ -56,4 +56,9 @@ public class FragmentEditList extends BaseFragmentCreateEdit implements EditList
         this.name.setText(name);
         this.name.setSelection(name.length());
     }
+
+    @Override
+    public void showToastNoInternet() {
+
+    }
 }

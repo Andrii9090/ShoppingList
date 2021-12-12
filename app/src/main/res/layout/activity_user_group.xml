@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_main">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/user_group_toolbar"
+            layout="@layout/toolbar_main" />
+
+        <Button
+            android:id="@+id/user_group_connect"
+            style="@style/OutLineButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@string/connect_to_group"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_group_toolbar" />
+
+        <Button
+            android:id="@+id/user_group_disconnect"
+            style="@style/OutLineButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@string/disconnect_from_group"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_group_toolbar" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_group_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/user_group_connect"
+            tools:itemCount="10"
+            tools:layout_editor_absoluteX="0dp"
+            tools:listitem="@layout/rv_user_group" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/nav_view"
+        layout="@layout/navigation" />
+</androidx.drawerlayout.widget.DrawerLayout>

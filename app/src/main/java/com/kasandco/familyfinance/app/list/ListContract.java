@@ -13,8 +13,5 @@ public interface ListContract extends BaseContract {
     void setCategoryId(long financeCategoryId);
     void runSendIntent(String text);
     String getStringResource(int resource);
-
     String getDeviceId();
-
-    void showDialogWithShareCode();
 }

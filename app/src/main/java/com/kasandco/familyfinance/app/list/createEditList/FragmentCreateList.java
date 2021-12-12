@@ -24,4 +24,9 @@ public class FragmentCreateList extends BaseFragmentCreateEdit implements Adapte
     protected String getStringView(int resId) {
         return getContext().getString(resId);
     }
+
+    @Override
+    public void showToastNoInternet() {
+
+    }
 }

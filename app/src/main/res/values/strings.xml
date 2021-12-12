@@ -4,7 +4,6 @@
     <string name="text_clear_empty">Очистить купленные</string>
     <string name="text_edit">Редактировать</string>
     <string name="text_clear_add_cost">Добавить расход</string>
-    <string name="text_share_list">Поделится списком</string>
     <string name="text_clear_all">Очистить все</string>
     <string name="text_remove">Удалить</string>
     <string name="text_error">Ошибка</string>
@@ -156,4 +155,15 @@
     <string name="not_active_items">Список пустой или нет активных элементов</string>
     <string name="error_no_added_subscribe_list">"Ошибка! Вы указали не корректный токен "</string>
     <string name="register_text">Регистрация</string>
+    <string name="menu_group">Моя группа</string>
+    <string name="my_group">Моя группа</string>
+    <string name="connect_to_group">Добавить в группу</string>
+    <string name="disconnect_from_group">Выйти из группы</string>
+    <string name="error_remove_user" >Не удалось удалить, возможно нет соединения с Интернетом</string>
+    <string name="user_email">Email пользователя</string>
+    <string name="text_add_user_to_group">Добавить</string>
+    <string name="text_close_dialog">Закрыть</string>
+    <string name="title_add_new_user">Добавить в группу пользователя</string>
+    <string name="text_private">Сделать приватным</string>
+    <string name="text_set_public">Сделать общедоступным</string>
 </resources>

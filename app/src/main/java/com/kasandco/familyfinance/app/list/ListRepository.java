@@ -83,7 +83,6 @@ public class ListRepository extends BaseRepository {
                             listModel.setServerId(obj.getId());
                             listModel.setDateMod(obj.getDateMod());
                             listModel.setDateModServer(obj.getDateMod());
-                            listModel.setListCode(obj.getToken());
                             new Thread(() -> listDao.update(listModel)).start();
                         }
                     }
@@ -130,7 +129,15 @@ public class ListRepository extends BaseRepository {
         this.callback = callback;
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
             sync();
+        }else if (isLogged && !isNetworkConnect.isInternetAvailable()){
+            callback.noConnectionToInternet();
+            getAllItems();
+        }else {
+            getAllItems();
         }
+    }
+
+    private void getAllItems() {
         disposable.add(listDao.getAllActiveList().subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::setListItems, throwable -> callback.setListItems(null)));
@@ -164,7 +171,6 @@ public class ListRepository extends BaseRepository {
                                         listModify.setId(listModel.getId());
                                         listModify.setId(listDao.getId(listModify.getServerId()));
                                         listModify.setFinanceCategoryId(listModel.getFinanceCategoryId());
-                                        listModify.setListCode(listModel.getListCode());
                                         listDao.update(listModify);
                                     } else {
                                         listDao.insert(new ListModel(item));
@@ -175,18 +181,12 @@ public class ListRepository extends BaseRepository {
                             new Thread(() -> listSyncHistoryDao.insert(syncData)).start();
                         }
                     }
-                    new Thread(() -> {
-                        List<ListModel> listModels = listDao.getAllList();
-                        for (ListModel item : listModels) {
-                            itemRepository.setServerListId(item.getServerId());
-                            itemRepository.sync(item.getId());
-                        }
-                    }).start();
+                    getAllItems();
                 }
 
                 @Override
                 public void error() {
-
+                    getAllItems();
                 }
             };
             Requests.request(call, callbackResponse);
@@ -214,39 +214,29 @@ public class ListRepository extends BaseRepository {
             listModel.setIsDelete(1);
             new Thread(() -> listDao.update(listModel)).start();
             if (isNetworkConnect.isInternetAvailable()) {
-                long serverId = listModel.getServerId();
-                if (serverId > 0) {
-                    Call<ResponseBody> call = network.removeList(serverId);
-                    Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
-                        @Override
-                        public void success(ResponseBody responseObj) {
-                            new Thread(() -> listDao.delete(listModel)).start();
-                        }
+                if (listModel.getServerId()!=0) {
+                    long serverId = listModel.getServerId();
+                    if (serverId > 0) {
+                        Call<ResponseBody> call = network.removeList(serverId);
+                        Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                            @Override
+                            public void success(ResponseBody responseObj) {
+                                new Thread(() -> listDao.delete(listModel)).start();
+                            }
 
-                        @Override
-                        public void error() {
+                            @Override
+                            public void error() {
 
-                        }
-                    };
-                    Requests.request(call, callbackResponse);
+                            }
+                        };
+                        Requests.request(call, callbackResponse);
+                    }
+                }else {
+                    new Thread(() -> listDao.delete(listModel)).start();
                 }
             }
         } else {
             new Thread(() -> listDao.delete(listModel)).start();
-        }
-    }
-
-    public void clearInactiveItems(ListModel listModel) {
-        if (listModel.getQuantityInactive() > 0) {
-            new Thread(() -> listDao.clearInactiveItems(listModel.getId())).start();
-            networkClearInactiveListItems(listModel.getId());
-        }
-    }
-
-    public void clearActiveItems(ListModel listModel) {
-        if (listModel.getQuantityActive() > 0) {
-            new Thread(() -> listDao.clearActiveItems(listModel.getId())).start();
-            networkClearActiveListItems(listModel.getId());
         }
     }
 
@@ -334,14 +324,14 @@ public class ListRepository extends BaseRepository {
 
     public void subscribeToList(String token, ListResponseListener callback) {
         Call<ListApiModel> call = network.subscribeToList(token);
-
+        Handler handler = new Handler();
         Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
             @Override
             public void success(ListApiModel responseObj) {
                 if (responseObj != null) {
                     ListModel listModel = new ListModel(responseObj);
                     new Thread(() -> listDao.insert(listModel)).start();
-                    callback.closeCreateForm();
+                    handler.post(callback::closeCreateForm);
                 }
             }
 
@@ -354,9 +344,19 @@ public class ListRepository extends BaseRepository {
         Requests.request(call, callbackResponse);
     }
 
+    public void setPrivate(ListModel listModel) {
+        if(listModel.getIsPrivate()==1){
+            listModel.setIsPrivate(0);
+        }else {
+            listModel.setIsPrivate(1);
+        }
+        listModel.setDateMod(String.valueOf(System.currentTimeMillis()));
+        update(listModel);
+    }
+
     public interface ListRepositoryInterface {
         void setListItems(List<ListModel> listModel);
-
+        void noConnectionToInternet();
         void getAllActiveListItems(List<ItemModel> items);
     }
 

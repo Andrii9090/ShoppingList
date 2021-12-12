@@ -20,6 +20,7 @@ import com.kasandco.familyfinance.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +76,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         });
         holder.imageIcon.setOnClickListener(view -> {
             setPosition(holder.getBindingAdapterPosition());
-            zoomImageListener.showZoomImage();
+            try {
+                zoomImageListener.showZoomImage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         holder.itemView.setOnClickListener(view -> {
@@ -140,7 +145,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
     public interface ShowZoomImage {
-        void showZoomImage();
+        void showZoomImage() throws IOException;
     }
 
     public interface OnClickItemListener {

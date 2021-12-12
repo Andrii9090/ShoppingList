@@ -181,6 +181,11 @@ public class FragmentCreateCategory extends Fragment implements CreateCategoryCo
 
     }
 
+    @Override
+    public void showToastNoInternet() {
+
+    }
+
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {

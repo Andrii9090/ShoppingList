@@ -16,9 +16,6 @@ public class ListApiModel {
     @SerializedName("finance_category")
     private long financeCategoryId;
 
-    @SerializedName("shared_token")
-    private String token;
-
     @SerializedName("local_id")
     private long localId;
 
@@ -28,16 +25,20 @@ public class ListApiModel {
     @SerializedName("is_delete")
     private boolean isDelete;
 
-    public ListApiModel(ListModel listModel){
+    @SerializedName("is_private")
+    private boolean isPrivate;
+
+    public ListApiModel(ListModel listModel) {
         id = listModel.getServerId();
         name = listModel.getName();
         icon = listModel.getIcon();
-        token = listModel.getListCode();
         localId = listModel.getId();
-        if(listModel.getDateMod().length()==10) {
+        isPrivate = listModel.getIsPrivate() == 1;
+
+        if (listModel.getDateMod().length() == 10) {
             dateMod = listModel.getDateMod();
-        }else {
-            dateMod = listModel.getDateMod().substring(0,10);
+        } else {
+            dateMod = listModel.getDateMod().substring(0, 10);
         }
         financeCategoryId = listModel.getFinanceCategoryId();
         isDelete = listModel.getIsDelete() == 1;
@@ -76,14 +77,6 @@ public class ListApiModel {
         this.financeCategoryId = financeCategoryId;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public long getLocalId() {
         return localId;
     }
@@ -116,6 +109,14 @@ public class ListApiModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, icon, financeCategoryId, token, localId, dateMod, isDelete);
+        return Objects.hash(id, name, icon, financeCategoryId, localId, dateMod, isDelete);
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 }

@@ -21,6 +21,11 @@ public class FinanceActivityPresenter extends BasePresenter<FinanceViewContract>
         this.view = view;
     }
 
+    @Override
+    public void swipeRefresh() {
+
+    }
+
     public void clickBtnNewCategory(int type) {
         view.showCreateCategoryFragment(type);
     }

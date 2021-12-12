@@ -37,7 +37,6 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
     private ListAdapterListener onClickListener;
     private int positionItem;
 
-
     @Inject
     public ListRvAdapter() {
         this.listItems = new ArrayList<>();
@@ -59,7 +58,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         holder.bind(position);
     }
 
-    public List<ListModel> getItems(){
+    public List<ListModel> getItems() {
         return listItems;
     }
 
@@ -71,7 +70,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
         return positionItem;
     }
 
-    public void resetPosition(){
+    public void resetPosition() {
         positionItem = -1;
     }
 
@@ -82,12 +81,12 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
 
     @SuppressLint("NotifyDataSetChanged")
     public void updateItems(List<ListModel> listItems) {
-        if(getItemCount()>0) {
+        if (getItemCount() > 0) {
             DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffListItem(this.listItems, listItems));
             this.listItems.clear();
             this.listItems.addAll(listItems);
             diff.dispatchUpdatesTo(this);
-        }else {
+        } else {
             this.listItems.clear();
             this.listItems.addAll(listItems);
             notifyDataSetChanged();
@@ -97,17 +96,17 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         ImageView icon;
         TextView name;
-        TextView quantity;
         ImageButton menu;
         ContextMenu contextMenu;
+        ImageView imagePrivate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnCreateContextMenuListener(this);
             icon = itemView.findViewById(R.id.list_item_icon);
             name = itemView.findViewById(R.id.list_item_name);
-            quantity = itemView.findViewById(R.id.list_item_quantity);
             menu = itemView.findViewById(R.id.list_item_menu);
+            imagePrivate = itemView.findViewById(R.id.list_item_private);
             itemView.setOnLongClickListener(view -> true);
         }
 
@@ -116,6 +115,9 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             MenuInflater inflater = new MenuInflater(view.getContext());
             inflater.inflate(R.menu.context_menu_list_item, contextMenu);
             this.contextMenu = contextMenu;
+            if(listItems.get(positionItem).getIsPrivate()==1){
+                contextMenu.getItem(0).setTitle(R.string.text_set_public);
+            }
         }
 
         public void bind(int position) {
@@ -154,14 +156,17 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
                 Async async = new Async();
                 async.execute();
             }
+            if (listItems.get(position).getIsPrivate() == 1) {
+                imagePrivate.setVisibility(View.VISIBLE);
+            }
             name.setText(listItems.get(position).getName());
-            quantity.setText(String.format("%d / %d", listItems.get(position).getQuantityActive(), listItems.get(position).getQuantityActive()+listItems.get(position).getQuantityInactive()));
             View.OnClickListener menuListener;
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
             menuListener = view -> {
                 setPosition(getAbsoluteAdapterPosition());
                 switch (view.getId()) {
                     case R.id.list_item_menu:
+                        positionItem = getAbsoluteAdapterPosition();
                         if (currentapiVersion >= android.os.Build.VERSION_CODES.N) {
                             itemView.showContextMenu(itemView.getWidth(), itemView.getHeight());
                         } else {
@@ -170,6 +175,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
                         break;
                 }
             };
+
             menu.setOnClickListener(menuListener);
 
             itemView.setOnClickListener(view -> onClickListener.itemOnClick(ViewHolder.this));

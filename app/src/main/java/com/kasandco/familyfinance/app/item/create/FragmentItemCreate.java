@@ -99,6 +99,11 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
 
     }
 
+    @Override
+    public void showToastNoInternet() {
+
+    }
+
     public interface ClickListenerCreateFragment{
         void close();
     }

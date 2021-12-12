@@ -16,14 +16,8 @@ public interface ListDao extends BaseDao<ListModel> {
     @Query("SELECT * FROM list")
     List<ListModel> getAllList();
 
-    @Query("SELECT *, (SELECT COUNT(*) FROM list_item WHERE local_list_id=list.id AND status=1) as quantity_active, (SELECT COUNT(*) FROM list_item WHERE local_list_id=list.id AND status=0) as quantity_inactive FROM list WHERE is_delete=0 ORDER BY date_mod DESC")
+    @Query("SELECT * FROM list WHERE is_delete=0 ORDER BY date_mod DESC")
     Flowable<List<ListModel>> getAllActiveList();
-
-    @Query("UPDATE list SET quantity_inactive=0 WHERE id=:id")
-    void clearInactiveItems(long id);
-
-    @Query("UPDATE list SET quantity_active=0 WHERE id=:id")
-    void clearActiveItems(long id);
 
     @Query("SELECT id FROM list WHERE server_id =:serverId")
     long getId(Long serverId);

@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 public class ItemCreatePresenter extends BasePresenter<FragmentItemCreateContract> {
-//    @Inject
-//    public ItemDao itemDao;
     @Inject
     public ItemRepository repository;
 
@@ -26,13 +24,16 @@ public class ItemCreatePresenter extends BasePresenter<FragmentItemCreateContrac
         this.view = view;
     }
 
+    @Override
+    public void swipeRefresh() {
+
+    }
+
     public void create(String name, long listId, long serverListId) {
-        if(name.isEmpty()){
-            view.showToast();
-        }else {
+        if (!name.isEmpty()) {
             repository.create(getQuantity(name), listId, serverListId);
-            view.showToast();
         }
+        view.showToast();
     }
 
     public void edit(String text, ItemModel itemEdit) {

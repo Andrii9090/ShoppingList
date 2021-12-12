@@ -17,6 +17,10 @@ import androidx.fragment.app.Fragment;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.utils.SaveImageUtils;
+
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 public class FragmentZoomImage extends Fragment {
@@ -26,11 +30,12 @@ public class FragmentZoomImage extends Fragment {
     private SubsamplingScaleImageView image;
     private ConstraintLayout buttonsRoot;
 
+    public SaveImageUtils imageUtils;
     private ClickListenerZoomImage rootListener;
 
     @Inject
-    public FragmentZoomImage(){
-
+    public FragmentZoomImage(SaveImageUtils imageUtils){
+        this.imageUtils = imageUtils;
     }
 
     @Nullable
@@ -42,18 +47,12 @@ public class FragmentZoomImage extends Fragment {
         btnClose = view.findViewById(R.id.fragment_zoom_image_btn_close);
         btnRemove = view.findViewById(R.id.fragment_zoom_image_btn_remove);
         buttonsRoot = view.findViewById(R.id.fragment_zoom_image_buttons);
-
         btnRemove.setOnClickListener(clickListener);
         btnClose.setOnClickListener(clickListener);
         image = view.findViewById(R.id.fragment_zoom_image_item);
         image.setVisibility(View.INVISIBLE);
         image.setOnClickListener(clickListener);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                buttonsRoot.setVisibility(View.INVISIBLE);
-            }
-        }, 1500);
+        new Handler().postDelayed(() -> buttonsRoot.setVisibility(View.INVISIBLE), 1500);
         return view;
     }
 
@@ -62,8 +61,8 @@ public class FragmentZoomImage extends Fragment {
 
     }
 
-    public void setImage(String path){
-        image.setImage(ImageSource.bitmap(BitmapFactory.decodeFile(path)));
+    public void setImage(String path) throws IOException {
+        image.setImage(ImageSource.bitmap(imageUtils.getCameraOrientation(path, BitmapFactory.decodeFile(path))));
         image.setVisibility(View.VISIBLE);
     }
 

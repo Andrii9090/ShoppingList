@@ -1,5 +1,6 @@
 package com.kasandco.familyfinance.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ public class SaveImageUtils {
         this.context = context;
     }
 
+    @SuppressLint("SimpleDateFormat")
     public File createImageFile() throws IOException {
         fileName = new SimpleDateFormat("yyyy_MM_dd_HHmmss").format(new Date());
         storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -94,7 +96,7 @@ public class SaveImageUtils {
         return Uri.fromFile(fileGallery);
     }
 
-    private Bitmap getCameraOrientation(String photoPath, Bitmap bitmap) throws IOException {
+    public Bitmap getCameraOrientation(String photoPath, Bitmap bitmap) throws IOException {
         ExifInterface ei = new ExifInterface(photoPath);
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                 ExifInterface.ORIENTATION_UNDEFINED);
@@ -103,6 +105,8 @@ public class SaveImageUtils {
         switch(orientation) {
 
             case ExifInterface.ORIENTATION_ROTATE_90:
+//            case ExifInterface.ORIENTATION_UNDEFINED:
+
                 rotatedBitmap = rotateImage(bitmap, 90);
                 break;
 
@@ -115,6 +119,8 @@ public class SaveImageUtils {
                 break;
 
             case ExifInterface.ORIENTATION_NORMAL:
+
+
             default:
                 rotatedBitmap = bitmap;
         }

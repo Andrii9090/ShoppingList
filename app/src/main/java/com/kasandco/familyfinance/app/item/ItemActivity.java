@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -46,16 +45,13 @@ import javax.inject.Inject;
 public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomImage, ItemAdapter.OnClickItemListener, FragmentZoomImage.ClickListenerZoomImage, ItemContract, Constants, FragmentItemCreate.ClickListenerCreateFragment {
     @Inject
     ItemPresenter presenter;
-
     FragmentItemCreate createFragment;
-
     FragmentZoomImage fragmentZoomImage;
 
-    long listId;
-    String listName;
-    long serverListId;
+    private long listId;
+    private String listName;
+    private long serverListId;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private TextView emptyText;
     private FloatingActionButton createFloatingBtn;
@@ -63,36 +59,31 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    1);
+        }
         listId = getIntent().getLongExtra(LIST_ITEM_ID, 0);
         listName = getIntent().getStringExtra(LIST_NAME);
         serverListId = getIntent().getLongExtra(LIST_SERVER_ID, 0);
         App.getItemComponent(this).inject(this);
         setContentView(R.layout.activity_item);
+
+        refreshLayout = findViewById(R.id.item_activity_swipe);
+        refreshLayout.setOnRefreshListener(refreshListener);
+
         recyclerView = findViewById(R.id.item_activity_rv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         emptyText = findViewById(R.id.item_activity_text_empty);
         createFloatingBtn = findViewById(R.id.create_item_floating_btn);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         Toolbar toolbar = findViewById(R.id.item_activity_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
         MaterialTextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(listName);
-        swipeRefreshLayout = findViewById(R.id.item_activity_swipe);
-        swipeRefreshLayout.setOnRefreshListener(refreshListener);
-        createFloatingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startVoiceRecognitionActivity();
-            }
-        });
-        toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
+        createFloatingBtn.setOnClickListener(view -> startVoiceRecognitionActivity());
     }
 
     @Inject
@@ -112,8 +103,12 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
     @Override
     protected void startNewActivity(Class<?> activityClass) {
-        Intent intent = new Intent(this, activityClass);
-        startActivity(intent);
+        if (getClass()!=activityClass) {
+            Intent intent = new Intent(this, activityClass);
+            startActivity(intent);
+        }else{
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }
     }
 
     @Override
@@ -176,7 +171,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     }
 
     @Override
-    public void showZoomFragment(String imagePath) {
+    public void showZoomFragment(String imagePath) throws IOException {
         getSupportFragmentManager().beginTransaction().add(R.id.item_activity_fragment, fragmentZoomImage).commitNow();
         fragmentZoomImage.setImage(imagePath);
         showFloatingBtn(false);
@@ -215,16 +210,6 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     @Override
     public long getServerListId() {
         return serverListId;
-    }
-
-    @Override
-    public void showLoading() {
-        swipeRefreshLayout.setRefreshing(true);
-    }
-
-    @Override
-    public void hideLoading() {
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -349,7 +334,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     }
 
     @Override
-    public void showZoomImage() {
+    public void showZoomImage() throws IOException {
         presenter.clickShowZoomImage();
     }
 

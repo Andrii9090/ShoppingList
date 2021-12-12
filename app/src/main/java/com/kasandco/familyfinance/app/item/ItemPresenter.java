@@ -17,13 +17,10 @@ import java.util.List;
 
 public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRepository.ItemRepositoryCallback {
 
-    ItemDao itemDao;
-
-    ItemAdapter adapter;
-
-    ItemRepository repository;
-
-    SaveImageUtils imageUtils;
+    private ItemDao itemDao;
+    private ItemAdapter adapter;
+    private ItemRepository repository;
+    private SaveImageUtils imageUtils;
 
     long listId;
     long serverListId;
@@ -43,6 +40,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
     }
 
     private void prepare() {
+        view.showLoading();
         listId = view.getListId();
         serverListId = view.getServerListId();
         repository.getAll(listId, serverListId,this);
@@ -62,6 +60,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
         items.addAll(list);
         view.hideLoading();
         adapter.updateList(list);
+        view.hideLoading();
         setEmptyText();
     }
 
@@ -114,7 +113,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
         }
     }
 
-    public void clickShowZoomImage() {
+    public void clickShowZoomImage() throws IOException {
         if (adapter.items.get(adapter.getPosition()).getImagePath() != null) {
             view.showZoomFragment(adapter.items.get(adapter.getPosition()).getImagePath());
         } else {
@@ -133,7 +132,6 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
 
     public void refreshData() {
         items.clear();
-        repository.unSubscribe();
         repository.getAll(listId, serverListId, this);
     }
 
@@ -155,6 +153,11 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
 
     public void destroy() {
         repository.unSubscribe();
+    }
+
+    @Override
+    public void swipeRefresh() {
+
     }
 
 

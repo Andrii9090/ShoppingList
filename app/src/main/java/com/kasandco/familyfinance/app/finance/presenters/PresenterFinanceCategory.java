@@ -80,6 +80,11 @@ public class PresenterFinanceCategory extends BasePresenter<HistoryContract> imp
         repository.clearDisposable();
     }
 
+    @Override
+    public void swipeRefresh() {
+
+    }
+
     public void selectRemoveList(int position) {
         repository.remove(adapter.getItems().get(position).getCategory());
         view.reloadTotal();

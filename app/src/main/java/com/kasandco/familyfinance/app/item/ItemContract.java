@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.core.BaseContract;
 
+import java.io.IOException;
+
 public interface ItemContract extends BaseContract {
     void startAdapter(RecyclerView.Adapter<?> adapter);
 
@@ -18,7 +20,7 @@ public interface ItemContract extends BaseContract {
 
     void showToast(int no_camera);
 
-    void showZoomFragment(String imagePath);
+    void showZoomFragment(String imagePath) throws IOException;
 
     void closeZoomFragment();
 

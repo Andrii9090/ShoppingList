@@ -15,8 +15,8 @@ public class ListModel extends BaseModel implements Serializable {
 
     private String name;
 
-    @ColumnInfo(name = "is_owner", defaultValue = "1")
-    private int isOwner;
+    @ColumnInfo(name = "is_private", defaultValue = "1")
+    private int isPrivate;
 
     @ColumnInfo(name = "icon_id", defaultValue = "0")
     private String icon;
@@ -26,17 +26,6 @@ public class ListModel extends BaseModel implements Serializable {
 
     @ColumnInfo(name = "cost_category_id", defaultValue = "0")
     private Long financeCategoryId;
-
-    @ColumnInfo(name = "list_code", defaultValue = "")
-    private String listCode;
-
-    @SerializedName("active_quantity")
-    @ColumnInfo(name = "quantity_active", defaultValue = "0")
-    private int quantityActive;
-
-    @SerializedName("no_active_quantity")
-    @ColumnInfo(name = "quantity_inactive", defaultValue = "0")
-    private int quantityInactive;
 
     public ListModel(){
 
@@ -58,8 +47,8 @@ public class ListModel extends BaseModel implements Serializable {
         dateModServer = listData.getDateMod();
         isDelete = listData.isDelete()?1:0;
         icon = listData.getIcon();
-        listCode = listData.getToken();
         financeCategoryId = listData.getFinanceCategoryId();
+        isPrivate = listData.isPrivate()?1:0;
     }
 
     public String getName() {
@@ -78,14 +67,6 @@ public class ListModel extends BaseModel implements Serializable {
         this.id = id;
     }
 
-    public int getIsOwner() {
-        return isOwner;
-    }
-
-    public void setIsOwner(int isOwner) {
-        this.isOwner = isOwner;
-    }
-
     public int getIsCost() {
         return isCost;
     }
@@ -100,14 +81,6 @@ public class ListModel extends BaseModel implements Serializable {
 
     public void setFinanceCategoryId(Long financeCategoryId) {
         this.financeCategoryId = financeCategoryId;
-    }
-
-    public String getListCode() {
-        return listCode;
-    }
-
-    public void setListCode(String listCode) {
-        this.listCode = listCode;
     }
 
     public long getServerId() {
@@ -134,22 +107,6 @@ public class ListModel extends BaseModel implements Serializable {
         this.isDelete = isDelete;
     }
 
-    public int getQuantityActive() {
-        return quantityActive;
-    }
-
-    public void setQuantityActive(int quantityActive) {
-        this.quantityActive = quantityActive;
-    }
-
-    public int getQuantityInactive() {
-        return quantityInactive;
-    }
-
-    public void setQuantityInactive(int quantityInactive) {
-        this.quantityInactive = quantityInactive;
-    }
-
     public String getIcon() {
         return icon;
     }
@@ -158,23 +115,11 @@ public class ListModel extends BaseModel implements Serializable {
         this.icon = icon;
     }
 
-    public ListModel clone() {
-        ListModel cloneItem = new ListModel();
-
-        cloneItem.id = this.id;
-        cloneItem.name = this.name;
-        cloneItem.isOwner = this.isOwner;
-        cloneItem.icon = this.icon;
-        cloneItem.isCost = this.isCost;
-        cloneItem.financeCategoryId = this.financeCategoryId;
-        cloneItem.listCode = this.listCode;
-        cloneItem.serverId = this.serverId;
-        cloneItem.dateMod = this.dateMod;
-        cloneItem.isDelete = this.isDelete;
-        cloneItem.quantityActive = this.quantityActive;
-        cloneItem.quantityInactive = this.quantityInactive;
-        return cloneItem;
+    public int getIsPrivate() {
+        return isPrivate;
     }
 
-
+    public void setIsPrivate(int isPrivate) {
+        this.isPrivate = isPrivate;
+    }
 }

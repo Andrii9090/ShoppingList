@@ -16,6 +16,8 @@ import com.kasandco.familyfinance.app.splash.SplashComponent;
 import com.kasandco.familyfinance.app.splash.SplashModule;
 import com.kasandco.familyfinance.app.statistic.StatisticComponent;
 import com.kasandco.familyfinance.app.statistic.StatisticModule;
+import com.kasandco.familyfinance.app.user.group.ComponentUserGroup;
+import com.kasandco.familyfinance.app.user.group.ModuleUserGroup;
 import com.kasandco.familyfinance.app.user.login.LoginComponent;
 import com.kasandco.familyfinance.app.user.login.LoginModule;
 import com.kasandco.familyfinance.app.user.registration.RegistrationComponent;
@@ -41,4 +43,5 @@ public interface AppComponent {
     FinanceDetailComponent plus(FinanceDetailModule module);
     UserSettingsComponent plus(UserSettingsModule module);
     SettingsComponent plus(SettingsModule module);
+    ComponentUserGroup plus(ModuleUserGroup module);
 }

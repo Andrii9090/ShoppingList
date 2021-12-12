@@ -31,25 +31,24 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     @Override
     public void create() {
         boolean isEdit = false;
-        ListModel newList = new ListModel();
-        newList = editItem.clone();
+//        ListModel newList = new ListModel();
+//        newList = editItem.clone();
         if (!editItem.getName().equals(name)) {
-            newList.setName(name);
+            editItem.setName(name);
             isEdit = true;
         }
         if (editItem.getIcon() != null && !editItem.getIcon().equals(pathIcon) || editItem.getIcon() == null && pathIcon != null) {
-            newList.setIcon(pathIcon);
+            editItem.setIcon(pathIcon);
             isEdit = true;
         }
         if (editItem.getFinanceCategoryId()!=null && editItem.getFinanceCategoryId() != financeCategory) {
-            newList.setFinanceCategoryId(financeCategory);
+            editItem.setFinanceCategoryId(financeCategory);
             isEdit = true;
         }
-        if (isEdit) {
-            newList.setDateMod(String.valueOf(System.currentTimeMillis()));
-            listRepository.update(newList);
-        }
-        nullingSpinnerPosition();
+        editItem.setDateMod(String.valueOf(System.currentTimeMillis()));
+        listRepository.update(editItem);
+//        }
+//        nullingSpinnerPosition();
         view.close();
     }
 
@@ -57,7 +56,7 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     public void setEditItem(ListModel item) {
         editItem = item;
         view.setName(editItem.getName());
-        if(financeCategoryNames.size()>0){
+        if (financeCategoryNames.size() > 0) {
             setEditDataSpinner();
         }
     }
@@ -65,7 +64,7 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     @Override
     public void setAllCostCategory(List<FinanceCategoryModel> categoryModels) {
         super.setAllCostCategory(categoryModels);
-        financeCategoryNames.set(0,view.getStringResource(R.string.text_no_selected_finance_category));
+        financeCategoryNames.set(0, view.getStringResource(R.string.text_no_selected_finance_category));
         setEditDataSpinner();
     }
 
@@ -91,11 +90,11 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     }
 
     @Override
-    public void nullingSpinnerPosition(){
+    public void nullingSpinnerPosition() {
         positionSpinner = -1;
     }
 
-    private void setEditDataIcon(){
+    private void setEditDataIcon() {
         if (editItem.getIcon() != null && !editItem.getIcon().isEmpty()) {
             adapterIcon.setIcon(editItem.getIcon());
             for (IconModel model : icons) {
@@ -107,5 +106,15 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
             }
         }
         view.setIconPosition(iconPosition);
+    }
+
+    @Override
+    public void viewReady(EditListContract.View view) {
+
+    }
+
+    @Override
+    public void swipeRefresh() {
+
     }
 }

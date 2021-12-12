@@ -22,6 +22,11 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> imple
         this.view = view;
     }
 
+    @Override
+    public void swipeRefresh() {
+
+    }
+
     public void clickLogOut() {
         view.showLoader();
         repository.deleteAllData(this);

@@ -82,6 +82,11 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
     }
 
     @Override
+    public void showToastNoInternet() {
+
+    }
+
+    @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if(isVisible()) {
             presenter.contextMenuClick(item.getItemId());
