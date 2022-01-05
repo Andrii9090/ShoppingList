@@ -23,7 +23,7 @@ public class FinanceDetailModule {
     @Provides
     @FinanceDetailScope
     FinanceDetailRepository providesFinanceDetailRepository(FinanceDao financeDao, AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect _isNetworkConnect){
-        return new FinanceDetailRepository(financeDao, appDataBase.getFinanceHistorySyncDao(), retrofit, sharedPreferenceUtil,_isNetworkConnect);
+        return new FinanceDetailRepository(financeDao, appDataBase.getFinanceHistorySyncDao(), retrofit, sharedPreferenceUtil,_isNetworkConnect, appDataBase.getFinanceCategoryDao());
     }
 
     @FinanceDetailScope

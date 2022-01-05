@@ -33,7 +33,7 @@ public class PresenterCreateFinanceCategory extends BasePresenter<CreateCategory
             } else {
                 if (editItem == null) {
                     category = new FinanceCategoryModel(name, iconPath, type, String.valueOf(System.currentTimeMillis()), String.valueOf(System.currentTimeMillis()));
-                    repository.createNewCategory(category, this, checked);
+                    repository.createNewCategory(category, this);
                 } else {
                     if (!editItem.getName().equals(name) || !editItem.getIconPath().equals(iconPath)) {
                         editItem.setDateMod(String.valueOf(System.currentTimeMillis()));
@@ -61,9 +61,14 @@ public class PresenterCreateFinanceCategory extends BasePresenter<CreateCategory
     public void added(long id) {
         view.nullingView();
         if (checked) {
-            repository.createNewList(id, category);
+            repository.createNewList(id, category, this);
         }
         view.close();
+    }
+
+    @Override
+    public void maxLimit() {
+        view.showToast(R.string.text_error_max_quantity);
     }
 
     public void destroyView() {

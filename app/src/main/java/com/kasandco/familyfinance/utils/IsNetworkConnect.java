@@ -10,17 +10,18 @@ import com.kasandco.familyfinance.R;
 
 
 public class IsNetworkConnect {
-    Context context;
+    private Context context;
+    private ConnectivityManager cm;
+    private NetworkInfo netInfo;
 
     public IsNetworkConnect(Context context) {
         this.context = context;
+        cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        netInfo = cm.getActiveNetworkInfo();
     }
 
 
     public boolean isInternetAvailable() {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
         boolean isConnect = netInfo != null && netInfo.isConnectedOrConnecting();
         if (isConnect) {
             return true;

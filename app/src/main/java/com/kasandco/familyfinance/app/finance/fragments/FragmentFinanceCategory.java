@@ -1,5 +1,7 @@
 package com.kasandco.familyfinance.app.finance.fragments;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -18,14 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.finance.adapters.FinanceCategoryAdapter;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
-import com.kasandco.familyfinance.app.finance.presenters.HistoryContract;
+import com.kasandco.familyfinance.app.finance.presenters.FinanceCategoryContract;
 import com.kasandco.familyfinance.app.finance.presenters.PresenterFinanceCategory;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
 import javax.inject.Inject;
 
-public class FragmentFinanceCategory extends Fragment implements HistoryContract, FinanceCategoryAdapter.OnClickItemListener {
-    private ImageButton btnAddCategory;
+public class FragmentFinanceCategory extends Fragment implements FinanceCategoryContract {
+    private ImageButton btnAddCategory, btnReloadData;
     private RecyclerView recyclerView;
 
     private PresenterFinanceCategory presenter;
@@ -43,9 +45,11 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_finance_history, container, false);
+        View view = inflater.inflate(R.layout.fragment_finance_category, container, false);
         btnAddCategory = view.findViewById(R.id.fragment_expensive_btn_add_category);
         btnAddCategory.setOnClickListener(clickListener);
+        btnReloadData = view.findViewById(R.id.fragment_expensive_btn_update);
+        btnReloadData.setOnClickListener(clickListener);
 
         recyclerView = view.findViewById(R.id.fragment_expensive_recycler_view);
 
@@ -67,6 +71,9 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
                 case R.id.fragment_expensive_btn_add_category:
                     callback.onClickAddCategory(type);
                     break;
+                case R.id.fragment_expensive_btn_update:
+                    callback.reloadTotal();
+                    presenter.clickReloadData();
             }
         }
     };
@@ -88,10 +95,26 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if(isVisible()) {
-            presenter.contextMenuClick(item.getItemId());
+        if (isVisible()) {
+            switch (item.getItemId()) {
+                case R.id.context_finance_category_edit:
+                    presenter.clickEdit();
+                    break;
+                case R.id.context_finance_category_detail:
+                    presenter.clickDetail();
+                    break;
+                case R.id.context_finance_category_remove:
+                    presenter.clickCategoryRemove();
+                    break;
+                case R.id.context_finance_category_create_new:
+                    presenter.clickToCreateNewHistoryItem();
+                    break;
+                case R.id.context_finance_category_private:
+                    presenter.clickPrivate();
+                    break;
+            }
             return super.onContextItemSelected(item);
-        }else {
+        } else {
             return false;
         }
     }
@@ -103,7 +126,6 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
 
     @Override
     public void setAdapter(FinanceCategoryAdapter adapter) {
-        adapter.setOnClickListener(this);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -153,8 +175,29 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
     }
 
     @Override
-    public void clickToItem() {
-        presenter.clickToCreateNewHistoryItem();
+    public void animateBtnReload(boolean animate) {
+        btnReloadData.animate().rotation(360).setDuration(600);
+        btnReloadData.animate().setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                btnReloadData.setRotation(0f);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
     }
 
 
@@ -176,6 +219,7 @@ public class FragmentFinanceCategory extends Fragment implements HistoryContract
         void onClickEdit(int type, FinanceCategoryModel financeCategoryModel);
 
         void onclickShowFinanceDetailActivity(long categoryId);
+
         void reloadTotal();
     }
 }

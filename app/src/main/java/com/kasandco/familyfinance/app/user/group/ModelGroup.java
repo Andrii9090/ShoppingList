@@ -7,22 +7,11 @@ import java.util.List;
 public class ModelGroup {
     @SerializedName("id")
     private long id;
-    @SerializedName("group_name")
-    private String groupName;
     @SerializedName("users")
     private List<String> users;
 
-    public ModelGroup(String _group_name, List<String> _users){
-        groupName  = _group_name;
+    public ModelGroup(List<String> _users){
         users = _users;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
     }
 
     public List<String> getUsers() {

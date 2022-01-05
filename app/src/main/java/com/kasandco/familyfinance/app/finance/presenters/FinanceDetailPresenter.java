@@ -1,5 +1,6 @@
 package com.kasandco.familyfinance.app.finance.presenters;
 
+import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.finance.FinanceDetailRepository;
 import com.kasandco.familyfinance.app.finance.core.FinanceDetailView;
 import com.kasandco.familyfinance.app.finance.helpers.ConverterFinanceModelToFinanceDetailModel;
@@ -51,6 +52,7 @@ public class FinanceDetailPresenter extends BasePresenter<FinanceDetailView.View
     }
 
     private void loadData() {
+        view.showLoading();
         repository.getFinancesDetail(view.getCategoryId(), String.valueOf(startDate), String.valueOf(endDate), this);
     }
 
@@ -59,10 +61,20 @@ public class FinanceDetailPresenter extends BasePresenter<FinanceDetailView.View
         ConverterFinanceModelToFinanceDetailModel converter = new ConverterFinanceModelToFinanceDetailModel(items);
         this.items = converter.convert();
         view.addAdapterToRV(this.items);
+        view.hideLoading();
+    }
+
+    @Override
+    public void permDined() {
+        view.showToast(R.string.text_no_permissions);
+    }
+
+    @Override
+    public void removed(FinanceDetailModel item) {
+            view.deleteViewItem(items.indexOf(item));
     }
 
     public void clickDeleteItem(int position) {
         repository.removeItem(items.get(position));
-        view.deleteViewItem(position);
     }
 }

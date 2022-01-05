@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.core.BasePresenter;
 import com.kasandco.familyfinance.core.Constants;
@@ -62,6 +63,16 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
         adapter.updateList(list);
         view.hideLoading();
         setEmptyText();
+    }
+
+    @Override
+    public void errorLoadImage() {
+        view.showSnackBarToast(R.string.error_upload_image, 0);
+    }
+
+    @Override
+    public void noPerm() {
+        view.showToast(R.string.text_no_permissions);
     }
 
     private void setEmptyText() {
@@ -148,7 +159,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
     }
 
     public void createNewItem(String textEntered, long listId, long serverId) {
-        repository.create(new String[]{textEntered}, listId, serverId);
+        repository.create(textEntered, listId, serverId);
     }
 
     public void destroy() {

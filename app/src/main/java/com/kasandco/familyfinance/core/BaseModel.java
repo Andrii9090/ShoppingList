@@ -14,15 +14,11 @@ public abstract class BaseModel {
     protected int isDelete;
     @ColumnInfo(name = "server_id")
     protected long serverId;
+    @ColumnInfo(name = "is_owner", defaultValue = "1")
+    protected int isOwner;
 
-    public BaseModel(){}
-
-    public BaseModel(String _dateModServer, String _dateMod, int _isDelete, long _id, long  _serverId){
-        id=_id;
-        serverId = _serverId;
-        dateMod = _dateMod;
-        dateModServer = _dateModServer;
-        isDelete = _isDelete;
+    public BaseModel() {
+        isOwner=1;
     }
 
     public long getId() {
@@ -63,5 +59,14 @@ public abstract class BaseModel {
 
     public void setDateModServer(String dateModServer) {
         this.dateModServer = dateModServer;
+    }
+
+
+    public int getIsOwner() {
+        return isOwner;
+    }
+
+    public void setIsOwner(int isOwner) {
+        this.isOwner = isOwner;
     }
 }

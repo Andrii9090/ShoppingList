@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">FamilyFinance</string>
     <string name="text_empty">Здесь пока ничего нет</string>
-    <string name="text_clear_empty">Очистить купленные</string>
+    <string name="text_clear_empty">Очистить неактивные</string>
     <string name="text_edit">Редактировать</string>
     <string name="text_clear_add_cost">Добавить расход</string>
     <string name="text_clear_all">Очистить все</string>
@@ -47,7 +47,7 @@
     <string name="text_add">Добавить</string>
     <string name="text_name_or_icon_error">Ошибка в названии или не выбрана иконка</string>
     <string name="text_error_category_existed">Такая категория уже есть</string>
-    <string name="text_name_length">Длина названия не может быть больше 20 символов</string>
+    <string name="text_name_length">Название не может быть больше 20 символов</string>
     <string name="text_error_set_history_category">Выберите категорию в которую хотите добавить расход</string>
     <string name="error_divide_0">Разделить на  0 нельзя</string>
     <string name="text_select_date">Выбранные даты</string>
@@ -166,4 +166,16 @@
     <string name="title_add_new_user">Добавить в группу пользователя</string>
     <string name="text_private">Сделать приватным</string>
     <string name="text_set_public">Сделать общедоступным</string>
+    <string name="text_error_max_quantity">Без регистрации вы не можете  создать больше 3 списков</string>
+    <string name="not_register_user">Для того чтобы создать группу или стать участником группы необходимо зарегистрироваться</string>
+    <string name="error_upload_image">Превышен лимит изображений! Удалите изображения или перейдите на режим PRO</string>
+    <string name="text_no_permissions">У вас нет прав для этого действия!</string>
+    <string name="text_error_load_group">Произошла ошибка при загрузке</string>
+    <string name="text_error_no_group_user">В группе нет пользователей</string>
+    <string name="title_my_family">Моя семья</string>
+    <string name="text_copy_uid">Копировать ID</string>
+    <string name="error_copy_uid">Ошибка при копировании! Повторите позже</string>
+    <string name="text_uid_copied">Скопировано! Отправьте этот код другому пользователю, чтоб стать участником его  группы и вести общие списки и категории финансов</string>
+    <string name="user_uuid">Код пользователя</string>
+    <string name="error_load_data">Ошибка загрузки данных!</string>
 </resources>

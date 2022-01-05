@@ -3,6 +3,7 @@ package com.kasandco.familyfinance.app.finance;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
@@ -48,6 +49,7 @@ public class FinanceRepository extends BaseRepository {
     private final Retrofit retrofit;
     private final FinanceCategorySyncDao financeCategorySyncDao;
     private final FinanceHistorySyncDao financeHistorySyncDao;
+    private FinanceHistoryCallback callback;
 
     public FinanceRepository(AppDataBase appDataBase, Retrofit _retrofit, SharedPreferenceUtil _sharedPreference, IsNetworkConnect _isNetworkConnect) {
         super(_sharedPreference, _isNetworkConnect);
@@ -63,7 +65,7 @@ public class FinanceRepository extends BaseRepository {
         retrofit = _retrofit;
     }
 
-    public void createNewCategory(FinanceCategoryModel category, FinanceRepositoryCallback callback, boolean checked) {
+    public void createNewCategory(FinanceCategoryModel category, FinanceRepositoryCallback callback) {
         Handler handler = new Handler(Looper.getMainLooper());
         new Thread(() -> {
             try {
@@ -86,12 +88,20 @@ public class FinanceRepository extends BaseRepository {
                     category.setServerId(responseObj.getId());
                     category.setDateMod(responseObj.getDateMod());
                     category.setDateModServer(responseObj.getDateMod());
+                    category.setIsOwner(responseModel.isOwner() ? 1 : 0);
                     new Thread(() -> financeCategoryDao.update(category)).start();
                 }
 
                 @Override
                 public void error() {
 
+                }
+
+                @Override
+                public void noPermit() {
+                    if (callback != null) {
+                        callback.noPerm();
+                    }
                 }
             };
 
@@ -100,11 +110,16 @@ public class FinanceRepository extends BaseRepository {
         }
     }
 
-    public void createNewList(long categoryId, FinanceCategoryModel category) {
-        ListModel list = new ListModel(category.getName(), String.valueOf(System.currentTimeMillis()), category.getIconPath(), categoryId);
+    public void createNewList(long categoryId, FinanceCategoryModel category, FinanceRepositoryCallback callback) {
+        ListModel list = new ListModel(category.getName(), String.valueOf(System.currentTimeMillis()), String.valueOf(System.currentTimeMillis()), category.getIconPath(), categoryId);
+        Handler handler = new Handler();
         new Thread(() -> {
-            list.setId(listDao.insert(list));
-            createNetworkNewList(list);
+            if (!isLogged && listDao.getQuantity() >= Constants.MAX_QUANTITY_WITHOUT_REG) {
+                handler.post(callback::maxLimit);
+            } else {
+                list.setId(listDao.insert(list));
+                createNetworkNewList(list);
+            }
         }).start();
     }
 
@@ -127,6 +142,13 @@ public class FinanceRepository extends BaseRepository {
                 public void error() {
 
                 }
+
+                @Override
+                public void noPermit() {
+                    if (callback != null) {
+                        callback.noPerm();
+                    }
+                }
             };
 
             Call<ListApiModel> call = listNetwork.createNewList(listData);
@@ -135,6 +157,7 @@ public class FinanceRepository extends BaseRepository {
     }
 
     public void getAllData(int type, String dateStart, String dateEnd, FinanceHistoryCallback callback) {
+        this.callback = callback;
         disposable.add(financeCategoryDao.getAll(type, dateStart, dateEnd)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -174,14 +197,19 @@ public class FinanceRepository extends BaseRepository {
                                     if (categoryModel != null) {
                                         FinanceCategoryModel categoryModelModify = new FinanceCategoryModel(responseItem);
                                         categoryModelModify.setId(categoryModel.getId());
-                                        if (responseItem.getIsDelete()) {
+                                        if (responseItem.getIsDelete() || responseItem.isPrivate() && !responseItem.isOwner()) {
                                             financeCategoryDao.delete(categoryModelModify);
                                         } else {
                                             financeCategoryDao.update(categoryModelModify);
                                         }
+
                                     } else {
-                                        if (!responseItem.getIsDelete()) {
-                                            financeCategoryDao.insert(new FinanceCategoryModel(responseItem));
+                                        if ((!responseItem.getIsDelete() && !responseItem.isPrivate()) || (!responseItem.getIsDelete() && responseItem.isPrivate() && responseItem.isOwner())) {
+                                            try {
+                                                financeCategoryDao.insert(new FinanceCategoryModel(responseItem));
+                                            } catch (SQLiteConstraintException e) {
+                                                continue;
+                                            }
                                         }
                                     }
                                 }
@@ -194,6 +222,13 @@ public class FinanceRepository extends BaseRepository {
                     @Override
                     public void error() {
                         updateLocal.start();
+                    }
+
+                    @Override
+                    public void noPermit() {
+                        if (callback != null) {
+                            callback.noPerm();
+                        }
                     }
                 };
                 Call<List<FinanceCategoryApiModel>> call = network.syncCategory(syncData, deviceId);
@@ -220,6 +255,13 @@ public class FinanceRepository extends BaseRepository {
                         @Override
                         public void error() {
 
+                        }
+
+                        @Override
+                        public void noPermit() {
+                            if (callback != null) {
+                                callback.noPerm();
+                            }
                         }
                     };
                     Call<ResponseBody> call = network.removeHistoryItem(modelItem.getServerId());
@@ -257,7 +299,7 @@ public class FinanceRepository extends BaseRepository {
                                     if (financeCategory != null) {
                                         FinanceHistoryModel model = new FinanceHistoryModel(item);
                                         model.setCategoryId(financeCategory.getId());
-                                        model.setIsDelete(item.is_delete()?1:0);
+                                        model.setIsDelete(item.is_delete() ? 1 : 0);
                                         financeHistoryDao.insert(model);
                                     }
                                 }
@@ -270,6 +312,13 @@ public class FinanceRepository extends BaseRepository {
                 @Override
                 public void error() {
                     updateLocalThread.start();
+                }
+
+                @Override
+                public void noPermit() {
+                    if (callback != null) {
+                        callback.noPerm();
+                    }
                 }
             };
             Requests.request(call, callbackResponse);
@@ -293,74 +342,88 @@ public class FinanceRepository extends BaseRepository {
 
     public void updateFinanceCategory(FinanceCategoryModel editItem, FinanceRepositoryCallback callback) {
         Handler handler = new Handler(Looper.getMainLooper());
+        updateNetworkCategory(editItem);
         new Thread(() -> {
             financeCategoryDao.update(editItem);
-            handler.post(() -> callback.added(0));
+            if (callback != null) {
+                handler.post(() -> callback.added(editItem.getId()));
+            }
         }).start();
-        updateNetworkCategory(editItem);
     }
 
     private void updateNetworkCategory(FinanceCategoryModel item) {
-        FinanceCategoryApiModel categoryNetworkModel = new FinanceCategoryApiModel(item);
-        Requests.RequestsInterface<FinanceCategoryApiModel> callbackResponse = new Requests.RequestsInterface<FinanceCategoryApiModel>() {
-            @Override
-            public void success(FinanceCategoryApiModel responseObj) {
-                if (responseObj != null) {
-                    item.setDateMod(responseObj.getDateMod());
-                    item.setDateModServer(responseObj.getDateMod());
-                    new Thread(() -> financeCategoryDao.update(item));
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            FinanceCategoryApiModel categoryNetworkModel = new FinanceCategoryApiModel(item);
+            Requests.RequestsInterface<FinanceCategoryApiModel> callbackResponse = new Requests.RequestsInterface<FinanceCategoryApiModel>() {
+                @Override
+                public void success(FinanceCategoryApiModel responseObj) {
+                    if (responseObj != null) {
+                        item.setDateMod(responseObj.getDateMod());
+                        item.setDateModServer(responseObj.getDateMod());
+                        new Thread(() -> financeCategoryDao.update(item)).start();
+                    }
                 }
-            }
 
-            @Override
-            public void error() {
+                @Override
+                public void error() {
+                    callback.error();
+                }
 
-            }
-        };
-
-        Call<FinanceCategoryApiModel> call = network.updateCategory(categoryNetworkModel);
-        Requests.request(call, callbackResponse);
-    }
-
-    public void remove(FinanceCategoryModel financeCategory) {
-        softRemove(financeCategory);
-        if (isLogged) {
-            if (isNetworkConnect.isInternetAvailable() && financeCategory.getServerId() > 0) {
-                Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
-                    @Override
-                    public void success(ResponseBody responseObj) {
-                        new Thread(() -> {
-                            financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
-                            financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
-                            financeCategoryDao.delete(financeCategory);
-                        }).start();
+                @Override
+                public void noPermit() {
+                    if (callback != null) {
+                        callback.noPerm();
                     }
+                }
+            };
 
-                    @Override
-                    public void error() {
-                        softRemove(financeCategory);
-                    }
-                };
-
-                Call<ResponseBody> call = network.removeCategory(financeCategory.getServerId());
-                Requests.request(call, callbackResponse);
-            }
+            Call<FinanceCategoryApiModel> call = network.updateCategory(categoryNetworkModel);
+            Requests.request(call, callbackResponse);
         } else {
-            new Thread(() -> {
-                financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
-                financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
-                financeCategoryDao.delete(financeCategory);
-            }).start();
+            callback.noInternet();
         }
     }
 
-    private void softRemove(FinanceCategoryModel financeCategory) {
-        financeCategory.setIsDelete(1);
-        financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+    public void remove(FinanceCategoryModel financeCategory) {
         new Thread(() -> {
-            financeHistoryDao.softDeleteFinanceHistories(financeCategory.getId());
-            financeCategoryDao.update(financeCategory);
+            financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+            financeHistoryDao.softDeleteFinanceHistory(financeCategory.getId());
+            financeCategoryDao.softDelete(financeCategory.getId());
+            if (isLogged) {
+                if (isNetworkConnect.isInternetAvailable() && financeCategory.getServerId() > 0) {
+                    Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                        @Override
+                        public void success(ResponseBody responseObj) {
+                            new Thread(() -> {
+                                financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
+                                financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+                                financeCategoryDao.delete(financeCategory);
+                            }).start();
+                        }
+
+                        @Override
+                        public void error() {
+                            callback.error();
+                        }
+
+                        @Override
+                        public void noPermit() {
+                            if (callback != null) {
+                                callback.noPerm();
+                            }
+                        }
+                    };
+
+                    Call<ResponseBody> call = network.removeCategory(financeCategory.getServerId());
+                    Requests.request(call, callbackResponse);
+                }
+            } else {
+                    financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+                    financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
+                    financeCategoryDao.delete(financeCategory);
+            }
         }).start();
+
     }
 
     public void createNewHistoryItem(FinanceHistoryModel item) {
@@ -383,6 +446,13 @@ public class FinanceRepository extends BaseRepository {
                 @Override
                 public void error() {
 
+                }
+
+                @Override
+                public void noPermit() {
+                    if (callback != null) {
+                        callback.noPerm();
+                    }
                 }
             };
 
@@ -415,16 +485,32 @@ public class FinanceRepository extends BaseRepository {
                 .subscribe(aDouble -> callback.setTotal(2, aDouble), throwable -> callback.setTotal(2, 0.0f)));
     }
 
+    public void setPrivate(FinanceCategoryWithTotal financeCategory) {
+        if (financeCategory.getCategory().getIsPrivate() == 1) {
+            financeCategory.getCategory().setIsPrivate(0);
+        } else {
+            financeCategory.getCategory().setIsPrivate(1);
+        }
+        updateFinanceCategory(financeCategory.getCategory(), null);
+    }
+
 
     public interface FinanceRepositoryCallback {
         void notUnique();
 
         void added(long id);
 
+        void maxLimit();
     }
 
     public interface FinanceHistoryCallback {
         void setAllItems(List<FinanceCategoryWithTotal> historyList);
+
+        void noPerm();
+
+        void error();
+
+        void noInternet();
     }
 
     public interface FinanceTotalResult {

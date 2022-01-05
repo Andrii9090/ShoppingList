@@ -27,4 +27,10 @@ public interface FinanceCategoryDao extends BaseDao<FinanceCategoryModel> {
 
     @Query("SELECT * FROM finance_category WHERE server_id=:serverId")
     FinanceCategoryModel getCategoryForServerId(long serverId);
+
+    @Query("SELECT * FROM finance_category WHERE id=:financeCategoryId")
+    FinanceCategoryModel getCategory(Long financeCategoryId);
+
+    @Query("UPDATE finance_category SET is_delete=1 WHERE id=:financeCategoryId")
+    void softDelete(long financeCategoryId);
 }

@@ -33,4 +33,7 @@ public interface ListDao extends BaseDao<ListModel> {
 
     @Query("SELECT * FROM list WHERE server_id=:serverId")
     ListModel getListForServerId(long serverId);
+
+    @Query("SELECT COUNT(*) FROM list WHERE is_delete=0")
+    int getQuantity();
 }

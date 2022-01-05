@@ -60,10 +60,14 @@ public class LoginRepository {
 
                         @Override
                         public void error() {
-
                             handler.post(() -> {
                                 callback.logged(true, response.body().getToken());
                             });
+                        }
+
+                        @Override
+                        public void noPermit() {
+
                         }
                     };
                     Requests.request(callSettings, callbackResponse);
@@ -89,6 +93,11 @@ public class LoginRepository {
             }
             @Override
             public void error() {
+            }
+
+            @Override
+            public void noPermit() {
+
             }
         };
         HashMap<String, String> settings = new HashMap<>();

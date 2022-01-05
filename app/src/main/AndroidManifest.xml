@@ -14,7 +14,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -25,6 +24,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FamilyFinance">
+
+        <service
+            android:name=".app.list.ListFMS"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".app.user.group.UserGroupActivity"
             android:exported="false" />
@@ -56,13 +64,17 @@
         <activity
             android:name=".app.list.ListActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="OPEN_LIST_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".app.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

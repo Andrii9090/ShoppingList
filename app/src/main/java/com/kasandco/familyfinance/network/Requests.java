@@ -1,11 +1,9 @@
 package com.kasandco.familyfinance.network;
 
-import com.kasandco.familyfinance.core.BaseRepository;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class Requests {
     public static <R> void request(Call<R> call, RequestsInterface<R> callback) {
@@ -14,10 +12,10 @@ public class Requests {
         call.enqueue(new Callback<R>() {
             @Override
             public void onResponse(Call<R> call, Response<R> response) {
-                if(response.code()==401){
-//                    callback.errorAuth();
+                if(response.code()==401 || response.code()==403){
+                    callback.noPermit();
                 }
-                if (response.isSuccessful()) {
+                else if (response.isSuccessful()) {
                     if (callback != null)
                         new Thread(() -> callback.success(response.body())).start();
                 } else {
@@ -39,6 +37,6 @@ public class Requests {
 
         void error();
 
-//        void errorAuth();
+        void noPermit();
     }
 }

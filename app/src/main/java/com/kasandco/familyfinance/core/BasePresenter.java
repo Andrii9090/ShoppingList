@@ -13,8 +13,7 @@ public abstract class BasePresenter<V> implements Constants {
 
     public void destroy(){
         view = null;
-    };
+    }
 
     abstract public void swipeRefresh();
-
 }

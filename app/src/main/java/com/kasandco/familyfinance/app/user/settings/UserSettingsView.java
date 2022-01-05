@@ -14,4 +14,8 @@ public interface UserSettingsView {
 
     void showLoader();
     void hideLoader();
+
+    void copyToClipBoard(String uid);
+
+    void showDialog();
 }

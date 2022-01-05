@@ -23,6 +23,7 @@ import com.kasandco.familyfinance.app.finance.models.FinanceDetailModel;
 import com.kasandco.familyfinance.app.finance.presenters.FinanceDetailPresenter;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.DateHelper;
+import com.kasandco.familyfinance.utils.ToastUtils;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -129,6 +130,11 @@ public class FinanceDetailActivity extends BaseActivity implements FinanceDetail
     @Override
     public void deleteViewItem(int position) {
         adapter.deleteItem(position);
+    }
+
+    @Override
+    public void showToast(int resource) {
+        ToastUtils.showToast(getString(resource),this);
     }
 
     @Override

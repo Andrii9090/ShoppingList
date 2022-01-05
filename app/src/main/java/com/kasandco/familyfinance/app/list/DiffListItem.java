@@ -1,11 +1,6 @@
 package com.kasandco.familyfinance.app.list;
 
-import android.util.Log;
-
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
-
-import com.kasandco.familyfinance.app.item.ItemModel;
 
 import java.util.List;
 
@@ -24,7 +19,11 @@ public class DiffListItem extends DiffUtil.Callback {
 
     @Override
     public int getNewListSize() {
-        return newItems.size();
+        if(newItems!=null) {
+            return newItems.size();
+        }else{
+            return 0;
+        }
     }
 
     @Override
@@ -38,6 +37,6 @@ public class DiffListItem extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         ListModel oldItem = oldItems.get(oldItemPosition);
         ListModel newItem = newItems.get(newItemPosition);
-        return !oldItem.getDateMod().equals(newItem.getDateMod());
+        return !oldItem.getDateMod().equals(newItem.getDateMod()) || !oldItem.getDateModServer().equals(newItem.getDateModServer());
     }
 }

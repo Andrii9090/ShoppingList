@@ -1,10 +1,14 @@
 package com.kasandco.familyfinance.app.user.settings;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -15,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -23,7 +26,6 @@ import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
-import com.kasandco.familyfinance.app.user.login.LoginActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
@@ -32,9 +34,8 @@ import javax.inject.Inject;
 public class UserSettingsActivity extends BaseActivity implements UserSettingsView {
 
     private EditText email, oldPassword, newPassword, newPassword2;
-    private Button btnSave, btnChangePassword;
+    private Button btnSave, btnChangePassword, copyUid;
     private Toolbar toolbar;
-    private ImageButton btnNav;
     private LinearProgressIndicator loader;
 
     @Inject
@@ -50,14 +51,18 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
         newPassword = findViewById(R.id.user_settings_new_password);
         newPassword2 = findViewById(R.id.user_settings_new_password2);
         loader = findViewById(R.id.user_settings_loading);
+        copyUid = findViewById(R.id.user_settings_copy_uid);
         btnSave = findViewById(R.id.user_settings_btn_save);
         btnChangePassword = findViewById(R.id.user_settings_btn_change_password);
-        btnSave.setOnClickListener(listener);
-        btnChangePassword.setOnClickListener(listener);
         toolbar = findViewById(R.id.user_settings_toolbar);
+
         setSupportActionBar(toolbar);
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(R.string.user_settings_title);
+
+        btnSave.setOnClickListener(listener);
+        btnChangePassword.setOnClickListener(listener);
+        copyUid.setOnClickListener(listener);
 
         if (sharedPreferenceUtil.getSharedPreferences().getString(Constants.EMAIL, null) != null) {
             email.setText(sharedPreferenceUtil.getSharedPreferences().getString(Constants.EMAIL, ""));
@@ -107,6 +112,9 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
                 break;
             case R.id.user_settings_btn_change_password:
                 presenter.clickBtnChangePassword();
+                break;
+            case R.id.user_settings_copy_uid:
+                presenter.clickBtnCopyUid();
                 break;
         }
     };
@@ -172,5 +180,24 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
     @Override
     public void hideLoader() {
         loader.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void copyToClipBoard(String uid) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("uid", uid);
+        clipboard.setPrimaryClip(clip);
+    }
+
+    @Override
+    public void showDialog() {
+        DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
+            dialogInterface.cancel();
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.text_uid_copied)
+                .setPositiveButton(R.string.text_positive_btn, dialogListener);
+
+        builder.show();
     }
 }

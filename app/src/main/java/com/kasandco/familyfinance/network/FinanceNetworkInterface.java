@@ -36,6 +36,6 @@ public interface FinanceNetworkInterface {
     @POST(Constants.REST_API_VERSION + "finance/history/sync/")
     Call<List<FinanceHistoryApiModel>> syncHistory(@Body List<FinanceHistorySync> syncData, @Header("device-id") String deviceId);
 
-    @GET(Constants.REST_API_VERSION + "finance/history/delete/{pk}")
+    @GET(Constants.REST_API_VERSION + "finance/history/delete/{pk}/")
     Call<ResponseBody> removeHistoryItem(@Path("pk") Long serverId);
 }

@@ -92,11 +92,10 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onClick(DialogInterface dialogInterface, int i) {
         if (i==DialogInterface.BUTTON_POSITIVE){
             callback.removeItem(currentPosition);
-        }
-        if (i==DialogInterface.BUTTON_NEGATIVE){
+        }else{
             dialogInterface.cancel();
         }
-        currentPosition = 0;
+        currentPosition = -1;
     }
 
     public void deleteItem(int position) {
@@ -118,7 +117,6 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         public void bind(int position, String _comment, String _userEmail, double _total, String _time, String currency){
-            currentPosition = position;
             if(_comment !=null){
                 String textComment = itemView.getContext().getString(R.string.pattern_finance_comment,_userEmail.isEmpty()?"":_userEmail+":", _comment);
 
@@ -131,6 +129,7 @@ public class FinanceDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
             total.setText(String.format(itemView.getContext().getString(R.string.text_currency_format), _total, currency));
             View.OnClickListener clickListener = view -> {
                 if (view.getId()==R.id.rv_finance_detail_remove){
+                    currentPosition = position;
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext())
                             .setMessage(R.string.delete_dialog)
                             .setPositiveButton(R.string.text_positive_btn, FinanceDetailAdapter.this)

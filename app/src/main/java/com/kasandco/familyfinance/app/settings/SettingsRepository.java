@@ -38,6 +38,11 @@ public class SettingsRepository extends BaseRepository {
                 public void error() {
 
                 }
+
+                @Override
+                public void noPermit() {
+
+                }
             };
             HashMap<String, String> settings = new HashMap<>();
             settings.put("theme", String.valueOf(sharedPreference.getSharedPreferences().getInt(Constants.COLOR_THEME, Constants.THEME_DEFAULT)));

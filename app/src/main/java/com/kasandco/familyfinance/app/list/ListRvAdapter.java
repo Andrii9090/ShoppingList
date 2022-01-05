@@ -118,6 +118,16 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             if(listItems.get(positionItem).getIsPrivate()==1){
                 contextMenu.getItem(0).setTitle(R.string.text_set_public);
             }
+
+            if(listItems.get(getAbsoluteAdapterPosition()).getIsOwner()==0){
+                contextMenu.getItem(0).setVisible(false);
+                contextMenu.getItem(1).setVisible(false);
+                contextMenu.getItem(5).setVisible(false);
+                contextMenu.getItem(6).setVisible(false);
+            }
+            if(listItems.get(getAbsoluteAdapterPosition()).getFinanceCategoryId()==null || listItems.get(getAbsoluteAdapterPosition()).getFinanceCategoryId()<=0){
+                contextMenu.getItem(2).setVisible(false);
+            }
         }
 
         public void bind(int position) {
@@ -158,6 +168,8 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             }
             if (listItems.get(position).getIsPrivate() == 1) {
                 imagePrivate.setVisibility(View.VISIBLE);
+            }else{
+                imagePrivate.setVisibility(View.GONE);
             }
             name.setText(listItems.get(position).getName());
             View.OnClickListener menuListener;

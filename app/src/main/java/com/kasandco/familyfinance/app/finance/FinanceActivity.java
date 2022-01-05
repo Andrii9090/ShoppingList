@@ -14,7 +14,11 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -360,6 +364,4 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceCate
             return 2;
         }
     }
-
-
 }

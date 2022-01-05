@@ -2,6 +2,7 @@ package com.kasandco.familyfinance.app.list;
 
 import android.annotation.SuppressLint;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.item.ItemModel;
 import com.kasandco.familyfinance.core.BasePresenter;
@@ -34,12 +35,19 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     private void showEmptyText() {
+        if(listItems!=null)
         view.showEmptyText(listItems.size() > 0);
     }
 
     @Override
     public void viewReady(ListActivity view) {
         this.view = view;
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        repository.saveFMCToken(task.getResult());
+                    }
+                });
         getListItems();
     }
 
@@ -73,8 +81,22 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
         }
     }
 
+    @Override
+    public void noPermit() {
+        view.showToast(R.string.text_no_permissions);
+    }
+
+    @Override
+    public void error() {
+        view.showToast(R.string.error_load_data);
+    }
+
     public void clickShowCreateFragment() {
-        view.showCreateFragment();
+        if(!repository.isLogged() && adapter.getItemCount()>=MAX_QUANTITY_WITHOUT_REG){
+            view.showToast(R.string.text_error_max_quantity);
+        }else {
+            view.showCreateFragment();
+        }
     }
 
     public void selectRemoveList() {
@@ -87,11 +109,11 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     public void selectClearBought() {
-        adapter.getItems().get(adapter.getPosition()).setDateMod(String.valueOf(System.currentTimeMillis()));
+        repository.removeInactiveItems(adapter.getItems().get(adapter.getPosition()));
     }
 
     public void selectClearAll() {
-        adapter.getItems().get(adapter.getPosition()).setDateMod(String.valueOf(System.currentTimeMillis()));
+        repository.removeAllItems(adapter.getItems().get(adapter.getPosition()));
     }
 
     public void clickItem(ListRvAdapter.ViewHolder holder) {
@@ -104,7 +126,7 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     public void selectAddCost() {
-        if (adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == 0) {
+        if (adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == null || adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == 0) {
             view.showToast(R.string.text_error_add_cost);
         } else {
             view.showCreateItemHistoryFragment();

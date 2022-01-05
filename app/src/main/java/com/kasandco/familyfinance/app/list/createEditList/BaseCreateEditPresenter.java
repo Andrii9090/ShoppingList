@@ -61,9 +61,13 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
     }
 
     protected boolean validate() {
-        if (name == null && name.length() < 2) {
-            return false;
-        } else return !textSpinnerSelected.isEmpty();
+        if (name != null && name.length() > 2) {
+            return true;
+        }
+        if (!textSpinnerSelected.isEmpty()){
+            return true;
+        }
+        return false;
     }
 
     public void clickCreateBtn() {

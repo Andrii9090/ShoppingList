@@ -6,6 +6,7 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.41875" />
         <entry key="../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/drawable-anydpi/ic_private.xml" value="0.24322916666666666" />
+        <entry key="app/src/main/res/drawable-anydpi/ic_reload_white.xml" value="0.2921875" />
         <entry key="app/src/main/res/drawable/ic_calculator.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/ic_finance_icon.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/drawable/ic_income.xml" value="0.2109375" />
@@ -26,7 +27,7 @@
         <entry key="app/src/main/res/layout-v21/activity_expense.xml" value="0.22395833333333334" />
         <entry key="app/src/main/res/layout/activity_expense.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_finance.xml" value="0.253125" />
-        <entry key="app/src/main/res/layout/activity_finance_detail.xml" value="0.3458333333333333" />
+        <entry key="app/src/main/res/layout/activity_finance_detail.xml" value="0.4700029476749277" />
         <entry key="app/src/main/res/layout/activity_item.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/activity_list.xml" value="0.14527399779330635" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
@@ -36,7 +37,7 @@
         <entry key="app/src/main/res/layout/activity_statistic.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_test.xml" value="0.33958333333333335" />
         <entry key="app/src/main/res/layout/activity_user_group.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/activity_user_settings.xml" value="0.3411458333333333" />
+        <entry key="app/src/main/res/layout/activity_user_settings.xml" value="0.37025641025641026" />
         <entry key="app/src/main/res/layout/calculator.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/detailt_stat.xml" value="0.33958333333333335" />
         <entry key="app/src/main/res/layout/fragment_color_theme_setting.xml" value="0.19583333333333333" />
@@ -47,6 +48,7 @@
         <entry key="app/src/main/res/layout/fragment_create_item.xml" value="0.33549582947173306" />
         <entry key="app/src/main/res/layout/fragment_create_list_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_expensive_history.xml" value="0.41367632268353716" />
+        <entry key="app/src/main/res/layout/fragment_finance_category.xml" value="0.2760416666666667" />
         <entry key="app/src/main/res/layout/fragment_finance_history.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_navigation_view_main.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/fragment_select_currency.xml" value="0.33958333333333335" />
@@ -66,7 +68,7 @@
         <entry key="app/src/main/res/layout/rv_list_cell.xml" value="0.328125" />
         <entry key="app/src/main/res/layout/rv_list_element.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/rv_user_group.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/toolbar_main.xml" value="0.728" />
+        <entry key="app/src/main/res/layout/toolbar_main.xml" value="0.590728476821192" />
         <entry key="app/src/main/res/menu/context_menu_list_item.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/menu/menu_context_finance_category.xml" value="0.17864583333333334" />
         <entry key="app/src/main/res/menu/menu_context_item.xml" value="0.23020833333333332" />
@@ -76,6 +78,7 @@
         <entry key="app/src/main/res/menu/option_currency_menu.xml" value="0.33958333333333335" />
         <entry key="app/src/main/res/menu/user_settings_menu.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.20625" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24895833333333334" />
         <entry key="app/src/main/res/xml/file_paths.xml" value="0.23072916666666668" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.1953125" />
       </map>

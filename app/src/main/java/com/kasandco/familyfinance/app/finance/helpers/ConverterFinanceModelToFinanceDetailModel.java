@@ -27,6 +27,10 @@ public class ConverterFinanceModelToFinanceDetailModel {
                 financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getDate(), -1));
             }else {
                 if (!dateItem.equals(currentDate)) {
+                    FinanceDetailModel model = new FinanceDetailModel(financeModel.get(i).getDate(), -1);
+                    model.setCategoryId(financeModel.get(i).getCategoryId());
+                    model.setServerId(financeModel.get(i).getServerId());
+                    model.setId(financeModel.get(i).getId());
                     financeDetailModel.add(new FinanceDetailModel(financeModel.get(i).getDate(), -1));
                     currentDate = dateItem;
                 }

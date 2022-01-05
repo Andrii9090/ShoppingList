@@ -14,7 +14,10 @@ public class ListApiModel {
     private String icon;
 
     @SerializedName("finance_category")
-    private long financeCategoryId;
+    private Long financeCategoryId;
+
+    @SerializedName("is_owner")
+    private boolean isOwner;
 
     @SerializedName("local_id")
     private long localId;
@@ -40,7 +43,11 @@ public class ListApiModel {
         } else {
             dateMod = listModel.getDateMod().substring(0, 10);
         }
-        financeCategoryId = listModel.getFinanceCategoryId();
+        if (listModel.getFinanceCategoryId()!= null && listModel.getFinanceCategoryId()!=0) {
+            financeCategoryId = listModel.getFinanceCategoryId();
+        }else {
+            financeCategoryId = null;
+        }
         isDelete = listModel.getIsDelete() == 1;
     }
 
@@ -118,5 +125,13 @@ public class ListApiModel {
 
     public void setPrivate(boolean aPrivate) {
         isPrivate = aPrivate;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 }

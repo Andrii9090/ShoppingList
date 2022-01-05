@@ -17,6 +17,8 @@ public interface FinanceDetailView {
         void addAdapterToRV(List<FinanceDetailModel> items);
 
         void deleteViewItem(int position);
+
+        void showToast(int text_no_permissions);
     }
     
     interface Presenter{

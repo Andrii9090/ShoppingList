@@ -6,13 +6,19 @@ import java.util.List;
 
 public interface ContractUserGroup {
     interface View extends BaseContract {
-        void setGroupName(String groupName);
-
         void setDataToAdapter(List<String> users);
 
         void showToastErrorRemoveUser();
 
         void userRemoved(String email);
+
+        void showDialogNotRegisterUser();
+
+        void showToast(int text_error_load_group);
+
+        void noMainUser();
+
+        void showLoading(boolean isShow);
     }
 
     interface Presenter {

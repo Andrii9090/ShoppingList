@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
@@ -51,6 +53,8 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     private long listId;
     private String listName;
     private long serverListId;
+
+    private Snackbar snackbar;
 
     private RecyclerView recyclerView;
     private TextView emptyText;
@@ -210,6 +214,15 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     @Override
     public long getServerListId() {
         return serverListId;
+    }
+
+    @Override
+    public void showSnackBarToast(int text, int length) {
+        if (snackbar==null || !snackbar.isShown()) {
+            snackbar = Snackbar.make(this, recyclerView, getString(text), Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
+
     }
 
     @Override

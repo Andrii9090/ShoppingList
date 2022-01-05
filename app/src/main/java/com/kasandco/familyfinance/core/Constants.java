@@ -4,8 +4,7 @@ import com.kasandco.familyfinance.R;
 
 public interface Constants {
     String REST_API_VERSION = "/api/v1/";
-    String BASE_URL = "https://b5bb-85-86-244-26.ngrok.io";
-    String API_KEY = "api_key";
+    String BASE_URL = "https://27cb-85-86-244-26.ngrok.io";
     String IS_ADDED_ICONS = "is_added_icons";
 
     int REQUEST_TAKE_PHOTO = 1;
@@ -30,4 +29,7 @@ public interface Constants {
     String EMAIL = "email";
     String DEVICE_ID = "device_id";
     int THEME_DEFAULT = R.style.Theme_FamilyFinanceBlue;
+    int MAX_QUANTITY_WITHOUT_REG = 3;
+    String FMC_TOKEN = "fmc_token";
+    String UUID = "uuid";
 }

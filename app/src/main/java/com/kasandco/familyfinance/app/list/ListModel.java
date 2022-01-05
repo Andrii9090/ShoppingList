@@ -27,28 +27,54 @@ public class ListModel extends BaseModel implements Serializable {
     @ColumnInfo(name = "cost_category_id", defaultValue = "0")
     private Long financeCategoryId;
 
-    public ListModel(){
+    public ListModel() {
 
     }
 
     @Ignore
-    public ListModel(String name, String dateMod, String iconPath, long financeCategoryId){
-        this.icon =iconPath;
+    public ListModel(String name, String dateMod, String dateModServer, String iconPath, long financeCategoryId) {
+        this.icon = iconPath;
+        this.dateMod = dateMod;
+        this.name = name;
+        this.dateModServer = dateModServer;
+        this.financeCategoryId = financeCategoryId;
+        isPrivate = 1;
+    }
+
+    @Ignore
+    public ListModel(String name, String dateMod, String iconPath, long financeCategoryId) {
+        this.icon = iconPath;
         this.dateMod = dateMod;
         this.name = name;
         this.financeCategoryId = financeCategoryId;
+        isPrivate = 1;
     }
 
-    public ListModel(ListApiModel listData){
+    public ListModel(ListApiModel listData) {
         id = listData.getLocalId();
         serverId = listData.getId();
         name = listData.getName();
         dateMod = listData.getDateMod();
         dateModServer = listData.getDateMod();
-        isDelete = listData.isDelete()?1:0;
+        isDelete = listData.isDelete() ? 1 : 0;
         icon = listData.getIcon();
         financeCategoryId = listData.getFinanceCategoryId();
-        isPrivate = listData.isPrivate()?1:0;
+        isPrivate = listData.isPrivate() ? 1 : 0;
+        isOwner = listData.isOwner() ? 1 : 0;
+    }
+
+    public ListModel(ListModel editItem) {
+        icon = editItem.getIcon();
+        name = editItem.getName();
+        id = editItem.getId();
+        financeCategoryId = editItem.getFinanceCategoryId();
+        serverId = editItem.getServerId();
+        isPrivate = editItem.getIsPrivate();
+        isDelete = editItem.getIsDelete();
+        isCost = editItem.getIsCost();
+        dateMod = editItem.getDateMod();
+        dateModServer = editItem.getDateModServer();
+        isOwner = editItem.getIsOwner();
     }
 
     public String getName() {

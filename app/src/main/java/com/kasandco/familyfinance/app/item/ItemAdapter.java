@@ -58,7 +58,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         } else {
 
             Picasso.get()
-                    .load(new File(items.get(position).getImagePath()))
+                    .load(new File(items.get(holder.getAbsoluteAdapterPosition()).getImagePath()))
                     .centerCrop()
                     .resize(100, 100)
                     .into(holder.imageIcon);

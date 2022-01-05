@@ -4,7 +4,7 @@ import com.kasandco.familyfinance.app.finance.adapters.FinanceCategoryAdapter;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
 import com.kasandco.familyfinance.core.BaseContract;
 
-public interface HistoryContract extends BaseContract {
+public interface FinanceCategoryContract extends BaseContract {
     int getHistoryType();
 
     void setAdapter(FinanceCategoryAdapter adapter);
@@ -20,4 +20,6 @@ public interface HistoryContract extends BaseContract {
     void showDialogRemove(int position);
 
     void reloadTotal();
+
+    void animateBtnReload(boolean b);
 }

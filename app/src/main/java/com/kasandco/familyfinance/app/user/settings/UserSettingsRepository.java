@@ -1,11 +1,15 @@
 package com.kasandco.familyfinance.app.user.settings;
 
+import android.os.Handler;
+
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.core.BaseRepository;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.core.icon.IconModel;
+import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
 import com.kasandco.familyfinance.network.model.ChangePaswordApiModel;
+import com.kasandco.familyfinance.network.model.UIdModel;
 import com.kasandco.familyfinance.network.model.UpdateEmailApiModel;
 import com.kasandco.familyfinance.utils.IsNetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
@@ -37,6 +41,7 @@ public class UserSettingsRepository extends BaseRepository {
                 if (response.isSuccessful()) {
                     sharedPreference.getEditor().putString(Constants.EMAIL, null).apply();
                     sharedPreference.getEditor().putString(Constants.TOKEN, null).apply();
+                    sharedPreference.getEditor().putString(Constants.UUID, null).apply();
                     new Thread(() -> {
                         List<IconModel> icons = appDataBase.getIconDao().getAllIcon();
                         appDataBase.clearAllTables();
@@ -96,6 +101,37 @@ public class UserSettingsRepository extends BaseRepository {
         });
     }
 
+    public void getUid(UserSettingsRepositoryCallback callback) {
+        String uid = sharedPreference.getSharedPreferences().getString(Constants.UUID, null);
+        if(uid != null){
+            callback.uid(uid);
+        }else {
+            getUidFromServer(callback);
+        }
+    }
+
+    private void getUidFromServer(UserSettingsRepositoryCallback callback) {
+        Handler handler = new Handler();
+        Requests.RequestsInterface<UIdModel> requests = new Requests.RequestsInterface<UIdModel>() {
+            @Override
+            public void success(UIdModel responseObj) {
+                sharedPreference.getEditor().putString(Constants.UUID, responseObj.getUid()).apply();
+                handler.post(()->callback.uid(responseObj.getUid()));
+            }
+
+            @Override
+            public void error() {
+                handler.post(()->callback.uid(null));
+            }
+
+            @Override
+            public void noPermit() {
+            }
+        };
+        Call<UIdModel> call = network.getUid();
+        Requests.request(call, requests);
+    }
+
     public interface UserSettingsRepositoryCallback {
         void errorToChangeEmail();
 
@@ -104,5 +140,6 @@ public class UserSettingsRepository extends BaseRepository {
         void dataCleared();
 
         void passwordChanged(boolean success);
+        void uid(String uid);
     }
 }

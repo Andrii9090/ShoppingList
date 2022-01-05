@@ -20,10 +20,12 @@ import javax.inject.Inject;
 public class AdapterUserGroup extends RecyclerView.Adapter<AdapterUserGroup.ViewHolder> {
     private List<String> users;
     private CallbackAdapterUserGroup callback;
+    private boolean isMainUser;
 
     @Inject
     public AdapterUserGroup() {
         users = new ArrayList<>();
+        isMainUser = true;
     }
 
     public void setUsers(List<String> users) {
@@ -58,17 +60,22 @@ public class AdapterUserGroup extends RecyclerView.Adapter<AdapterUserGroup.View
         notifyItemRemoved(index);
     }
 
+    public void setMainUser(boolean mainUser) {
+        isMainUser = mainUser;
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageButton btnRemove;
         private TextView email;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             btnRemove = itemView.findViewById(R.id.rv_user_group_btn_remove);
             email = itemView.findViewById(R.id.rv_user_group_email);
-
+            if(!isMainUser){
+                btnRemove.setVisibility(View.GONE);
+            }
         }
 
         public void bind(String emailText) {

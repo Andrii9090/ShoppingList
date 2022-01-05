@@ -30,25 +30,18 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
 
     @Override
     public void create() {
-        boolean isEdit = false;
-//        ListModel newList = new ListModel();
-//        newList = editItem.clone();
+        ListModel model = new ListModel(editItem);
         if (!editItem.getName().equals(name)) {
-            editItem.setName(name);
-            isEdit = true;
+            model.setName(name);
         }
         if (editItem.getIcon() != null && !editItem.getIcon().equals(pathIcon) || editItem.getIcon() == null && pathIcon != null) {
-            editItem.setIcon(pathIcon);
-            isEdit = true;
+            model.setIcon(pathIcon);
         }
         if (editItem.getFinanceCategoryId()!=null && editItem.getFinanceCategoryId() != financeCategory) {
-            editItem.setFinanceCategoryId(financeCategory);
-            isEdit = true;
+            model.setFinanceCategoryId(financeCategory);
         }
-        editItem.setDateMod(String.valueOf(System.currentTimeMillis()));
-        listRepository.update(editItem);
-//        }
-//        nullingSpinnerPosition();
+        model.setDateMod(String.valueOf(System.currentTimeMillis()));
+        listRepository.update(model);
         view.close();
     }
 
@@ -115,6 +108,11 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
 
     @Override
     public void swipeRefresh() {
+
+    }
+
+    @Override
+    public void maxLimit() {
 
     }
 }

@@ -26,11 +26,8 @@ public interface ListNetworkInterface extends BaseNetworkInterface {
     Call<ResponseBody> removeList(@Path("id") long serverId);
 
     @POST(Constants.REST_API_VERSION+"lists/sync-lists/")
-    Call<List<ListApiModel>> syncData(@Body List<LastSyncApiDataModel> lastSyncItems, @Header("device-id") String deviceId);
+    Call<List<ListApiModel>> syncData(@Body List<LastSyncApiDataModel> lastSyncItems, @Header("device-id") String deviceId, @Header("fm") String fmId);
 
-    @GET(Constants.REST_API_VERSION+"lists/subscribe-list/{token}/")
-    Call<ListApiModel> subscribeToList(@Path("token") String token);
-
-    @GET(Constants.REST_API_VERSION+"lists/list-items-delete/{status}/{listId}")
+    @GET(Constants.REST_API_VERSION+"lists/list-items-delete/{status}/{listId}/")
     Call<ResponseBody> clearListItems(@Path("listId") long listId, @Path("status") int status);
 }

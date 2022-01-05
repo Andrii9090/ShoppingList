@@ -155,12 +155,9 @@ public class FragmentCreateCategory extends Fragment implements CreateCategoryCo
 
     @Override
     public void close() {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                KeyboardUtil.hideKeyboard(getActivity());
-                callback.closeCreateFragment();
-            }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            KeyboardUtil.hideKeyboard(getActivity());
+            callback.closeCreateFragment();
         });
     }
 

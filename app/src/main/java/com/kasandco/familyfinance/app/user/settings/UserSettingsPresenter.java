@@ -99,4 +99,18 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> imple
             view.showToast(R.string.text_password_changed_error);
         }
     }
+
+    @Override
+    public void uid(String uid) {
+        if(uid!=null){
+            view.copyToClipBoard(uid);
+            view.showDialog();
+        }else {
+            view.showToast(R.string.error_copy_uid);
+        }
+    }
+
+    public void clickBtnCopyUid() {
+        repository.getUid(this);
+    }
 }

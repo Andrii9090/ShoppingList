@@ -1,5 +1,7 @@
 package com.kasandco.familyfinance.app.finance.presenters;
 
+import android.util.Log;
+
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.finance.FinanceRepository;
 import com.kasandco.familyfinance.app.finance.adapters.FinanceCategoryAdapter;
@@ -8,7 +10,7 @@ import com.kasandco.familyfinance.core.BasePresenter;
 
 import java.util.List;
 
-public class PresenterFinanceCategory extends BasePresenter<HistoryContract> implements FinanceRepository.FinanceHistoryCallback {
+public class PresenterFinanceCategory extends BasePresenter<FinanceCategoryContract> implements FinanceRepository.FinanceHistoryCallback {
     private int type;
     private FinanceCategoryAdapter adapter;
     private String startDate;
@@ -22,7 +24,7 @@ public class PresenterFinanceCategory extends BasePresenter<HistoryContract> imp
     }
 
     @Override
-    public void viewReady(HistoryContract view) {
+    public void viewReady(FinanceCategoryContract view) {
         this.view = view;
         type = this.view.getHistoryType();
         setNewPeriod(startDate, endDate);
@@ -44,20 +46,19 @@ public class PresenterFinanceCategory extends BasePresenter<HistoryContract> imp
         view.setAdapter(adapter);
     }
 
-    public void contextMenuClick(int itemId) {
-        int position = adapter.getCurrentPosition();
-        switch (itemId) {
-            case R.id.context_finance_category_edit:
-                view.showEditForm(type, adapter.getItems().get(position).getCategory());
-                break;
-            case R.id.context_finance_category_detail:
-                view.startFinanceDetailActivity(adapter.getItems().get(position).getCategory());
-                break;
-            case R.id.context_finance_category_remove:
-                view.showDialogRemove(position);
-                break;
-        }
-        adapter.nullingPosition();
+    @Override
+    public void noPerm() {
+        view.showToast(R.string.text_no_permissions);
+    }
+
+    @Override
+    public void error() {
+        view.showToast(R.string.error_load_data);
+    }
+
+    @Override
+    public void noInternet() {
+        view.showToast(R.string.internet_connection_error);
     }
 
     public void clickToCreateNewHistoryItem() {
@@ -88,5 +89,29 @@ public class PresenterFinanceCategory extends BasePresenter<HistoryContract> imp
     public void selectRemoveList(int position) {
         repository.remove(adapter.getItems().get(position).getCategory());
         view.reloadTotal();
+    }
+
+    public void clickEdit() {
+        view.showEditForm(type, adapter.getItems().get(adapter.getCurrentPosition()).getCategory());
+        adapter.nullingPosition();
+    }
+
+    public void clickDetail() {
+        view.startFinanceDetailActivity(adapter.getItems().get(adapter.getCurrentPosition()).getCategory());
+        adapter.nullingPosition();
+    }
+
+    public void clickCategoryRemove() {
+        view.showDialogRemove(adapter.getCurrentPosition());
+        adapter.nullingPosition();
+    }
+
+    public void clickPrivate() {
+        repository.setPrivate(adapter.getItems().get(adapter.getCurrentPosition()));
+    }
+
+    public void clickReloadData() {
+        view.animateBtnReload(true);
+        setNewPeriod(startDate, endDate);
     }
 }

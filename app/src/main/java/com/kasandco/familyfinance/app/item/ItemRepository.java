@@ -36,6 +36,7 @@ public class ItemRepository extends BaseRepository {
     private ItemNetworkInterface network;
     private ItemSyncHistoryDao itemSyncDao;
     private SaveImageUtils saveImageUtils;
+    private ItemRepositoryCallback callback;
 
     @Inject
     public ItemRepository(ItemNetworkInterface _networkInterface, ItemDao _itemDao, SaveImageUtils _saveImage, SharedPreferenceUtil _sharedPreference, IsNetworkConnect networkConnect, ItemSyncHistoryDao _itemSyncDao) {
@@ -47,9 +48,9 @@ public class ItemRepository extends BaseRepository {
         disposable = new CompositeDisposable();
     }
 
-    public void create(String[] arrayText, long listId, long serverListId) {
+    public void create(String name, long listId, long serverListId) {
         new Thread(() -> {
-            long itemId = itemDao.insert(new ItemModel(arrayText[0], listId, serverListId));
+            long itemId = itemDao.insert(new ItemModel(name, listId, serverListId));
             ItemModel item = itemDao.getItem(itemId);
             networkCreate(item);
         }).start();
@@ -69,6 +70,13 @@ public class ItemRepository extends BaseRepository {
                 @Override
                 public void error() {
 
+                }
+
+                @Override
+                public void noPermit() {
+                    if(callback!=null) {
+                        callback.noPerm();
+                    }
                 }
             };
 
@@ -107,6 +115,13 @@ public class ItemRepository extends BaseRepository {
                 public void error() {
                     new Thread(() -> itemDao.update(item)).start();
                 }
+
+                @Override
+                public void noPermit() {
+                    if(callback!=null) {
+                        callback.noPerm();
+                    }
+                }
             };
 
             Call<ResponseBody> call = network.remove(item.getServerId());
@@ -136,6 +151,13 @@ public class ItemRepository extends BaseRepository {
                 public void error() {
 
                 }
+
+                @Override
+                public void noPermit() {
+                    if(callback!=null) {
+                        callback.noPerm();
+                    }
+                }
             };
 
             Call<ItemApiModel> call = network.update(apiModel);
@@ -147,6 +169,7 @@ public class ItemRepository extends BaseRepository {
     public void getAll(long listId, long serverListId, ItemRepositoryCallback callback) {
         this.listId = listId;
         this.serverListId = serverListId;
+        this.callback = callback;
         disposable.add(itemDao.getAllItems(listId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -177,11 +200,11 @@ public class ItemRepository extends BaseRepository {
                                         itemModel.setId(item.getId());
                                         itemModel.setImagePath(item.getImagePath());
                                         if (!itemResponse.getServerImageName().isEmpty()) {
-                                            if (item.getImagePath() == null || item.getImagePath().isEmpty()) {
+                                            if (item.getImagePath() == null || item.getImagePath().isEmpty() && !itemResponse.isDelete()) {
                                                 downloadImageFromServer(item.getServerId());
-                                            } else if (item.getServerImageName() == null) {
+                                            } else if (item.getServerImageName() == null && !itemResponse.isDelete()) {
                                                 downloadImageFromServer(item.getServerId());
-                                            } else if (item.getServerImageName() != null && !item.getServerImageName().equals(itemResponse.getServerImageName())) {
+                                            } else if (item.getServerImageName() != null && !item.getServerImageName().equals(itemResponse.getServerImageName()) && !itemResponse.isDelete()) {
                                                 downloadImageFromServer(item.getServerId());
                                             } else {
                                                 itemModel.setServerImageName(itemResponse.getServerImageName());
@@ -193,14 +216,16 @@ public class ItemRepository extends BaseRepository {
                                         } else {
                                             itemDao.update(itemModel);
                                         }
-                                        if (itemResponse.getHasImage() && !itemResponse.getServerImageName().equals(itemModel.getServerImageName())) {
+                                        if (itemResponse.getHasImage() && !itemResponse.getServerImageName().equals(itemModel.getServerImageName()) && !itemResponse.isDelete()) {
                                             downloadImageFromServer(itemResponse.getId());
                                         }
                                     } else {
-                                        itemModel.setLocalListId(listId);
-                                        itemDao.insert(itemModel);
-                                        if (itemResponse.getHasImage()) {
-                                            downloadImageFromServer(itemResponse.getId());
+                                        if (!itemResponse.isDelete()) {
+                                            itemModel.setLocalListId(listId);
+                                            itemDao.insert(itemModel);
+                                            if (itemResponse.getHasImage()) {
+                                                downloadImageFromServer(itemResponse.getId());
+                                            }
                                         }
                                     }
 
@@ -213,6 +238,13 @@ public class ItemRepository extends BaseRepository {
                     @Override
                     public void error() {
 
+                    }
+
+                    @Override
+                    public void noPermit() {
+                        if(callback!=null) {
+                            callback.noPerm();
+                        }
                     }
                 };
 
@@ -265,7 +297,13 @@ public class ItemRepository extends BaseRepository {
 
             @Override
             public void error() {
+            }
 
+            @Override
+            public void noPermit() {
+                if(callback!=null) {
+                    callback.noPerm();
+                }
             }
         };
 
@@ -279,9 +317,6 @@ public class ItemRepository extends BaseRepository {
         if (imagePath.isEmpty()) {
             deleteImageInServer(id);
         }
-//        if (bitmap != null) {
-//            saveImageFromServer(bitmap, id);
-//        }
     }
 
     private void deleteImageInServer(long id) {
@@ -312,7 +347,14 @@ public class ItemRepository extends BaseRepository {
 
                     @Override
                     public void error() {
+                        callback.errorLoadImage();
+                    }
 
+                    @Override
+                    public void noPermit() {
+                        if(callback!=null) {
+                            callback.noPerm();
+                        }
                     }
                 };
 
@@ -339,5 +381,8 @@ public class ItemRepository extends BaseRepository {
 
     public interface ItemRepositoryCallback {
         void setItems(List<ItemModel> items);
+        void errorLoadImage();
+
+        void noPerm();
     }
 }

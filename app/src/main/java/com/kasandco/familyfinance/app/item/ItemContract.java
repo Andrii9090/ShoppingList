@@ -31,4 +31,6 @@ public interface ItemContract extends BaseContract {
     ContentResolver getContentResolver();
 
     long getServerListId();
+
+    void showSnackBarToast(int error_upload_image, int len);
 }

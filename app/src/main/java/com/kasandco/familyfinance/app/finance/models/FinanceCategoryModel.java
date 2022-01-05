@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
 
+import com.google.firebase.FirebaseApp;
 import com.kasandco.familyfinance.core.BaseModel;
 import com.kasandco.familyfinance.network.model.FinanceCategoryApiModel;
 
@@ -13,6 +14,8 @@ import com.kasandco.familyfinance.network.model.FinanceCategoryApiModel;
 public class FinanceCategoryModel extends BaseModel {
 
     private String name;
+    @ColumnInfo(name = "is_private", defaultValue = "1")
+    private int isPrivate;
     @ColumnInfo(defaultValue = "1")
     private int type;
     @ColumnInfo(name = "icon_path")
@@ -23,21 +26,26 @@ public class FinanceCategoryModel extends BaseModel {
 
     @Ignore
     public FinanceCategoryModel(String name, String iconPath, int type, String dateMod) {
+        super();
         this.name = name;
         this.iconPath = iconPath;
         this.type = type;
         this.dateMod = dateMod;
+        isPrivate = 1;
     }
 
     public FinanceCategoryModel(String name, String iconPath, int type, String dateMod, String date) {
+        super();
         this.name = name;
         this.iconPath = iconPath;
         this.type = type;
         this.dateMod = dateMod;
         this.date = date;
+        isPrivate = 1;
     }
 
     public FinanceCategoryModel(FinanceCategoryApiModel responseModel) {
+        super();
         name = responseModel.getName();
         iconPath = responseModel.getIconPath();
         type = responseModel.getType();
@@ -46,6 +54,8 @@ public class FinanceCategoryModel extends BaseModel {
         isDelete = responseModel.getIsDelete() ? 1 : 0;
         serverId = responseModel.getId();
         id = responseModel.getLocalId();
+        isPrivate = responseModel.isPrivate()?1:0;
+        isOwner = responseModel.isOwner()?1:0;
     }
 
     public long getId() {
@@ -118,5 +128,13 @@ public class FinanceCategoryModel extends BaseModel {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    public int getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(int isPrivate) {
+        this.isPrivate = isPrivate;
     }
 }

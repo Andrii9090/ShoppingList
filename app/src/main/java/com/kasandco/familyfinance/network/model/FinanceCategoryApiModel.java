@@ -1,6 +1,5 @@
 package com.kasandco.familyfinance.network.model;
 
-import androidx.room.ColumnInfo;
 
 import com.google.gson.annotations.SerializedName;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
@@ -18,6 +17,10 @@ public class FinanceCategoryApiModel {
     private boolean isDelete;
     @SerializedName("date_mod")
     private String dateMod;
+    @SerializedName("is_private")
+    private boolean isPrivate;
+    @SerializedName("is_owner")
+    private boolean isOwner;
     private double total;
 
     public FinanceCategoryApiModel(){}
@@ -27,8 +30,10 @@ public class FinanceCategoryApiModel {
         name = category.getName();
         type = category.getType();
         iconPath = category.getIconPath();
+        isOwner = category.getIsOwner() == 1;
         isDelete = category.getIsDelete() == 1;
         total = 0;
+        isPrivate = category.getIsPrivate()==1;
     }
 
     public long getId() {
@@ -95,4 +100,19 @@ public class FinanceCategoryApiModel {
         this.total = total;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
+    }
 }

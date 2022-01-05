@@ -13,6 +13,7 @@
         android:id="@+id/rv_item_category_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:src="@drawable/ic_calculator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,7 +21,7 @@
     <TextView
         android:id="@+id/rv_item_category_name"
         android:layout_width="0dp"
-        app:layout_constraintWidth_percent=".95"
+        app:layout_constraintWidth_percent=".85"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/roboto_regular"
@@ -28,6 +29,15 @@
         android:textAlignment="center"
         android:textSize="@dimen/categorySize"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_item_category_icon" />
+
+    <ImageView
+        android:id="@+id/rv_item_category_private"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/ic_private"
+        app:layout_constraintBottom_toTopOf="@+id/rv_item_category_total"
+        app:layout_constraintStart_toEndOf="@+id/rv_item_category_name"
         app:layout_constraintTop_toBottomOf="@+id/rv_item_category_icon" />
 
     <TextView

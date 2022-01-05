@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -39,7 +40,6 @@ import java.util.List;
 public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategoryAdapter.ViewHolder> {
     private List<FinanceCategoryWithTotal> items;
     private int currentPosition;
-    private OnClickItemListener listener;
 
     public FinanceCategoryAdapter() {
         currentPosition = -1;
@@ -60,7 +60,7 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         if (this.items == null) {
             this.items = new ArrayList<>();
             this.items.addAll(items);
-            notifyDataSetChanged();
+            //notifyDataSetChanged();
         } else {
             diff(items);
         }
@@ -96,32 +96,33 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         return currentPosition;
     }
 
-    public void setOnClickListener(OnClickItemListener listener) {
-        this.listener = listener;
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
-        ImageView icon;
+        ImageView icon, imgPrivate;
         TextView name, total;
+        int currentapiVersion;
 
+        @SuppressLint("NotifyDataSetChanged")
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            currentapiVersion = android.os.Build.VERSION.SDK_INT;
             icon = itemView.findViewById(R.id.rv_item_category_icon);
             name = itemView.findViewById(R.id.rv_item_category_name);
             total = itemView.findViewById(R.id.rv_item_category_total);
-            itemView.setOnClickListener(view -> {
+            imgPrivate = itemView.findViewById(R.id.rv_item_category_private);
+
+            View.OnClickListener menuListener;
+            menuListener = view -> {
                 setPosition(getAbsoluteAdapterPosition());
-                changeSelected();
-                items.get(getAbsoluteAdapterPosition()).setSelected(true);
-                items.get(getAbsoluteAdapterPosition()).getCategory().setDateMod(String.valueOf(System.currentTimeMillis()));
-                notifyDataSetChanged();
-                listener.clickToItem();
-            });
+                currentPosition = getAbsoluteAdapterPosition();
+                if (currentapiVersion >= Build.VERSION_CODES.N) {
+                    itemView.showContextMenu(itemView.getWidth(), itemView.getHeight());
+                } else {
+                    itemView.showContextMenu();
+                }
+            };
+            itemView.setOnLongClickListener(view -> true);
+            itemView.setOnClickListener(menuListener);
             itemView.setOnCreateContextMenuListener(this);
-            itemView.setOnLongClickListener(view -> {
-                setPosition(getAbsoluteAdapterPosition());
-                return false;
-            });
         }
 
         @SuppressLint({"DefaultLocale", "ResourceType"})
@@ -150,6 +151,13 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
+            imgPrivate.setVisibility(View.GONE);
+
+
+            if (items.get(position).getCategory().getIsPrivate() == 1) {
+                imgPrivate.setVisibility(View.VISIBLE);
+            }
+
             name.setText(items.get(position).getCategory().getName());
             total.setText(String.format("%.2f %s", (float) items.get(position).getTotal(), new SharedPreferenceUtil(total.getContext()).getSharedPreferences().getString(SHP_DEFAULT_CURRENCY, "USD")));
         }
@@ -158,20 +166,14 @@ public class FinanceCategoryAdapter extends RecyclerView.Adapter<FinanceCategory
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             MenuInflater menuInflater = new MenuInflater(view.getContext());
             menuInflater.inflate(R.menu.menu_context_finance_category, contextMenu);
-        }
-    }
-
-    private void changeSelected() {
-        for (FinanceCategoryWithTotal item : items) {
-            if (item.isSelected()) {
-                item.setSelected(false);
-                item.getCategory().setDateMod(String.valueOf(System.currentTimeMillis()));
-                break;
+            if (items.get(getAbsoluteAdapterPosition()).getCategory().getIsPrivate() == 1) {
+                contextMenu.getItem(1).setTitle(R.string.text_set_public);
+            }
+            if(items.get(getAbsoluteAdapterPosition()).getCategory().getIsOwner()==0){
+                contextMenu.getItem(1).setVisible(false);
+                contextMenu.getItem(4).setVisible(false);
+                contextMenu.getItem(3).setVisible(false);
             }
         }
-    }
-
-    public interface OnClickItemListener {
-        void clickToItem();
     }
 }

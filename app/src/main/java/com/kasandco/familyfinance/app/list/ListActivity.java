@@ -8,13 +8,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
@@ -36,9 +38,6 @@ import com.kasandco.familyfinance.utils.ToastUtils;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ListActivity extends BaseActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener, FragmentCreateItemHistory.ClickListener {
 
     @Inject
@@ -50,7 +49,6 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
 
     RecyclerView recyclerView;
     TextView emptyText;
-    @BindView(R.id.activity_list_toolbar)
     Toolbar toolbar;
 
     @Inject
@@ -60,8 +58,8 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        ButterKnife.bind(this);
         App.getListActivityComponent(this).inject(this);
+        toolbar = findViewById(R.id.activity_list_toolbar);
         refreshLayout = findViewById(R.id.swipe_container);
         recyclerView = findViewById(R.id.activity_list_rv_items);
         emptyText = findViewById(R.id.activity_list_text_empty);
@@ -72,6 +70,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         title.setText(R.string.title_list);
         toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
         refreshLayout.setOnRefreshListener(refreshListener);
+        emptyText.setVisibility(View.GONE);
     }
 
     @Override
