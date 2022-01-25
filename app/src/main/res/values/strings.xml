@@ -173,9 +173,12 @@
     <string name="text_error_load_group">Произошла ошибка при загрузке</string>
     <string name="text_error_no_group_user">В группе нет пользователей</string>
     <string name="title_my_family">Моя семья</string>
-    <string name="text_copy_uid">Копировать ID</string>
+    <string name="text_copy_uid">Копировать ID пользователя</string>
     <string name="error_copy_uid">Ошибка при копировании! Повторите позже</string>
     <string name="text_uid_copied">Скопировано! Отправьте этот код другому пользователю, чтоб стать участником его  группы и вести общие списки и категории финансов</string>
     <string name="user_uuid">Код пользователя</string>
     <string name="error_load_data">Ошибка загрузки данных!</string>
+    <string name="text_error_uuid">Проверьте ID пользователя на корректность</string>
+    <string name="server_client_id">317045841784-hmir9faqn7d7eisudddp14fp8tdj7bic.apps.googleusercontent.com</string>
+    <string name="text_logout_all">Выйти на всех устройствах</string>
 </resources>

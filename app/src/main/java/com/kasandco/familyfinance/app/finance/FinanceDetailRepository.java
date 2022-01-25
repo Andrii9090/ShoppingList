@@ -16,7 +16,7 @@ import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.FinanceNetworkInterface;
 import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.model.FinanceHistoryApiModel;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class FinanceDetailRepository extends BaseRepository {
     private FinanceCategoryDao financeCategoryDao;
 
     @Inject
-    public FinanceDetailRepository(FinanceDao _financeHistoryDao, FinanceHistorySyncDao _financeHistorySyncDao, Retrofit _retrofit, SharedPreferenceUtil _sharedPreference, IsNetworkConnect _isNetworkConnect, FinanceCategoryDao _financeCategoryDao) {
+    public FinanceDetailRepository(FinanceDao _financeHistoryDao, FinanceHistorySyncDao _financeHistorySyncDao, Retrofit _retrofit, SharedPreferenceUtil _sharedPreference, NetworkConnect _isNetworkConnect, FinanceCategoryDao _financeCategoryDao) {
         super(_sharedPreference, _isNetworkConnect);
         financeHistoryDao = _financeHistoryDao;
         financeHistorySyncDao = _financeHistorySyncDao;

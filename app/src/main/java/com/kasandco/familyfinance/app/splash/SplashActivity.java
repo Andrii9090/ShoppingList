@@ -10,10 +10,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.ImageView;
-
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
-import com.kasandco.familyfinance.app.finance.FinanceDetailActivity;
 import com.kasandco.familyfinance.app.settings.SettingsActivity;
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.icon.IconModel;
@@ -60,6 +58,8 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                 }
             }
         }).start();
+
+
     }
 
     @Override

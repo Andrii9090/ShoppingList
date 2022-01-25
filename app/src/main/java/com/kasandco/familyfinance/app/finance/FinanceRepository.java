@@ -3,7 +3,6 @@ package com.kasandco.familyfinance.app.finance;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryModel;
@@ -26,7 +25,7 @@ import com.kasandco.familyfinance.network.model.FinanceCategoryApiModel;
 import com.kasandco.familyfinance.network.model.FinanceHistoryApiModel;
 import com.kasandco.familyfinance.network.model.LastSyncApiDataModel;
 import com.kasandco.familyfinance.network.model.ListApiModel;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class FinanceRepository extends BaseRepository {
     private final FinanceHistorySyncDao financeHistorySyncDao;
     private FinanceHistoryCallback callback;
 
-    public FinanceRepository(AppDataBase appDataBase, Retrofit _retrofit, SharedPreferenceUtil _sharedPreference, IsNetworkConnect _isNetworkConnect) {
+    public FinanceRepository(AppDataBase appDataBase, Retrofit _retrofit, SharedPreferenceUtil _sharedPreference, NetworkConnect _isNetworkConnect) {
         super(_sharedPreference, _isNetworkConnect);
         disposable = new CompositeDisposable();
 
@@ -70,16 +69,15 @@ public class FinanceRepository extends BaseRepository {
         new Thread(() -> {
             try {
                 long id = financeCategoryDao.insert(category);
-                handler.post(() -> callback.added(id));
                 category.setId(id);
-                createNewCategoryNetwork(category);
+                createNewCategoryNetwork(category, callback, handler);
             } catch (SQLiteConstraintException e) {
                 handler.post(callback::notUnique);
             }
         }).start();
     }
 
-    private void createNewCategoryNetwork(FinanceCategoryModel category) {
+    private void createNewCategoryNetwork(FinanceCategoryModel category, FinanceRepositoryCallback callbackPresenter, Handler handler) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
             FinanceCategoryApiModel responseModel = new FinanceCategoryApiModel(category);
             Requests.RequestsInterface<FinanceCategoryApiModel> callbackResponse = new Requests.RequestsInterface<FinanceCategoryApiModel>() {
@@ -89,7 +87,11 @@ public class FinanceRepository extends BaseRepository {
                     category.setDateMod(responseObj.getDateMod());
                     category.setDateModServer(responseObj.getDateMod());
                     category.setIsOwner(responseModel.isOwner() ? 1 : 0);
-                    new Thread(() -> financeCategoryDao.update(category)).start();
+                    new Thread(() -> {
+                        financeCategoryDao.update(category);
+                        if (handler != null)
+                            handler.post(() -> callbackPresenter.added(category.getId()));
+                    }).start();
                 }
 
                 @Override
@@ -107,6 +109,9 @@ public class FinanceRepository extends BaseRepository {
 
             Call<FinanceCategoryApiModel> call = network.createCategory(responseModel);
             Requests.request(call, callbackResponse);
+        } else {
+            if (handler != null)
+                handler.post(() -> callbackPresenter.added(category.getId()));
         }
     }
 
@@ -117,7 +122,8 @@ public class FinanceRepository extends BaseRepository {
             if (!isLogged && listDao.getQuantity() >= Constants.MAX_QUANTITY_WITHOUT_REG) {
                 handler.post(callback::maxLimit);
             } else {
-                list.setId(listDao.insert(list));
+                long id = listDao.insert(list);
+                list.setId(id);
                 createNetworkNewList(list);
             }
         }).start();
@@ -125,9 +131,13 @@ public class FinanceRepository extends BaseRepository {
 
     private void createNetworkNewList(ListModel list) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            ListNetworkInterface listNetwork = retrofit.create(ListNetworkInterface.class);
             ListApiModel listData = new ListApiModel(list);
+            if (listData.getFinanceCategoryId() != 0) {
+                long categoryId = financeCategoryDao.getServerId(listData.getFinanceCategoryId());
+                listData.setFinanceCategoryId(categoryId);
+            }
 
+            ListNetworkInterface listNetwork = retrofit.create(ListNetworkInterface.class);
             Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
                 @Override
                 public void success(ListApiModel responseObj) {
@@ -175,7 +185,7 @@ public class FinanceRepository extends BaseRepository {
                     } else if (category.getDateModServer() != null && !category.getDateMod().equals(category.getDateModServer())) {
                         updateNetworkCategory(category);
                     } else if (category.getServerId() == 0) {
-                        createNewCategoryNetwork(category);
+                        createNewCategoryNetwork(category, null, null);
                     }
                 }
             });
@@ -418,9 +428,9 @@ public class FinanceRepository extends BaseRepository {
                     Requests.request(call, callbackResponse);
                 }
             } else {
-                    financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
-                    financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
-                    financeCategoryDao.delete(financeCategory);
+                financeCategory.setDateMod(String.valueOf(System.currentTimeMillis()));
+                financeHistoryDao.deleteFinanceHistory(financeCategory.getId());
+                financeCategoryDao.delete(financeCategory);
             }
         }).start();
 

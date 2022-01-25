@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,11 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
@@ -95,6 +90,11 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     }
 
     @Override
+    public void loaded(boolean empty) {
+        showEmptyText(empty);
+    }
+
+    @Override
     public void addAdapter(ListRvAdapter adapter) {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -124,6 +124,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
             emptyText.setVisibility(View.GONE);
         }
     }
+
 
     @Override
     public void showToast(int resource) {

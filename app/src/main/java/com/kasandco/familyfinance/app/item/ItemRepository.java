@@ -11,7 +11,7 @@ import com.kasandco.familyfinance.network.ItemNetworkInterface;
 import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.model.ImageItemApiModel;
 import com.kasandco.familyfinance.network.model.ItemApiModel;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SaveImageUtils;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -39,7 +39,7 @@ public class ItemRepository extends BaseRepository {
     private ItemRepositoryCallback callback;
 
     @Inject
-    public ItemRepository(ItemNetworkInterface _networkInterface, ItemDao _itemDao, SaveImageUtils _saveImage, SharedPreferenceUtil _sharedPreference, IsNetworkConnect networkConnect, ItemSyncHistoryDao _itemSyncDao) {
+    public ItemRepository(ItemNetworkInterface _networkInterface, ItemDao _itemDao, SaveImageUtils _saveImage, SharedPreferenceUtil _sharedPreference, NetworkConnect networkConnect, ItemSyncHistoryDao _itemSyncDao) {
         super(_sharedPreference, networkConnect);
         network = _networkInterface;
         itemDao = _itemDao;
@@ -74,7 +74,7 @@ public class ItemRepository extends BaseRepository {
 
                 @Override
                 public void noPermit() {
-                    if(callback!=null) {
+                    if (callback != null) {
                         callback.noPerm();
                     }
                 }
@@ -99,11 +99,9 @@ public class ItemRepository extends BaseRepository {
     private void networkRemove(ItemModel item) {
         item.setIsDelete(1);
         if (!isNetworkConnect.isInternetAvailable()) {
-            if (item.getIsDelete() != 1) {
-                new Thread(() -> {
-                    itemDao.update(item);
-                }).start();
-            }
+            new Thread(() -> {
+                itemDao.update(item);
+            }).start();
         } else {
             Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                 @Override
@@ -118,7 +116,7 @@ public class ItemRepository extends BaseRepository {
 
                 @Override
                 public void noPermit() {
-                    if(callback!=null) {
+                    if (callback != null) {
                         callback.noPerm();
                     }
                 }
@@ -143,6 +141,7 @@ public class ItemRepository extends BaseRepository {
                 public void success(ItemApiModel responseObj) {
                     new Thread(() -> {
                         ItemModel itemConverted = new ItemModel(responseObj);
+                        itemConverted.setLocalListId(item.getLocalListId());
                         itemDao.update(itemConverted);
                     }).start();
                 }
@@ -154,7 +153,7 @@ public class ItemRepository extends BaseRepository {
 
                 @Override
                 public void noPermit() {
-                    if(callback!=null) {
+                    if (callback != null) {
                         callback.noPerm();
                     }
                 }
@@ -167,6 +166,7 @@ public class ItemRepository extends BaseRepository {
     }
 
     public void getAll(long listId, long serverListId, ItemRepositoryCallback callback) {
+        sync(listId);
         this.listId = listId;
         this.serverListId = serverListId;
         this.callback = callback;
@@ -174,12 +174,11 @@ public class ItemRepository extends BaseRepository {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::setItems, error -> Log.e("Error", error.toString())));
-        sync(listId);
     }
 
     public void sync(long listId) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            new Thread(()->{
+            new Thread(() -> {
                 List<ItemSyncHistoryModel> syncHistory = itemSyncDao.getAll(serverListId);
 
                 Requests.RequestsInterface<List<ItemApiModel>> callbackResponse = new Requests.RequestsInterface<List<ItemApiModel>>() {
@@ -231,18 +230,17 @@ public class ItemRepository extends BaseRepository {
 
                                 }).start();
                             }
-
                         }
                     }
 
                     @Override
                     public void error() {
-
+                        callback.error();
                     }
 
                     @Override
                     public void noPermit() {
-                        if(callback!=null) {
+                        if (callback != null) {
                             callback.noPerm();
                         }
                     }
@@ -264,7 +262,7 @@ public class ItemRepository extends BaseRepository {
                     if (item.getIsDelete() == 1) {
                         networkRemove(item);
                     }
-                    if (item.getDateModServer()!=null && Long.parseLong(item.getDateMod().substring(0, 10)) > Long.parseLong(item.getDateModServer().substring(0, 10))) {
+                    if (item.getDateModServer() != null && Long.parseLong(item.getDateMod().substring(0, 10)) > Long.parseLong(item.getDateModServer().substring(0, 10))) {
                         networkUpdate(item);
                     }
                 }
@@ -301,7 +299,7 @@ public class ItemRepository extends BaseRepository {
 
             @Override
             public void noPermit() {
-                if(callback!=null) {
+                if (callback != null) {
                     callback.noPerm();
                 }
             }
@@ -352,7 +350,7 @@ public class ItemRepository extends BaseRepository {
 
                     @Override
                     public void noPermit() {
-                        if(callback!=null) {
+                        if (callback != null) {
                             callback.noPerm();
                         }
                     }
@@ -381,8 +379,11 @@ public class ItemRepository extends BaseRepository {
 
     public interface ItemRepositoryCallback {
         void setItems(List<ItemModel> items);
+
         void errorLoadImage();
 
         void noPerm();
+
+        void error();
     }
 }

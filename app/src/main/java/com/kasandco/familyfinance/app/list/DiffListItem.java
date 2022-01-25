@@ -37,6 +37,6 @@ public class DiffListItem extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         ListModel oldItem = oldItems.get(oldItemPosition);
         ListModel newItem = newItems.get(newItemPosition);
-        return !oldItem.getDateMod().equals(newItem.getDateMod()) || !oldItem.getDateModServer().equals(newItem.getDateModServer());
+        return !oldItem.getDateMod().equals(newItem.getDateMod()) || oldItem.getDateModServer()!= null && newItem.getDateModServer()!=null && !oldItem.getDateModServer().equals(newItem.getDateModServer());
     }
 }

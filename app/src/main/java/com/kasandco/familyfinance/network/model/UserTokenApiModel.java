@@ -6,6 +6,7 @@ public class UserTokenApiModel {
 
     @SerializedName("auth_token")
     private String token;
+    private String email;
 
     public UserTokenApiModel(String _token){
         token = _token;
@@ -17,5 +18,13 @@ public class UserTokenApiModel {
 
     public String getToken(){
         return token;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

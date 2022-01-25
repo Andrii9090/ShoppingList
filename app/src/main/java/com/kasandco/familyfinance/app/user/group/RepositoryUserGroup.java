@@ -5,9 +5,8 @@ import android.os.Handler;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
-import com.kasandco.familyfinance.network.model.UIdModel;
 import com.kasandco.familyfinance.network.model.UserApiModel;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 
@@ -19,12 +18,12 @@ import retrofit2.Retrofit;
 
 public class RepositoryUserGroup {
     private SharedPreferenceUtil sharedPreferenceUtil;
-    private IsNetworkConnect isNetworkConnect;
+    private NetworkConnect isNetworkConnect;
     private UserGroupRepositoryCallback callback;
     private UserNetworkInterface network;
 
     @Inject
-    public RepositoryUserGroup(Retrofit _retrofit, SharedPreferenceUtil _sharedPref, IsNetworkConnect _isNetworkConnect) {
+    public RepositoryUserGroup(Retrofit _retrofit, SharedPreferenceUtil _sharedPref, NetworkConnect _isNetworkConnect) {
         isNetworkConnect = _isNetworkConnect;
         sharedPreferenceUtil = _sharedPref;
         network = _retrofit.create(UserNetworkInterface.class);
@@ -96,30 +95,34 @@ public class RepositoryUserGroup {
     }
 
     public void addNewUserToGroup(String uid) {
-        Handler handler = new Handler();
-        Requests.RequestsInterface<ResponseBody> requests = new Requests.RequestsInterface<ResponseBody>() {
-            @Override
-            public void success(ResponseBody responseObj) {
-                handler.post(() -> {
-                    getAllUsers(callback);
-                });
-            }
+        if(uid.equals(sharedPreferenceUtil.getSharedPreferences().getString(Constants.UUID,""))){
+            callback.errorUuid();
+        }else {
+            Handler handler = new Handler();
+            Requests.RequestsInterface<ResponseBody> requests = new Requests.RequestsInterface<ResponseBody>() {
+                @Override
+                public void success(ResponseBody responseObj) {
+                    handler.post(() -> {
+                        getAllUsers(callback);
+                    });
+                }
 
-            @Override
-            public void error() {
-                handler.post(() -> {
+                @Override
+                public void error() {
+                    handler.post(() -> {
+                        callback.error();
+                    });
+                }
+
+                @Override
+                public void noPermit() {
                     callback.error();
-                });
-            }
+                }
+            };
 
-            @Override
-            public void noPermit() {
-                callback.error();
-            }
-        };
-
-        Call<ResponseBody> call = network.addToGroup(uid);
-        Requests.request(call, requests);
+            Call<ResponseBody> call = network.addToGroup(uid);
+            Requests.request(call, requests);
+        }
     }
 
     public boolean isRegisterUser() {
@@ -141,5 +144,7 @@ public class RepositoryUserGroup {
         void errorNoGroupUser();
 
         void noMainUser();
+
+        void errorUuid();
     }
 }

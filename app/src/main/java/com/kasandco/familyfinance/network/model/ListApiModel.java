@@ -43,10 +43,10 @@ public class ListApiModel {
         } else {
             dateMod = listModel.getDateMod().substring(0, 10);
         }
-        if (listModel.getFinanceCategoryId()!= null && listModel.getFinanceCategoryId()!=0) {
+        if (listModel.getFinanceCategoryId()!= null) {
             financeCategoryId = listModel.getFinanceCategoryId();
         }else {
-            financeCategoryId = null;
+            financeCategoryId = Long.parseLong("0");
         }
         isDelete = listModel.getIsDelete() == 1;
     }

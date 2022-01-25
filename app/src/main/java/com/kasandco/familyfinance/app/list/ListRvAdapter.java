@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder> {
     private List<ListModel> listItems;
@@ -38,16 +39,16 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
     private int positionItem;
 
     @Inject
-    public ListRvAdapter() {
+    public ListRvAdapter(@Named("activity_context") Context _context) {
         this.listItems = new ArrayList<>();
         positionItem = -1;
+        context = _context;
+        onClickListener = (ListAdapterListener) context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        onClickListener = (ListAdapterListener) context;
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_list_cell, parent, false);
         return new ViewHolder(view);
     }
@@ -86,10 +87,12 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
             this.listItems.clear();
             this.listItems.addAll(listItems);
             diff.dispatchUpdatesTo(this);
+            onClickListener.loaded(false);
         } else {
             this.listItems.clear();
             this.listItems.addAll(listItems);
             notifyDataSetChanged();
+            onClickListener.loaded(true);
         }
     }
 
@@ -196,5 +199,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
 
     public interface ListAdapterListener {
         void itemOnClick(ViewHolder holder);
+
+        void loaded(boolean empty);
     }
 }

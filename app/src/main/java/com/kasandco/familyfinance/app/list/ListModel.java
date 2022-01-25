@@ -27,6 +27,9 @@ public class ListModel extends BaseModel implements Serializable {
     @ColumnInfo(name = "cost_category_id", defaultValue = "0")
     private Long financeCategoryId;
 
+    @ColumnInfo(name = "server_category_id", defaultValue = "0")
+    private Long serverFinanceCategoryId;
+
     public ListModel() {
 
     }
@@ -58,7 +61,7 @@ public class ListModel extends BaseModel implements Serializable {
         dateModServer = listData.getDateMod();
         isDelete = listData.isDelete() ? 1 : 0;
         icon = listData.getIcon();
-        financeCategoryId = listData.getFinanceCategoryId();
+        serverFinanceCategoryId = listData.getFinanceCategoryId();
         isPrivate = listData.isPrivate() ? 1 : 0;
         isOwner = listData.isOwner() ? 1 : 0;
     }
@@ -147,5 +150,13 @@ public class ListModel extends BaseModel implements Serializable {
 
     public void setIsPrivate(int isPrivate) {
         this.isPrivate = isPrivate;
+    }
+
+    public Long getServerFinanceCategoryId() {
+        return serverFinanceCategoryId;
+    }
+
+    public void setServerFinanceCategoryId(Long serverFinanceCategoryId) {
+        this.serverFinanceCategoryId = serverFinanceCategoryId;
     }
 }

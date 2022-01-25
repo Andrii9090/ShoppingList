@@ -1,19 +1,17 @@
 package com.kasandco.familyfinance.network.model;
 
 public class UserRegisterApiModel {
-    private String email;
-    private String password;
+    private String token;
 
-    public UserRegisterApiModel(String _email, String _password){
-        email = _email;
-        password = _password;
+    public UserRegisterApiModel(String _token){
+        token = _token;
     }
 
-    public String getEmail() {
-        return email;
+    public String getToken() {
+        return token;
     }
 
-    public String getPassword() {
-        return password;
+    public void setToken(String token) {
+        this.token = token;
     }
 }

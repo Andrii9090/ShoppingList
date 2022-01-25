@@ -30,6 +30,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:imeOptions="actionSend"
                         android:inputType="textCapSentences"
                         android:hint="@string/name_quantity_item"/>
                 <ImageButton

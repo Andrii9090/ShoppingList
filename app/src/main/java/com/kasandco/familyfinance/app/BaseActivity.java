@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
 import com.kasandco.familyfinance.BuildConfig;
 import com.kasandco.familyfinance.R;
@@ -24,13 +26,14 @@ import com.kasandco.familyfinance.app.statistic.StatisticActivity;
 import com.kasandco.familyfinance.app.user.group.UserGroupActivity;
 import com.kasandco.familyfinance.app.user.login.LoginActivity;
 import com.kasandco.familyfinance.app.user.settings.UserSettingsActivity;
+import com.kasandco.familyfinance.app.user.settings.UserSettingsRepository;
 import com.kasandco.familyfinance.core.BaseContract;
-import com.kasandco.familyfinance.core.BasePresenter;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
-public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BaseContract {
+
+public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BaseContract, UserSettingsRepository.UserSettingsRepositoryCallback {
     protected NavigationView navigationView;
     protected DrawerLayout drawerLayout;
     protected ImageButton btnUserSetting;
@@ -150,4 +153,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         refreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public void dataCleared() {
+
+    }
+
+    @Override
+    public void uid(String uid) {
+
+    }
 }

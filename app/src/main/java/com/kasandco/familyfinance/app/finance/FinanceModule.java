@@ -15,7 +15,7 @@ import com.kasandco.familyfinance.app.finance.presenters.PresenterFinanceCategor
 import com.kasandco.familyfinance.core.icon.IconDao;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.core.Constants;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import javax.inject.Named;
@@ -69,7 +69,7 @@ public class FinanceModule {
 
     @FinanceActivityScope
     @Provides
-    FinanceRepository providesFinanceRepository(AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect networkConnect) {
+    FinanceRepository providesFinanceRepository(AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, NetworkConnect networkConnect) {
         return new FinanceRepository(appDataBase, retrofit, sharedPreferenceUtil, networkConnect);
     }
 

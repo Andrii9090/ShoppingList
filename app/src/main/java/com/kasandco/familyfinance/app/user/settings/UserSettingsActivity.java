@@ -20,7 +20,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.kasandco.familyfinance.App;
 import com.kasandco.familyfinance.R;
@@ -33,10 +39,11 @@ import javax.inject.Inject;
 
 public class UserSettingsActivity extends BaseActivity implements UserSettingsView {
 
-    private EditText email, oldPassword, newPassword, newPassword2;
-    private Button btnSave, btnChangePassword, copyUid;
+    private EditText email;
+    private Button btnExitAll, copyUid;
     private Toolbar toolbar;
     private LinearProgressIndicator loader;
+    private GoogleApiClient mGoogleApiClient;
 
     @Inject
     UserSettingsPresenter presenter;
@@ -47,22 +54,16 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
         setContentView(R.layout.activity_user_settings);
         App.getAppComponent().plus(new UserSettingsModule()).inject(this);
         email = findViewById(R.id.user_settings_email);
-        oldPassword = findViewById(R.id.user_settings_password);
-        newPassword = findViewById(R.id.user_settings_new_password);
-        newPassword2 = findViewById(R.id.user_settings_new_password2);
         loader = findViewById(R.id.user_settings_loading);
         copyUid = findViewById(R.id.user_settings_copy_uid);
-        btnSave = findViewById(R.id.user_settings_btn_save);
-        btnChangePassword = findViewById(R.id.user_settings_btn_change_password);
         toolbar = findViewById(R.id.user_settings_toolbar);
+        btnExitAll = findViewById(R.id.user_settings_logout_all);
 
         setSupportActionBar(toolbar);
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(R.string.user_settings_title);
-
-        btnSave.setOnClickListener(listener);
-        btnChangePassword.setOnClickListener(listener);
         copyUid.setOnClickListener(listener);
+        btnExitAll.setOnClickListener(listener);
 
         if (sharedPreferenceUtil.getSharedPreferences().getString(Constants.EMAIL, null) != null) {
             email.setText(sharedPreferenceUtil.getSharedPreferences().getString(Constants.EMAIL, ""));
@@ -78,6 +79,13 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
     protected void onResume() {
         super.onResume();
         presenter.viewReady(this);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -100,63 +108,31 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.logout) {
+            googleLogout();
             presenter.clickLogOut();
         }
         return true;
     }
 
+    private void googleLogout() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                status -> startListActivity());
+    }
+
     private View.OnClickListener listener = view -> {
         switch (view.getId()) {
-            case R.id.user_settings_btn_save:
-                presenter.clickBtnSave();
-                break;
-            case R.id.user_settings_btn_change_password:
-                presenter.clickBtnChangePassword();
-                break;
             case R.id.user_settings_copy_uid:
                 presenter.clickBtnCopyUid();
                 break;
+            case R.id.user_settings_logout_all:
+                presenter.clickLogOut(true);
         }
     };
 
-    @Override
-    public String[] getUserData() {
-        String emailText = "";
-        String oldPasswordText = "";
-        String newPasswordText = "";
-        String newPassword2Text = "";
-        if (email.getText().toString() != null && !email.getText().toString().isEmpty()) {
-            emailText = email.getText().toString();
-        }
-        if (oldPassword.getText().toString() != null && !oldPassword.getText().toString().isEmpty()) {
-            oldPasswordText = oldPassword.getText().toString();
-        }
-        if (newPassword.getText().toString() != null && !newPassword.getText().toString().isEmpty()) {
-            newPasswordText = newPassword.getText().toString();
-        }
-        if (newPassword2.getText().toString() != null && !newPassword2.getText().toString().isEmpty()) {
-            newPassword2Text = newPassword2.getText().toString();
-        }
-        String[] userData = new String[]{emailText, oldPasswordText, newPasswordText, newPassword2Text};
-        return userData;
-    }
 
     @Override
     public void showToast(int recourse) {
         ToastUtils.showToast(getString(recourse), this);
-    }
-
-    @Override
-    public void showNewPasswordTextInput() {
-        if (email.isEnabled()) {
-            newPassword.setVisibility(View.VISIBLE);
-            newPassword2.setVisibility(View.VISIBLE);
-            email.setEnabled(false);
-        } else {
-            newPassword.setVisibility(View.GONE);
-            newPassword2.setVisibility(View.GONE);
-            email.setEnabled(true);
-        }
     }
 
     @Override

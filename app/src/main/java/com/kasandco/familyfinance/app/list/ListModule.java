@@ -6,7 +6,6 @@ import com.kasandco.familyfinance.app.finance.FinanceRepository;
 import com.kasandco.familyfinance.app.finance.fragments.FragmentCreateItemHistory;
 import com.kasandco.familyfinance.app.finance.models.FinanceCategoryDao;
 import com.kasandco.familyfinance.app.finance.presenters.CreateHistoryItemPresenter;
-import com.kasandco.familyfinance.app.item.ItemActivityScope;
 import com.kasandco.familyfinance.app.item.ItemDao;
 import com.kasandco.familyfinance.app.item.ItemRepository;
 import com.kasandco.familyfinance.app.list.createEditList.CreatePresenter;
@@ -16,7 +15,7 @@ import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;
 import com.kasandco.familyfinance.core.AppDataBase;
 import com.kasandco.familyfinance.network.ItemNetworkInterface;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SaveImageUtils;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
@@ -74,7 +73,7 @@ public class ListModule {
 
     @ListActivityScope
     @Provides
-    ItemRepository providesItemRepository(Retrofit retrofit, AppDataBase appDataBase, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect networkConnect, SaveImageUtils saveImage){
+    ItemRepository providesItemRepository(Retrofit retrofit, AppDataBase appDataBase, SharedPreferenceUtil sharedPreferenceUtil, NetworkConnect networkConnect, SaveImageUtils saveImage){
         return new ItemRepository(retrofit.create(ItemNetworkInterface.class), appDataBase.getItemDao(), saveImage, sharedPreferenceUtil, networkConnect, appDataBase.getItemSyncDao());
     }
 
@@ -92,7 +91,7 @@ public class ListModule {
 
     @Provides
     @ListActivityScope
-    FinanceRepository providesFinanceRepository(AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreference, IsNetworkConnect networkConnect){
+    FinanceRepository providesFinanceRepository(AppDataBase appDataBase, Retrofit retrofit, SharedPreferenceUtil sharedPreference, NetworkConnect networkConnect){
         return new FinanceRepository(appDataBase, retrofit, sharedPreference, networkConnect);
     }
 

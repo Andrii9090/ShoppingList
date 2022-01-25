@@ -12,10 +12,9 @@ public class Requests {
         call.enqueue(new Callback<R>() {
             @Override
             public void onResponse(Call<R> call, Response<R> response) {
-                if(response.code()==401 || response.code()==403){
+                if (response.code() == 401 || response.code() == 403) {
                     callback.noPermit();
-                }
-                else if (response.isSuccessful()) {
+                } else if (response.isSuccessful()) {
                     if (callback != null)
                         new Thread(() -> callback.success(response.body())).start();
                 } else {
@@ -38,5 +37,6 @@ public class Requests {
         void error();
 
         void noPermit();
+
     }
 }

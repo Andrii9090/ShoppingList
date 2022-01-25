@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 
 import com.kasandco.familyfinance.core.Constants;
 
-import javax.inject.Inject;
 
 public class SharedPreferenceUtil {
     private static final String SHARED_PREFERENCE_NAME = "family_cost";
@@ -31,5 +30,11 @@ public class SharedPreferenceUtil {
 
     public String getDeviceId() {
         return getSharedPreferences().getString(Constants.DEVICE_ID,null);
+    }
+
+    public void logout() {
+        getEditor().putString(Constants.EMAIL, null).apply();
+        getEditor().putString(Constants.TOKEN, null).apply();
+        getEditor().putString(Constants.UUID, null).apply();
     }
 }

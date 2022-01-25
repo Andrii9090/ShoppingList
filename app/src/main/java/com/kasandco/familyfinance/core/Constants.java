@@ -4,7 +4,7 @@ import com.kasandco.familyfinance.R;
 
 public interface Constants {
     String REST_API_VERSION = "/api/v1/";
-    String BASE_URL = "https://27cb-85-86-244-26.ngrok.io";
+    String BASE_URL = "https://cf71-85-86-244-26.ngrok.io";
     String IS_ADDED_ICONS = "is_added_icons";
 
     int REQUEST_TAKE_PHOTO = 1;

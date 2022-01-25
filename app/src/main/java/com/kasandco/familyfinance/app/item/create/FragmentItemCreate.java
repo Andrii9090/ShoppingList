@@ -1,10 +1,14 @@
 package com.kasandco.familyfinance.app.item.create;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +57,15 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
         btnCreate = view.findViewById(R.id.create_item_enter);
         view.setOnClickListener(view1 -> listener.close());
         btnCreate.setOnClickListener(clickListener);
+
+
+        name.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                click_create();
+                return true;
+            }
+            return false;
+        });
     }
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
@@ -60,17 +73,21 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.create_item_enter:
-                    if (itemEdit == null) {
-                        presenter.create(name.getText().toString(), listId, serverListId);
-                    }else {
-                        presenter.edit(name.getText().toString(), itemEdit);
-                        listener.close();
-                    }
-                    name.setText("");
+                    click_create();
                     break;
             }
         }
     };
+
+    private void click_create() {
+        if (itemEdit == null) {
+            presenter.create(name.getText().toString(), listId, serverListId);
+        }else {
+            presenter.edit(name.getText().toString(), itemEdit);
+            listener.close();
+        }
+        name.setText("");
+    }
 
     @Override
     public void showToast() {

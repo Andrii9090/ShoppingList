@@ -75,6 +75,11 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
         view.showToast(R.string.text_no_permissions);
     }
 
+    @Override
+    public void error() {
+        view.showToast(R.string.text_error);
+    }
+
     private void setEmptyText() {
         view.showEmptyText(adapter.getItemCount() <= 0);
     }

@@ -16,7 +16,7 @@ import com.kasandco.familyfinance.network.ListNetworkInterface;
 import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.model.LastSyncApiDataModel;
 import com.kasandco.familyfinance.network.model.ListApiModel;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
@@ -39,7 +39,6 @@ public class ListRepository extends BaseRepository {
     private ListRepositoryInterface callback;
     private ListNetworkInterface network;
     private ListSyncHistoryDao listSyncHistoryDao;
-    private ItemRepository itemRepository;
 
     private IconDao iconDao;
 
@@ -47,14 +46,13 @@ public class ListRepository extends BaseRepository {
 
 
     @Inject
-    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, FinanceCategoryDao _financeDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect _connect, ItemRepository _itemRepository) {
+    public ListRepository(ListDao _listDao, IconDao _iconDao, ItemDao _itemDao, FinanceCategoryDao _financeDao, ListSyncHistoryDao _listSyncHistoryDao, Retrofit retrofit, SharedPreferenceUtil sharedPreferenceUtil, NetworkConnect _connect) {
         super(sharedPreferenceUtil, _connect);
         listDao = _listDao;
         iconDao = _iconDao;
         itemDao = _itemDao;
         financeDao = _financeDao;
         listSyncHistoryDao = _listSyncHistoryDao;
-        itemRepository = _itemRepository;
         if (isLogged) {
             network = retrofit.create(ListNetworkInterface.class);
         }
@@ -101,7 +99,6 @@ public class ListRepository extends BaseRepository {
                 };
                 Requests.request(call, callbackResponse);
             }).start();
-
         }
     }
 
@@ -117,7 +114,7 @@ public class ListRepository extends BaseRepository {
         if (isNetworkConnect.isInternetAvailable()) {
             new Thread(() -> {
                 ListApiModel networkData = new ListApiModel(listModel);
-                if(listModel.getFinanceCategoryId()!=null || listModel.getFinanceCategoryId()!=0) {
+                if (listModel.getFinanceCategoryId() != null || listModel.getFinanceCategoryId() != 0) {
                     long financeCategoryServerId = financeDao.getServerId(listModel.getFinanceCategoryId());
                     networkData.setFinanceCategoryId(financeCategoryServerId);
                 }
@@ -143,9 +140,6 @@ public class ListRepository extends BaseRepository {
                 };
                 Requests.request(call, callbackResponse);
             }).start();
-
-        } else {
-            new Thread(() -> listDao.update(listModel)).start();
         }
     }
 
@@ -180,8 +174,8 @@ public class ListRepository extends BaseRepository {
             Requests.RequestsInterface<List<ListApiModel>> callbackResponse = new Requests.RequestsInterface<List<ListApiModel>>() {
                 @Override
                 public void success(List<ListApiModel> responseObj) {
+                    new Thread(() -> listSyncHistoryDao.clear()).start();
                     if (responseObj != null && responseObj.size() > 0) {
-                        new Thread(() -> listSyncHistoryDao.clear()).start();
                         for (ListApiModel item : responseObj) {
                             ListModel listModel = listDao.getListForServerId(item.getId());
                             new Thread(() -> {
@@ -217,11 +211,13 @@ public class ListRepository extends BaseRepository {
 
                 @Override
                 public void noPermit() {
-
+                    getAllItems();
+                    callback.noPermit();
                 }
             };
             Requests.request(call, callbackResponse);
         }).start();
+
         new Thread(() -> {
             List<ListModel> listModels = listDao.getAllList();
             for (ListModel item : listModels) {
@@ -394,6 +390,7 @@ public class ListRepository extends BaseRepository {
     public boolean isLogged() {
         return sharedPreference.isLogged();
     }
+
 
     public interface ListRepositoryInterface {
         void setListItems(List<ListModel> listModel);

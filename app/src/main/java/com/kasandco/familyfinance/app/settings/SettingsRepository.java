@@ -6,7 +6,7 @@ import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
 import com.kasandco.familyfinance.network.model.UserSettingsApiModel;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class SettingsRepository extends BaseRepository {
     private UserNetworkInterface userNetworkInterface;
 
     @Inject
-    public SettingsRepository(SharedPreferenceUtil sharedPreferenceUtil, IsNetworkConnect isNetworkConnect, Retrofit retrofit) {
+    public SettingsRepository(SharedPreferenceUtil sharedPreferenceUtil, NetworkConnect isNetworkConnect, Retrofit retrofit) {
         super(sharedPreferenceUtil, isNetworkConnect);
         userNetworkInterface = retrofit.create(UserNetworkInterface.class);
     }

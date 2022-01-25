@@ -8,10 +8,8 @@ import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.core.icon.IconModel;
 import com.kasandco.familyfinance.network.Requests;
 import com.kasandco.familyfinance.network.UserNetworkInterface;
-import com.kasandco.familyfinance.network.model.ChangePaswordApiModel;
 import com.kasandco.familyfinance.network.model.UIdModel;
-import com.kasandco.familyfinance.network.model.UpdateEmailApiModel;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.List;
@@ -26,79 +24,69 @@ public class UserSettingsRepository extends BaseRepository {
     private AppDataBase appDataBase;
     private UserNetworkInterface network;
 
-    public UserSettingsRepository(SharedPreferenceUtil _sharedPreferenceUtil, AppDataBase _appDataBase, UserNetworkInterface _network, IsNetworkConnect _isNetworkConnect) {
+    public UserSettingsRepository(SharedPreferenceUtil _sharedPreferenceUtil, AppDataBase _appDataBase, UserNetworkInterface _network, NetworkConnect _isNetworkConnect) {
         super(_sharedPreferenceUtil, _isNetworkConnect);
         sharedPreference = _sharedPreferenceUtil;
         appDataBase = _appDataBase;
         network = _network;
     }
 
-    public void deleteAllData(UserSettingsRepositoryCallback callback) {
-        Call<ResponseBody> call = network.clearAllHistory(deviceId);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    sharedPreference.getEditor().putString(Constants.EMAIL, null).apply();
-                    sharedPreference.getEditor().putString(Constants.TOKEN, null).apply();
-                    sharedPreference.getEditor().putString(Constants.UUID, null).apply();
-                    new Thread(() -> {
-                        List<IconModel> icons = appDataBase.getIconDao().getAllIcon();
-                        appDataBase.clearAllTables();
-                        for (IconModel icon:icons) {
-                            appDataBase.getIconDao().insert(icon);
-                        }
-                    }).start();
-                    sharedPreference.getEditor().putInt(Constants.IS_ADDED_ICONS, 0).apply();
-                    callback.dataCleared();
+    public void deleteAllData(boolean logoutAll, UserSettingsRepositoryCallback callback) {
+        if(logoutAll){
+            Call<ResponseBody> call = network.logoutAll();
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        sharedPreference.logout();
+                        new Thread(() -> {
+                            List<IconModel> icons = appDataBase.getIconDao().getAllIcon();
+                            appDataBase.clearAllTables();
+                            for (IconModel icon : icons) {
+                                appDataBase.getIconDao().insert(icon);
+                            }
+                        }).start();
+                        sharedPreference.getEditor().putInt(Constants.IS_ADDED_ICONS, 0).apply();
+                        callback.dataCleared();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-            }
-        });
-
-    }
-
-    public void updateEmail(String emailNew, String password, UserSettingsRepositoryCallback callback) {
-        Call<ResponseBody> call = network.updateEmail(new UpdateEmailApiModel(sharedPreference.getSharedPreferences().getString(Constants.EMAIL, ""), emailNew, password));
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    callback.emailUpdated();
-                    sharedPreference.getEditor().putString(Constants.EMAIL, emailNew).apply();
-                } else {
-                    callback.errorToChangeEmail();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callback.errorToChangeEmail();
-            }
-        });
-    }
-
-    public void changePassword(String oldPassword, String newPassword, String newPassword2, UserSettingsRepositoryCallback callback) {
-        Call<ResponseBody> call = network.changePassword(new ChangePaswordApiModel(newPassword, newPassword2, oldPassword));
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    callback.passwordChanged(true);
-                } else {
-                    callback.passwordChanged(false);
+            });
+        }else {
+            Call<ResponseBody> call = network.clearAllHistory(deviceId);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        sharedPreference.logout();
+                        new Thread(() -> {
+                            List<IconModel> icons = appDataBase.getIconDao().getAllIcon();
+                            appDataBase.clearAllTables();
+                            for (IconModel icon : icons) {
+                                appDataBase.getIconDao().insert(icon);
+                            }
+                        }).start();
+                        new Thread(()->{
+                            List<IconModel> icons = appDataBase.getIconDao().getAllIcon();
+                            for (IconModel icon : icons) {
+                                appDataBase.getIconDao().insert(icon);
+                            }
+                        }).start();
+                        sharedPreference.getEditor().putInt(Constants.IS_ADDED_ICONS, 0).apply();
+                        callback.dataCleared();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callback.passwordChanged(false);
-            }
-        });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
     public void getUid(UserSettingsRepositoryCallback callback) {
@@ -133,13 +121,9 @@ public class UserSettingsRepository extends BaseRepository {
     }
 
     public interface UserSettingsRepositoryCallback {
-        void errorToChangeEmail();
-
-        void emailUpdated();
 
         void dataCleared();
 
-        void passwordChanged(boolean success);
         void uid(String uid);
     }
 }

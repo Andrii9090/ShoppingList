@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kasandco.familyfinance.R;
+import com.kasandco.familyfinance.core.Constants;
+import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +23,13 @@ public class AdapterUserGroup extends RecyclerView.Adapter<AdapterUserGroup.View
     private List<String> users;
     private CallbackAdapterUserGroup callback;
     private boolean isMainUser;
+    private SharedPreferenceUtil sharedPreference;
 
     @Inject
-    public AdapterUserGroup() {
+    public AdapterUserGroup(SharedPreferenceUtil sharedPreferenceUtil) {
         users = new ArrayList<>();
         isMainUser = true;
+        sharedPreference = sharedPreferenceUtil;
     }
 
     public void setUsers(List<String> users) {
@@ -80,12 +84,14 @@ public class AdapterUserGroup extends RecyclerView.Adapter<AdapterUserGroup.View
 
         public void bind(String emailText) {
             email.setText(emailText);
-            btnRemove.setOnClickListener(clickListener);
+            if(sharedPreference.getSharedPreferences().getString(Constants.EMAIL, "").equals(emailText)){
+                btnRemove.setVisibility(View.GONE);
+            }else {
+                btnRemove.setOnClickListener(clickListener);
+            }
         }
 
-        private View.OnClickListener clickListener = (view -> {
-            callback.removeUser(getAbsoluteAdapterPosition());
-        });
+        private View.OnClickListener clickListener = (view -> callback.removeUser(getAbsoluteAdapterPosition()));
     }
 
     public interface CallbackAdapterUserGroup {

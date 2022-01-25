@@ -2,13 +2,8 @@ package com.kasandco.familyfinance.core;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
-
-import com.kasandco.familyfinance.app.item.ItemRepository;
-import com.kasandco.familyfinance.utils.IsNetworkConnect;
+import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
-
-import java.io.IOException;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -18,7 +13,6 @@ import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -65,7 +59,7 @@ public class NetworkModule implements Constants {
 
     @Provides
     @Singleton
-    IsNetworkConnect providesIsNetworkConnect(@Named("application.context") Context context){
-        return new IsNetworkConnect(context);
+    NetworkConnect providesIsNetworkConnect(@Named("application.context") Context context){
+        return new NetworkConnect(context);
     }
 }

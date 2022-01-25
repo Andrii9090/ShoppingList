@@ -74,6 +74,11 @@ public class PresenterUserGroup extends BasePresenter<ContractUserGroup.View> im
     }
 
     @Override
+    public void errorUuid() {
+        view.showToast(R.string.text_error_uuid);
+    }
+
+    @Override
     public void removeUser(int position) {
         repository.removeUser(users.get(position));
     }

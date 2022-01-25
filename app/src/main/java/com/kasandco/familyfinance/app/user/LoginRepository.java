@@ -32,13 +32,15 @@ public class LoginRepository {
         sharedPreference = sharedPreferenceUtil;
     }
 
-    public void login(UserRegisterApiModel user, LoginCallback callback) {
+    public void login(String idToken, LoginCallback callback) {
+        UserRegisterApiModel user = new UserRegisterApiModel(idToken);
         Call<UserTokenApiModel> call = network.login(user);
         Handler handler = new Handler();
         call.enqueue(new Callback<UserTokenApiModel>() {
             @Override
             public void onResponse(Call<UserTokenApiModel> call, Response<UserTokenApiModel> response) {
                 if (response.isSuccessful()) {
+                    saveToken(response.body().getToken(), response.body().getEmail());
                     Call<UserSettingsApiModel> callSettings = network.getSettings("Token " + response.body().getToken(), sharedPreference.getDeviceId());
                     Requests.RequestsInterface<UserSettingsApiModel> callbackResponse = new Requests.RequestsInterface<UserSettingsApiModel>() {
                         @Override

@@ -15,7 +15,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <application
-        android:name=".App"
+        android:name="com.kasandco.familyfinance.App"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"

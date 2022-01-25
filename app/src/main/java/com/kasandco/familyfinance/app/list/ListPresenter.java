@@ -34,11 +34,6 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
         view.addAdapter(adapter);
     }
 
-    private void showEmptyText() {
-        if(listItems!=null)
-        view.showEmptyText(listItems.size() > 0);
-    }
-
     @Override
     public void viewReady(ListActivity view) {
         this.view = view;
@@ -53,7 +48,6 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
 
     public void setListItems(List<ListModel> listModels) {
         listItems = listModels;
-        showEmptyText();
         adapter.updateItems(listModels);
         view.hideLoading();
     }
