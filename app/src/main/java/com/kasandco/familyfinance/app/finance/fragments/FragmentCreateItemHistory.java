@@ -37,18 +37,10 @@ public class FragmentCreateItemHistory extends Fragment implements CreateHistory
     private DatePicker datePicker;
     private GregorianCalendar selectedDate;
     private FrameLayout calculator;
-    private long categoryId;
+    private long categoryId, serverCategoryId;
     private CreateHistoryItemPresenter presenter;
     private ClickListener callback;
-    private View.OnClickListener createListener  = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            presenter.createNewItem(type, categoryId, amount.getText().toString(), comment.getText().toString(), selectedDate);
-        }
-    };
-    private View.OnClickListener closeListener = view -> {
-        close();
-    };
+
 
     public FragmentCreateItemHistory(int type, CreateHistoryItemPresenter presenter) {
         this.type = type;
@@ -136,8 +128,13 @@ public class FragmentCreateItemHistory extends Fragment implements CreateHistory
         requireView().setOnClickListener(closeListener);
     }
 
-    public void setCategory(long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(long categoryId, long serverCategoryId) {
+        if(serverCategoryId ==0) {
+            this.categoryId = categoryId;
+            this.serverCategoryId = 0;
+        }else{
+            this.serverCategoryId = serverCategoryId;
+        }
     }
 
     @Override
@@ -155,6 +152,16 @@ public class FragmentCreateItemHistory extends Fragment implements CreateHistory
     public interface ClickListener{
         void closeCreateItemHistory();
     }
+
+    private View.OnClickListener createListener  = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            presenter.createNewItem(type, categoryId, serverCategoryId, amount.getText().toString(), comment.getText().toString(), selectedDate);
+        }
+    };
+    private final View.OnClickListener closeListener = view -> {
+        close();
+    };
 
     class Calculator {
         private Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnDel, btnRes, btnOk, btnDiv, btnMulti, btnAdd, btnSub, btnPercent, btnPoint;

@@ -25,13 +25,14 @@ public class FinanceHistoryModel extends BaseModel {
     public FinanceHistoryModel(){}
 
     @Ignore
-    public FinanceHistoryModel(String date, long categoryId, double total, String  comment, int type, String dateMod, String  userEmail){
+    public FinanceHistoryModel(String date, long categoryId, long serverCategoryId, double total, String  comment, int type, String dateMod, String  userEmail){
         this.date = date;
         this.categoryId = categoryId;
         this.total = total;
         this.type = type;
         this.dateMod = dateMod;
         this.comment = comment;
+        this.serverCategoryId = serverCategoryId;
         this.userEmail = userEmail;
     }
     public FinanceHistoryModel(FinanceHistoryApiModel responseModel){

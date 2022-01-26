@@ -10,6 +10,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -19,10 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -34,14 +38,18 @@ import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.ToastUtils;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
 public class UserSettingsActivity extends BaseActivity implements UserSettingsView {
 
-    private EditText email;
+    private TextView email;
     private Button btnExitAll, copyUid;
     private Toolbar toolbar;
+    private ImageView photo;
     private LinearProgressIndicator loader;
     private GoogleApiClient mGoogleApiClient;
 
@@ -58,6 +66,14 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
         copyUid = findViewById(R.id.user_settings_copy_uid);
         toolbar = findViewById(R.id.user_settings_toolbar);
         btnExitAll = findViewById(R.id.user_settings_logout_all);
+        photo = findViewById(R.id.user_settings_img_profile);
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        Picasso.get()
+                .load(account.getPhotoUrl())
+                .centerCrop()
+                .placeholder(R.drawable.progress_animation)
+                .resize(500, 500)
+                .into(photo);
 
         setSupportActionBar(toolbar);
         TextView title = toolbar.findViewById(R.id.toolbar_title);

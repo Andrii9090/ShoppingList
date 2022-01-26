@@ -128,7 +128,7 @@ public class ListRvAdapter extends RecyclerView.Adapter<ListRvAdapter.ViewHolder
                 contextMenu.getItem(5).setVisible(false);
                 contextMenu.getItem(6).setVisible(false);
             }
-            if(listItems.get(getAbsoluteAdapterPosition()).getFinanceCategoryId()==null || listItems.get(getAbsoluteAdapterPosition()).getFinanceCategoryId()<=0){
+            if((listItems.get(getAbsoluteAdapterPosition()).getFinanceCategoryId()==null || listItems.get(getAbsoluteAdapterPosition()).getFinanceCategoryId()<=0) && (listItems.get(getAbsoluteAdapterPosition()).getServerFinanceCategoryId()==null || listItems.get(getAbsoluteAdapterPosition()).getServerFinanceCategoryId()==0)){
                 contextMenu.getItem(2).setVisible(false);
             }
         }

@@ -96,6 +96,7 @@ public class ListRepository extends BaseRepository {
                     public void noPermit() {
                         callback.noPermit();
                     }
+
                 };
                 Requests.request(call, callbackResponse);
             }).start();
@@ -114,10 +115,7 @@ public class ListRepository extends BaseRepository {
         if (isNetworkConnect.isInternetAvailable()) {
             new Thread(() -> {
                 ListApiModel networkData = new ListApiModel(listModel);
-                if (listModel.getFinanceCategoryId() != null || listModel.getFinanceCategoryId() != 0) {
-                    long financeCategoryServerId = financeDao.getServerId(listModel.getFinanceCategoryId());
-                    networkData.setFinanceCategoryId(financeCategoryServerId);
-                }
+                networkData.setFinanceCategoryId(listModel.getServerFinanceCategoryId());
                 Call<ListApiModel> call = network.updateList(networkData);
                 Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
                     @Override

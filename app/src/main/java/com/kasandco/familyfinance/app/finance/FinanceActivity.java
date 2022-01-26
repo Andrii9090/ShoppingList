@@ -14,11 +14,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -159,13 +155,13 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceCate
     }
 
     @Override
-    public void onClickAddCosts(long categoryId, int type) {
+    public void onClickAddCosts(long categoryId, long serverCategoryId, int type) {
         if (type == 1) {
-            costCreateItemFragment.setCategory(categoryId);
+            costCreateItemFragment.setCategory(categoryId, serverCategoryId);
             costCreateItemFragment.setCallback(this);
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen, costCreateItemFragment).commitNow();
         } else {
-            incomeCreateItemFragment.setCategory(categoryId);
+            incomeCreateItemFragment.setCategory(categoryId, serverCategoryId);
             incomeCreateItemFragment.setCallback(this);
             getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).add(R.id.frameLayout_full_screen, incomeCreateItemFragment).commitNow();
         }

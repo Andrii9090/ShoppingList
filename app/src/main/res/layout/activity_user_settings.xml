@@ -48,7 +48,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_settings_copy_uid" />
 
-        <EditText
+        <TextView
             android:id="@+id/user_settings_email"
             style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"

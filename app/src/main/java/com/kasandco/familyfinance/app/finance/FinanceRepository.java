@@ -29,6 +29,7 @@ import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -135,6 +136,7 @@ public class FinanceRepository extends BaseRepository {
             if (listData.getFinanceCategoryId() != 0) {
                 long categoryId = financeCategoryDao.getServerId(listData.getFinanceCategoryId());
                 listData.setFinanceCategoryId(categoryId);
+                list.setServerFinanceCategoryId(categoryId);
             }
 
             ListNetworkInterface listNetwork = retrofit.create(ListNetworkInterface.class);
@@ -143,6 +145,7 @@ public class FinanceRepository extends BaseRepository {
                 public void success(ListApiModel responseObj) {
                     if (responseObj != null) {
                         list.setServerId(responseObj.getId());
+                        list.setServerFinanceCategoryId(responseObj.getFinanceCategoryId() == null ? 0 : responseObj.getFinanceCategoryId());
                         list.setDateMod(responseObj.getDateMod());
                         new Thread(() -> listDao.update(list)).start();
                     }
@@ -436,11 +439,19 @@ public class FinanceRepository extends BaseRepository {
 
     }
 
-    public void createNewHistoryItem(FinanceHistoryModel item) {
+    public void createNewHistoryItem(int type, long categoryId, long serverCategoryId, String amount, String comment, GregorianCalendar selectedDate) {
+
         new Thread(() -> {
+            FinanceHistoryModel item = new FinanceHistoryModel(String.valueOf(selectedDate.getTime().getTime()), categoryId, serverCategoryId, Double.parseDouble(amount), comment, type, String.valueOf(System.currentTimeMillis()), "");
+
             item.setId(financeHistoryDao.insert(item));
-            long serverFinanceCategory = financeCategoryDao.getServerId(item.getCategoryId());
-            FinanceHistoryApiModel apiModel = new FinanceHistoryApiModel(null, item.getComment(), item.getTotal(), item.getDate(), item.getUserEmail(), item.getType(), serverFinanceCategory, item.getId(), item.getIsDelete() == 1, item.getDateMod());
+            createNetworkNewHistory(item);
+        }).start();
+    }
+
+    private void createNetworkNewHistory(FinanceHistoryModel item) {
+        if(isLogged && isNetworkConnect.isInternetAvailable()) {
+            FinanceHistoryApiModel apiModel = new FinanceHistoryApiModel(null, item.getComment(), item.getTotal(), item.getDate(), item.getUserEmail(), item.getType(), item.getServerCategoryId(), item.getId(), item.getIsDelete() == 1, item.getDateMod());
             Requests.RequestsInterface<FinanceHistoryApiModel> callbackResponse = new Requests.RequestsInterface<FinanceHistoryApiModel>() {
                 @Override
                 public void success(FinanceHistoryApiModel responseObj) {
@@ -468,7 +479,7 @@ public class FinanceRepository extends BaseRepository {
 
             Call<FinanceHistoryApiModel> call = network.createItemHistory(apiModel);
             Requests.request(call, callbackResponse);
-        }).start();
+        }
     }
 
     public void getTotalToPeriod(String startDate, String endDate, FinanceTotalResult callback) {

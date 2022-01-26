@@ -13,7 +13,7 @@ public interface FinanceCategoryContract extends BaseContract {
 
     void showToast(int text_error_set_history_category);
 
-    void showCreateHistoryItemForm(long id, int type);
+    void showCreateHistoryItemForm(long id, long serverId, int type);
 
     void startFinanceDetailActivity(FinanceCategoryModel category);
 

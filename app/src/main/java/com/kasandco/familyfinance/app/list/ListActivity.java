@@ -160,9 +160,9 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     }
 
     @Override
-    public void setCategoryId(long financeCategoryId) {
+    public void setCategoryId(long financeCategoryId, Long serverFinanceCategoryId) {
         if (fragmentCreateItemHistory.isAdded()) {
-            fragmentCreateItemHistory.setCategory(financeCategoryId);
+            fragmentCreateItemHistory.setCategory(financeCategoryId, serverFinanceCategoryId);
         }
     }
 

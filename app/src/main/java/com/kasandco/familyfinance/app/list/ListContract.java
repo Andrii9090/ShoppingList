@@ -10,7 +10,7 @@ public interface ListContract extends BaseContract {
     void showEditFragment(ListModel listModel);
     void showActivityDetails(ListModel listModel);
     void showCreateItemHistoryFragment();
-    void setCategoryId(long financeCategoryId);
+    void setCategoryId(long financeCategoryId, Long serverFinanceCategoryId);
     void runSendIntent(String text);
     String getStringResource(int resource);
     String getDeviceId();

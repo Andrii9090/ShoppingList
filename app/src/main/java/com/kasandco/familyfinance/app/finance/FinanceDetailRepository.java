@@ -20,6 +20,7 @@ import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 
@@ -57,8 +58,14 @@ public class FinanceDetailRepository extends BaseRepository {
     }
 
     private void getLocal(long category_id, String dateStart, String dateEnd, FinanceDetailCallback callback, Handler handler) {
+
         new Thread(() -> {
-            List<FinanceHistoryModel> items = financeHistoryDao.getDetailFinance(category_id, dateStart, dateEnd);
+            Long catId = category_id;
+            FinanceCategoryModel financeCategoryModel = financeCategoryDao.getCategory(category_id);
+            if(financeCategoryModel.getServerId()>0){
+                catId = financeCategoryModel.getServerId();
+            }
+            List<FinanceHistoryModel> items = financeHistoryDao.getDetailFinance(catId.longValue(), dateStart, dateEnd);
             handler.post(() -> {
                 callback.setFinanceItems(items);
             });

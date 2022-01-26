@@ -64,11 +64,7 @@ public class UserSettingsRepository extends BaseRepository {
                     if (response.isSuccessful()) {
                         sharedPreference.logout();
                         new Thread(() -> {
-                            List<IconModel> icons = appDataBase.getIconDao().getAllIcon();
                             appDataBase.clearAllTables();
-                            for (IconModel icon : icons) {
-                                appDataBase.getIconDao().insert(icon);
-                            }
                         }).start();
                         new Thread(()->{
                             List<IconModel> icons = appDataBase.getIconDao().getAllIcon();

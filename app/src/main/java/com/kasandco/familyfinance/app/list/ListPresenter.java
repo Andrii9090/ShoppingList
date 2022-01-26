@@ -120,11 +120,11 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     public void selectAddCost() {
-        if (adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == null || adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == 0) {
+        if ((adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == null || adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId() == 0) && (adapter.getItems().get(adapter.getPosition()).getServerFinanceCategoryId() == null || adapter.getItems().get(adapter.getPosition()).getServerFinanceCategoryId() == 0)) {
             view.showToast(R.string.text_error_add_cost);
         } else {
             view.showCreateItemHistoryFragment();
-            view.setCategoryId(adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId());
+            view.setCategoryId(adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId()==null?0:adapter.getItems().get(adapter.getPosition()).getFinanceCategoryId(), adapter.getItems().get(adapter.getPosition()).getServerFinanceCategoryId()==null?0:adapter.getItems().get(adapter.getPosition()).getServerFinanceCategoryId());
         }
     }
 

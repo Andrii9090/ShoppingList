@@ -1,7 +1,6 @@
 package com.kasandco.familyfinance.app.finance.fragments;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -142,8 +141,8 @@ public class FragmentFinanceCategory extends Fragment implements FinanceCategory
     }
 
     @Override
-    public void showCreateHistoryItemForm(long id, int type) {
-        callback.onClickAddCosts(id, type);
+    public void showCreateHistoryItemForm(long id, long serverId, int type) {
+        callback.onClickAddCosts(id, serverId, type);
     }
 
     @Override
@@ -214,7 +213,7 @@ public class FragmentFinanceCategory extends Fragment implements FinanceCategory
     public interface ClickFragmentHistory {
         void onClickAddCategory(int financeType);
 
-        void onClickAddCosts(long categoryId, int type);
+        void onClickAddCosts(long id, long categoryId, int type);
 
         void onClickEdit(int type, FinanceCategoryModel financeCategoryModel);
 

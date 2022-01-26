@@ -63,7 +63,7 @@ public class PresenterFinanceCategory extends BasePresenter<FinanceCategoryContr
 
     public void clickToCreateNewHistoryItem() {
         if (adapter.getCurrentPosition() != -1) {
-            view.showCreateHistoryItemForm(adapter.getItems().get(adapter.getCurrentPosition()).getCategory().getId(), type);
+            view.showCreateHistoryItemForm(adapter.getItems().get(adapter.getCurrentPosition()).getCategory().getId(), adapter.getItems().get(adapter.getCurrentPosition()).getCategory().getServerId(), type);
         } else {
             view.showToast(R.string.text_error_set_history_category);
         }
