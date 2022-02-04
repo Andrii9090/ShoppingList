@@ -1,5 +1,6 @@
 package com.kasandco.familyfinance.app.list;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.kasandco.familyfinance.app.finance.FinanceRepository;
@@ -18,6 +19,7 @@ import com.kasandco.familyfinance.network.ItemNetworkInterface;
 import com.kasandco.familyfinance.utils.NetworkConnect;
 import com.kasandco.familyfinance.utils.SaveImageUtils;
 import com.kasandco.familyfinance.utils.SharedPreferenceUtil;
+import com.kasandco.familyfinance.utils.ShowCaseUtil;
 
 import javax.inject.Named;
 
@@ -111,5 +113,10 @@ public class ListModule {
     @ListActivityScope
     SaveImageUtils providesSaveImageUtils(@Named("activity_context")Context context){
         return new SaveImageUtils(context);
+    }
+    @Provides
+    @ListActivityScope
+    ShowCaseUtil providesShowcaseUtil(@Named("activity_context")Context context){
+        return new ShowCaseUtil((Activity) context);
     }
 }

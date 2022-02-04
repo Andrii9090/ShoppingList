@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Menu;
@@ -29,11 +30,12 @@ import com.kasandco.familyfinance.app.list.createEditList.FragmentCreateList;
 import com.kasandco.familyfinance.app.list.createEditList.FragmentEditList;
 import com.kasandco.familyfinance.core.Constants;
 import com.kasandco.familyfinance.utils.KeyboardUtil;
+import com.kasandco.familyfinance.utils.ShowCaseUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
 
 import javax.inject.Inject;
 
-public class ListActivity extends BaseActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener, FragmentCreateItemHistory.ClickListener {
+public class ListActivity extends BaseActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener, FragmentCreateItemHistory.ClickListener, View.OnClickListener {
 
     @Inject
     public ListPresenter presenter;
@@ -45,6 +47,9 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     RecyclerView recyclerView;
     TextView emptyText;
     Toolbar toolbar;
+
+    @Inject
+    ShowCaseUtil showCaseUtil;
 
     @Inject
     FragmentCreateItemHistory fragmentCreateItemHistory;
@@ -72,6 +77,12 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     protected void onResume() {
         super.onResume();
         presenter.viewReady(this);
+        new Handler().postDelayed(()->{MenuItem item = toolbar.getMenu().getItem(0);
+            showCaseUtil.setCase(item.getItemId(), R.string.creating_new_list, R.string.creating_new_list_text);
+            showCaseUtil.setOnClickListener(this);
+            showCaseUtil.show();
+            },1000);
+
     }
 
     @Override
@@ -280,4 +291,18 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
             presenter.swipeRefresh();
         }
     };
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId()==R.id.showcase_button){
+            if(showCaseUtil.getLastVieId()==R.id.menu_list_activity_add_new_list) {
+                showCaseUtil.setCase(toolbar.findViewById(R.id.toolbar_menu).getId(), R.string.main_menu, R.string.main_menu_text);
+                showCaseUtil.show();
+            }else if(showCaseUtil.getLastVieId()==R.id.toolbar_menu){
+                showCaseUtil.hide();
+            }else{
+                showCaseUtil.hide();
+            }
+        }
+    }
 }

@@ -28,7 +28,7 @@ public class FragmentColorThemeSetting extends Fragment {
     public SharedPreferenceUtil sharedPreferenceUtil;
 
     public FragmentColorThemeSetting() {
-        App.appComponent.plus(new UserSettingsModule()).inject(this);
+        App.appComponent.plus(new UserSettingsModule(getActivity())).inject(this);
     }
 
     @Override

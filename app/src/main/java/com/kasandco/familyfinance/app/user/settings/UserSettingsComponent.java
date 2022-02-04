@@ -5,6 +5,7 @@ import com.kasandco.familyfinance.app.settings.FragmentColorThemeSetting;
 import dagger.Subcomponent;
 
 @Subcomponent(modules = {UserSettingsModule.class})
+@UserSettingScope
 public interface UserSettingsComponent {
     void inject(UserSettingsActivity activity);
 

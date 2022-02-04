@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Menu;
@@ -37,6 +38,7 @@ import com.kasandco.familyfinance.R;
 import com.kasandco.familyfinance.app.BaseActivity;
 import com.kasandco.familyfinance.app.list.ListActivity;
 import com.kasandco.familyfinance.core.Constants;
+import com.kasandco.familyfinance.utils.ShowCaseUtil;
 import com.kasandco.familyfinance.utils.ToastUtils;
 import com.squareup.picasso.Picasso;
 
@@ -55,12 +57,14 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
 
     @Inject
     UserSettingsPresenter presenter;
+    @Inject
+    ShowCaseUtil showCaseUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
-        App.getAppComponent().plus(new UserSettingsModule()).inject(this);
+        App.getAppComponent().plus(new UserSettingsModule(this)).inject(this);
         email = findViewById(R.id.user_settings_email);
         loader = findViewById(R.id.user_settings_loading);
         copyUid = findViewById(R.id.user_settings_copy_uid);
@@ -102,6 +106,12 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         mGoogleApiClient.connect();
+
+        new Handler().postDelayed(() -> {
+            showCaseUtil.setCase(R.id.user_settings_copy_uid, R.string.title_copy_uuid, R.string.text_detail_copy_uid);
+            showCaseUtil.show();
+        }, 1000);
+
     }
 
     @Override

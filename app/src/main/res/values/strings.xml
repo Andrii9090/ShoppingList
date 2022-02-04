@@ -181,4 +181,10 @@
     <string name="text_error_uuid">Проверьте ID пользователя на корректность</string>
     <string name="server_client_id">317045841784-hmir9faqn7d7eisudddp14fp8tdj7bic.apps.googleusercontent.com</string>
     <string name="text_logout_all">Выйти на всех устройствах</string>
+    <string name="creating_new_list">Как создать новый список?</string>
+    <string name="creating_new_list_text">Нажмите на \"+\" и впишите в поле название списка, который вы хотите создать</string>
+    <string name="main_menu">Главное меню</string>
+    <string name="main_menu_text">Здесь находиться главное меню приложения, доступ к статистике финансов, профиль пользователя</string>
+    <string name="title_copy_uuid">Как стать участником группы другого пользователя</string>
+    <string name="text_detail_copy_uid">Нажмите здесь и отправьте этот код пользователю, участником группы которого вы хотите стать</string>
 </resources>
