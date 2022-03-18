@@ -123,12 +123,14 @@ public class FinanceModule {
 
     @Named("cost_create")
     @Provides
+    @FinanceActivityScope
     FragmentCreateItemHistory providesCreateItemHistoryCost(CreateHistoryItemPresenter presenter) {
         return new FragmentCreateItemHistory(Constants.TYPE_COSTS, presenter);
     }
 
     @Named("income_create")
     @Provides
+    @FinanceActivityScope
     FragmentCreateItemHistory providesCreateItemHistoryIncome(CreateHistoryItemPresenter presenter) {
         return new FragmentCreateItemHistory(Constants.TYPE_INCOME, presenter);
     }

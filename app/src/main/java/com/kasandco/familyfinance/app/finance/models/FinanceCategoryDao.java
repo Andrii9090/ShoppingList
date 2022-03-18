@@ -13,12 +13,12 @@ import io.reactivex.rxjava3.core.Single;
 @Dao
 public interface FinanceCategoryDao extends BaseDao<FinanceCategoryModel> {
 
-    @Query("SELECT *, (SELECT SUM(total) FROM finance_history as h WHERE h.category_id=fc.id OR h.category_id = fc.server_id AND h.date>=:dateStart AND h.date<=:dateEnd AND is_delete=0) as total FROM finance_category AS fc WHERE fc.type = :type AND fc.is_delete=0 ORDER BY fc.name ASC")
+    @Query("SELECT *, (SELECT SUM(total) FROM finance_history as h WHERE h.category_id=fc.id OR h.server_category_id = fc.server_id AND h.date>=:dateStart AND h.date<=:dateEnd AND is_delete=0) as total FROM finance_category AS fc WHERE fc.type = :type AND fc.is_delete=0 ORDER BY fc.name ASC")
     Flowable<List<FinanceCategoryWithTotal>> getAll(int type, String dateStart, String dateEnd);
 
     @Query("SELECT * FROM finance_category WHERE type=1")
     List<FinanceCategoryModel> getAllCostCategory();
-
+gi
     @Query("SELECT * FROM finance_category")
     List<FinanceCategoryModel> getAllCategories();
 

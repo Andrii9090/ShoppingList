@@ -18,7 +18,10 @@ public class FinanceActivityPresenter extends BasePresenter<FinanceViewContract>
 
     @Override
     public void viewReady(FinanceViewContract view) {
-        this.view = view;
+        if(this.view==null) {
+            this.view = view;
+            setStatPeriod(Calendar.MONTH);
+        }
     }
 
     @Override

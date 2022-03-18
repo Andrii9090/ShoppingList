@@ -98,11 +98,10 @@ public class FinanceActivity extends BaseActivity implements FragmentFinanceCate
 
     @Override
     protected void onResume() {
-        super.onResume();
         viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager(), getLifecycle()));
         presenter.viewReady(this);
-        presenter.setStatPeriod(Calendar.MONTH);
         setTabLayoutMediator();
+        super.onResume();
     }
 
     private void setTabLayoutMediator() {
