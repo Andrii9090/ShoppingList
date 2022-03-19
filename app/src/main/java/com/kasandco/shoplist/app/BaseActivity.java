@@ -120,7 +120,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
     @Override
     public void showToastNoInternet() {
-        ToastUtils.showToast(getString(R.string.internet_connection_error), this);
+        ToastUtils.showToast(getString(R.string.text_error_connect_to_internet), this);
     }
 
 

@@ -22,6 +22,7 @@ import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -58,6 +59,15 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                 }
             }
         }).start();
+
+        String lang = sharedPreferenceUtil.getSharedPreferences().getString("Lang", "uk");
+
+        Locale appLocale = new Locale(lang);
+
+        Locale.setDefault(appLocale);
+        android.content.res.Configuration config = new android.content.res.Configuration();
+        config.locale = appLocale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
 
     }

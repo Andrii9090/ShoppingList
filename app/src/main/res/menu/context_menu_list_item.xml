@@ -9,10 +9,6 @@
         android:title="@string/text_edit" />
 
     <item
-        android:id="@+id/context_menu_list_item_add_cost"
-        android:title="@string/text_clear_add_cost" />
-
-    <item
         android:id="@+id/context_menu_list_item_send_list"
         android:title="@string/text_send_list" />
 

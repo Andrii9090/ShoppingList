@@ -1,6 +1,5 @@
 package com.kasandco.shoplist.app.user.login;
 
-import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.user.LoginRepository;
 import com.kasandco.shoplist.core.BasePresenter;
 
@@ -35,11 +34,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
         if (isLogged){
             if(token!=null){
                 view.startListActivity();
-            }else {
-                view.showToast(R.string.text_login_error);
             }
-        }else {
-            view.showToast(R.string.text_login_error);
         }
         view.hideLoading();
     }
