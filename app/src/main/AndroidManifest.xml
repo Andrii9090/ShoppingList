@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kasandco.familyfinance">
+    package="com.kasandco.shoplist">
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -15,7 +15,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <application
-        android:name="com.kasandco.familyfinance.App"
+        android:name="com.kasandco.shoplist.App"
         android:allowBackup="false"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
@@ -26,7 +26,7 @@
         android:theme="@style/Theme.FamilyFinance">
 
         <service
-            android:name=".app.list.ListFMS"
+            android:name="com.kasandco.shoplist.app.list.ListFMS"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -34,35 +34,22 @@
         </service>
 
         <activity
-            android:name=".app.user.group.UserGroupActivity"
+            android:name="com.kasandco.shoplist.app.user.group.UserGroupActivity"
             android:exported="false" />
         <activity
-            android:name=".app.user.settings.UserSettingsActivity"
+            android:name="com.kasandco.shoplist.app.user.settings.UserSettingsActivity"
             android:exported="true" />
         <activity
-            android:name=".app.finance.FinanceDetailActivity"
+            android:name="com.kasandco.shoplist.app.user.login.LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".app.user.login.LoginActivity"
+            android:name="com.kasandco.shoplist.app.settings.SettingsActivity"
             android:exported="true" />
         <activity
-            android:name=".app.settings.SettingsActivity"
+            android:name="com.kasandco.shoplist.app.item.ItemActivity"
             android:exported="true" />
         <activity
-            android:name=".app.statistic.StatisticActivity"
-            android:exported="true" />
-        <activity
-            android:name=".app.user.registration.RegistrationActivity"
-            android:exported="true" />
-        <activity
-            android:name=".app.finance.FinanceActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".app.item.ItemActivity"
-            android:exported="true" />
-        <activity
-            android:name=".app.list.ListActivity"
+            android:name="com.kasandco.shoplist.app.list.ListActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
@@ -71,7 +58,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".app.splash.SplashActivity"
+            android:name="com.kasandco.shoplist.app.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -81,7 +68,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.kasandco.familyfinance"
+            android:authorities="com.kasandco.shoplist"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

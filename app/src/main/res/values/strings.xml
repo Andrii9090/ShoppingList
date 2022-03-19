@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FamilyFinance</string>
+    <string name="app_name">RemeberA</string>
     <string name="text_empty">Здесь пока ничего нет</string>
     <string name="text_clear_empty">Очистить неактивные</string>
     <string name="text_edit">Редактировать</string>
@@ -179,7 +179,7 @@
     <string name="user_uuid">Код пользователя</string>
     <string name="error_load_data">Ошибка загрузки данных!</string>
     <string name="text_error_uuid">Проверьте ID пользователя на корректность</string>
-    <string name="server_client_id">317045841784-hmir9faqn7d7eisudddp14fp8tdj7bic.apps.googleusercontent.com</string>
+<!--    <string name="server_client_id">317045841784-hmir9faqn7d7eisudddp14fp8tdj7bic.apps.googleusercontent.com</string>-->
     <string name="text_logout_all">Выйти на всех устройствах</string>
     <string name="creating_new_list">Как создать новый список?</string>
     <string name="creating_new_list_text">Нажмите на \"+\" и впишите в поле название списка, который вы хотите создать</string>

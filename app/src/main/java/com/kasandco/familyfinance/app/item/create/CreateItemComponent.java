@@ -1,9 +1,0 @@
-package com.kasandco.familyfinance.app.item.create;
-
-import dagger.Subcomponent;
-
-@ItemCreateScope
-@Subcomponent(modules = CreateItemModule.class)
-public interface CreateItemComponent {
-    void inject(FragmentItemCreate fragment);
-}

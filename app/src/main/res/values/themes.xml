@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.FamilyFinance" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.FamilyFinance" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/toolbar</item>
         <item name="colorPrimaryVariant">@color/toolbar_black</item>
         <item name="colorOnPrimary">@color/white</item>

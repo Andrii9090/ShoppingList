@@ -44,16 +44,6 @@
                 tools:itemCount="6"
                 tools:listitem="@layout/rv_icon_element" />
 
-            <TextView
-                android:id="@+id/fragment_create_list_text_stat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="@string/cost_statistic_title"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_create_list_statistic"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_create_list_recycler_view" />
-
             <Spinner
                 android:id="@+id/fragment_create_list_statistic"
                 android:layout_width="0dp"
@@ -63,7 +53,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent=".1"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/fragment_create_list_text_stat"
+                app:layout_constraintStart_toEndOf="@+id/fragment_create_list_recycler_view"
                 app:layout_constraintTop_toBottomOf="@id/fragment_create_list_recycler_view" />
 
             <Button
