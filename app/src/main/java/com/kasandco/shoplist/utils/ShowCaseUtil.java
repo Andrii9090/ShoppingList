@@ -2,58 +2,55 @@ package com.kasandco.shoplist.utils;
 
 import android.app.Activity;
 import android.view.View;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-import com.kasandco.shoplist.R;
+
+import com.kasandco.shoplist.core.Constants;
+
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class ShowCaseUtil {
-    private ShowcaseView.Builder builder;
-    private ShowcaseView showcaseView;
+    private GuideView.Builder builder;
+    private GuideView showcaseView;
     private Activity activity;
-    private int lastVieId;
+    private SharedPreferenceUtil sharedPreferenceUtil;
 
-    public ShowCaseUtil(Activity _act){
+    public ShowCaseUtil(Activity _act, SharedPreferenceUtil _sharedPreferenceUtil) {
         activity = _act;
+        sharedPreferenceUtil = _sharedPreferenceUtil;
     }
 
-    public void setCase(int viewId, int resIdTitle, int resIdText) {
-        lastVieId = viewId;
-        ViewTarget viewTarget = new ViewTarget(viewId, activity);
-        if (builder == null) {
-            createShowCaseObl(activity);
-        }
-        setShowCase(viewTarget, resIdTitle, resIdText);
+    public void setCase(View viewId, int resIdTitle, int resIdText) {
+        createShowCaseObl(activity);
+        setShowCase(viewId, resIdTitle, resIdText);
+
     }
 
-    public void setOnClickListener(View.OnClickListener listener){
-        builder.setOnClickListener(listener);
+    public void setOnClickListener(GuideListener listener) {
+        builder.setGuideListener(listener);
     }
 
     private void createShowCaseObl(Activity activity) {
-        builder = new ShowcaseView.Builder(activity);
+        builder = new GuideView.Builder(activity);
     }
 
-    private void setShowCase(ViewTarget viewTarget, int resIdTitle, int resIdText) {
-        builder.setTarget(viewTarget)
-                .setStyle(R.style.Theme_FamilyFinance)
-                .setContentTitle(resIdTitle)
-                .blockAllTouches()
-                .hideOnTouchOutside()
-                .setContentText(resIdText);
+    private void setShowCase(View viewTarget, int resIdTitle, int resIdText) {
+        builder.setTargetView(viewTarget)
+                .setDismissType(DismissType.outside)
+                .setTitle(activity.getString(resIdTitle))
+                .setContentText(activity.getString(resIdText));
     }
 
     public void show() {
-        if(showcaseView==null) {
-            showcaseView = builder.build();
-        }
+        showcaseView = builder.build();
         showcaseView.show();
+        if(showcaseView.isShowing()){
+            sharedPreferenceUtil.getEditor().putString(Constants.IS_SHOW_INFO_ADD_LIST, "").apply();
+        }
+
     }
 
-    public int getLastVieId() {
-        return lastVieId;
-    }
-
-    public void hide(){
-        showcaseView.hide();
+    public void hide() {
+        showcaseView.dismiss();
     }
 }

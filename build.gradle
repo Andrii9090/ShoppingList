@@ -3,7 +3,6 @@ buildscript {
     ext.kotlin_version = '1.5.31'
     repositories {
         google()
-        jcenter()
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }
@@ -11,8 +10,9 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.0.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
-
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
         // in the individual module build.gradle files
+        classpath 'com.google.gms:google-services:4.3.10'
     }
 }
 

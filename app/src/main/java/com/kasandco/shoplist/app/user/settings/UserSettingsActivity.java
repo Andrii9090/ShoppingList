@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Menu;
@@ -99,12 +98,6 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         mGoogleApiClient.connect();
-
-        new Handler().postDelayed(() -> {
-            showCaseUtil.setCase(R.id.user_settings_copy_uid, R.string.title_copy_uuid, R.string.text_detail_copy_uid);
-            showCaseUtil.show();
-        }, 1000);
-
     }
 
     @Override

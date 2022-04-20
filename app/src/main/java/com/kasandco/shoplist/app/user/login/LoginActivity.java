@@ -3,6 +3,7 @@ package com.kasandco.shoplist.app.user.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -49,15 +50,12 @@ public class LoginActivity extends BaseActivity implements LoginContract.View, V
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setOnClickListener(this);
 
-//@TODO Google Auth
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.server_client_id))
+                .build();
 
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestEmail()
-//                .requestIdToken(getString(R.string.server_client_id))
-//                .requestEmail()
-//                .build();
-
-//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     @Override
@@ -136,6 +134,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View, V
                 presenter.receivedIdToken(account.getIdToken());
             }
         } catch (ApiException e) {
+            Log.e("Error", e.toString());
             updateUI(null);
         }
     }

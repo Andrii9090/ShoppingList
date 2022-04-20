@@ -84,7 +84,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         Toolbar toolbar = findViewById(R.id.item_activity_toolbar);
         setSupportActionBar(toolbar);
         toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
-        MaterialTextView title = toolbar.findViewById(R.id.toolbar_title);
+        TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(listName);
         createFloatingBtn.setOnClickListener(view -> startVoiceRecognitionActivity());
     }

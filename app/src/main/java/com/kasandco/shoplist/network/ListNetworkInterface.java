@@ -1,6 +1,7 @@
 package com.kasandco.shoplist.network;
 
 import com.kasandco.shoplist.core.Constants;
+import com.kasandco.shoplist.network.model.FMSTokenModel;
 import com.kasandco.shoplist.network.model.LastSyncApiDataModel;
 import com.kasandco.shoplist.network.model.ListApiModel;
 
@@ -22,11 +23,14 @@ public interface ListNetworkInterface extends BaseNetworkInterface {
     @POST(Constants.REST_API_VERSION+"lists/update-list/")
     Call<ListApiModel> updateList(@Body ListApiModel list);
 
+    @POST(Constants.REST_API_VERSION+"user/save-fms-token/")
+    Call<ResponseBody> saveFMSToken(@Body FMSTokenModel token);
+
     @GET(Constants.REST_API_VERSION+"lists/delete-list/{id}/")
     Call<ResponseBody> removeList(@Path("id") long serverId);
 
     @POST(Constants.REST_API_VERSION+"lists/sync-lists/")
-    Call<List<ListApiModel>> syncData(@Body List<LastSyncApiDataModel> lastSyncItems, @Header("device-id") String deviceId, @Header("fm") String fmId);
+    Call<List<ListApiModel>> syncData(@Body List<LastSyncApiDataModel> lastSyncItems, @Header("device-id") String deviceId);
 
     @GET(Constants.REST_API_VERSION+"lists/list-items-delete/{status}/{listId}/")
     Call<ResponseBody> clearListItems(@Path("listId") long listId, @Path("status") int status);

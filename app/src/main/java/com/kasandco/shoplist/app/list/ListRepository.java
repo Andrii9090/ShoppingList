@@ -2,8 +2,14 @@ package com.kasandco.shoplist.app.list;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kasandco.shoplist.core.BaseRepository;
 import com.kasandco.shoplist.core.Constants;
 import com.kasandco.shoplist.core.icon.IconDao;
@@ -12,6 +18,7 @@ import com.kasandco.shoplist.app.item.ItemDao;
 import com.kasandco.shoplist.app.item.ItemModel;
 import com.kasandco.shoplist.network.ListNetworkInterface;
 import com.kasandco.shoplist.network.Requests;
+import com.kasandco.shoplist.network.model.FMSTokenModel;
 import com.kasandco.shoplist.network.model.LastSyncApiDataModel;
 import com.kasandco.shoplist.network.model.ListApiModel;
 import com.kasandco.shoplist.utils.NetworkConnect;
@@ -152,6 +159,9 @@ public class ListRepository extends BaseRepository {
     }
 
     private void sync() {
+
+        sendFMSToken();
+
         new Thread(() -> {
             List<ListSyncHistoryModel> lastSyncItems = listSyncHistoryDao.getAll();
             List<LastSyncApiDataModel> lastSyncData = new ArrayList<>();
@@ -159,7 +169,7 @@ public class ListRepository extends BaseRepository {
                 lastSyncData.add(new LastSyncApiDataModel(item.getServerId(), item.getDateMod()));
             }
 
-            Call<List<ListApiModel>> call = network.syncData(lastSyncData, deviceId, sharedPreference.getSharedPreferences().getString(Constants.FMC_TOKEN, null));
+            Call<List<ListApiModel>> call = network.syncData(lastSyncData, deviceId);
 
             Requests.RequestsInterface<List<ListApiModel>> callbackResponse = new Requests.RequestsInterface<List<ListApiModel>>() {
                 @Override
@@ -223,6 +233,42 @@ public class ListRepository extends BaseRepository {
             }
 
         }).start();
+
+    }
+
+    private void sendFMSToken() {
+        String oldToken = sharedPreference.getSharedPreferences().getString(Constants.FMC_TOKEN, null);
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        return;
+                    }
+                    String token = task.getResult();
+                    if(oldToken == null || !oldToken.equals(token)){
+                        new Thread(()->{
+                            FMSTokenModel model = new FMSTokenModel(token);
+                            Call<ResponseBody> call = network.saveFMSToken(model);
+
+                            Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                                @Override
+                                public void success(ResponseBody responseObj) {
+                                    sharedPreference.getEditor().putString(Constants.FMC_TOKEN, token).commit();
+                                }
+
+                                @Override
+                                public void error() {
+                                }
+
+                                @Override
+                                public void noPermit() {
+                                }
+                            };
+                            Requests.request(call, callbackResponse);
+                        }).start();
+                    }
+                });
+
 
     }
 

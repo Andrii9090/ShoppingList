@@ -29,13 +29,12 @@ import retrofit2.Call;
 
 @ItemActivityScope
 public class ItemRepository extends BaseRepository {
-    private ItemDao itemDao;
-    private long listId;
+    private final ItemDao itemDao;
     private long serverListId;
-    private CompositeDisposable disposable;
-    private ItemNetworkInterface network;
-    private ItemSyncHistoryDao itemSyncDao;
-    private SaveImageUtils saveImageUtils;
+    private final CompositeDisposable disposable;
+    private final ItemNetworkInterface network;
+    private final ItemSyncHistoryDao itemSyncDao;
+    private final SaveImageUtils saveImageUtils;
     private ItemRepositoryCallback callback;
 
     @Inject
@@ -167,7 +166,6 @@ public class ItemRepository extends BaseRepository {
 
     public void getAll(long listId, long serverListId, ItemRepositoryCallback callback) {
         sync(listId);
-        this.listId = listId;
         this.serverListId = serverListId;
         this.callback = callback;
         disposable.add(itemDao.getAllItems(listId)

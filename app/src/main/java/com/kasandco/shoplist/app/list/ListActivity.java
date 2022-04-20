@@ -33,7 +33,9 @@ import com.kasandco.shoplist.utils.ToastUtils;
 
 import javax.inject.Inject;
 
-public class ListActivity extends BaseActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, ListRvAdapter.ListAdapterListener, View.OnClickListener {
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
+
+public class ListActivity extends BaseActivity implements Constants, ListContract, FragmentCreateList.CreateListListener, GuideListener, ListRvAdapter.ListAdapterListener {
 
     @Inject
     public ListPresenter presenter;
@@ -73,12 +75,14 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     protected void onResume() {
         super.onResume();
         presenter.viewReady(this);
-        new Handler().postDelayed(()->{MenuItem item = toolbar.getMenu().getItem(0);
-            showCaseUtil.setCase(item.getItemId(), R.string.creating_new_list, R.string.creating_new_list_text);
-            showCaseUtil.setOnClickListener(this);
-            showCaseUtil.show();
-            },1000);
-
+        new Handler().postDelayed(()->{
+            if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.IS_SHOW_INFO_ADD_LIST,null)==null)
+            {
+                showCaseUtil.setCase(findViewById(R.id.menu_list_activity_add_new_list), R.string.creating_new_list, R.string.creating_new_list_text);
+                showCaseUtil.show();
+                showCaseUtil.setOnClickListener(this);
+            }
+        },1000);
     }
 
     @Override
@@ -268,16 +272,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     };
 
     @Override
-    public void onClick(View view) {
-        if (view.getId()==R.id.showcase_button){
-            if(showCaseUtil.getLastVieId()==R.id.menu_list_activity_add_new_list) {
-                showCaseUtil.setCase(toolbar.findViewById(R.id.toolbar_menu).getId(), R.string.main_menu, R.string.main_menu_text);
-                showCaseUtil.show();
-            }else if(showCaseUtil.getLastVieId()==R.id.toolbar_menu){
-                showCaseUtil.hide();
-            }else{
-                showCaseUtil.hide();
-            }
-        }
+    public void onDismiss(View view) {
+        showCaseUtil.hide();
     }
 }

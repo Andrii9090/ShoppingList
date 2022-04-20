@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RemeberA</string>
+    <string name="app_name">Listera</string>
     <string name="text_empty">Записів немає</string>
     <string name="text_clear_empty">Видалити неактивні</string>
     <string name="text_edit">Редагувати</string>
@@ -32,8 +32,8 @@
     <string name="menu_feed">Залишити відгук</string>
     <string name="menu_pro">Версія PRO</string>
     <string name="menu_mail_to_dev">Написати адміністрації</string>
-    <string name="text_sound">Кажіть…</string>
-    <string name="text_color_theme">Колорова тема</string>
+    <string name="text_sound">Говоріть…</string>
+    <string name="text_color_theme">Кольорова тема</string>
     <string name="text_selected_language">Мова</string>
     <string name="text_save">Зберегти</string>
     <string name="title_list">Мої списки</string>
@@ -79,12 +79,13 @@
     <string name="main_menu">Головне меню</string>
     <string name="main_menu_text">Ось тут знаходиться головне меню</string>
     <string name="title_copy_uuid">Як долучитись до групи іншого користувача?</string>
-    <string name="text_detail_copy_uid">Натисніть ось тут та відправте цей код користувачу, до групи якого ви хочете долучитись</string>
+    <string name="text_detail_copy_uid">¿Cómo crear una nueva lista?</string>
     <string name="text_copy_uid">Скопіювати ID користувача</string>
     <string name="error_copy_uid">Помилка при копиюванні! Спробуйт пізніше</string>
     <string name="text_uid_copied">Готово! Відправте цей код іншому користовачу, щоб долучитись до його групи та вести спільні списки</string>
     <string name="user_uuid">Код користувача</string>
     <string name="text_error_uuid">Перевірте ID користувача на коректність</string>
+    <string name="text_ok">ok</string>
 
 
 </resources>

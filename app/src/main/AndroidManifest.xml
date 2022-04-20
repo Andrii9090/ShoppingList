@@ -26,7 +26,7 @@
         android:theme="@style/Theme.FamilyFinance">
 
         <service
-            android:name="com.kasandco.shoplist.app.list.ListFMS"
+            android:name="com.kasandco.shoplist.app.list.ListFSM"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RemeberA</string>
+    <string name="app_name">Listera</string>
     <string name="text_empty">Здесь пока ничего нет</string>
     <string name="text_clear_empty">Очистить неактивные</string>
     <string name="text_edit">Редактировать</string>
@@ -73,16 +73,17 @@
     <string name="title_my_family">Моя семья</string>
     <string name="text_copy_uid">Копировать ID пользователя</string>
     <string name="error_copy_uid">Ошибка при копировании! Повторите позже</string>
-    <string name="text_uid_copied">Скопировано! Отправьте этот код другому пользователю, чтоб стать участником его  группы и вести общие списки и категории финансов</string>
+    <string name="text_uid_copied">Скопировано! Отправьте этот код другому пользователю, чтоб стать участником его  группы и вести общие списки</string>
     <string name="user_uuid">Код пользователя</string>
     <string name="error_load_data">Ошибка загрузки данных!</string>
     <string name="text_error_uuid">Проверьте ID пользователя на корректность</string>
-<!--    <string name="server_client_id">317045841784-hmir9faqn7d7eisudddp14fp8tdj7bic.apps.googleusercontent.com</string>-->
     <string name="text_logout_all">Выйти на всех устройствах</string>
     <string name="creating_new_list">Как создать новый список?</string>
     <string name="creating_new_list_text">Нажмите на \"+\" и впишите в поле название списка, который вы хотите создать</string>
     <string name="main_menu">Главное меню</string>
     <string name="main_menu_text">Здесь находиться главное меню приложения, доступ к статистике финансов, профиль пользователя</string>
-    <string name="title_copy_uuid">Как стать участником группы другого пользователя</string>
+    <string name="title_copy_uuid">Как стать участником группы другого пользователя?</string>
     <string name="text_detail_copy_uid">Нажмите здесь и отправьте этот код пользователю, участником группы которого вы хотите стать</string>
+    <string name="text_ok">ok</string>
+    <string name="server_client_id">991688112000-ss562nibrj6pflb4fihupao2iji3iv4l.apps.googleusercontent.com</string>
 </resources>

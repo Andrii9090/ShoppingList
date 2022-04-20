@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "991688112000",
+    "project_id": "listera-347620",
+    "storage_bucket": "listera-347620.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991688112000:android:e926680229be2afe383365",
+        "android_client_info": {
+          "package_name": "com.kasandco.shoplist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991688112000-r24hphfad6a0nli47n855s3bm32nfgeb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kasandco.shoplist",
+            "certificate_hash": "8565b16213f929908764720991f4af57f65a4cc3"
+          }
+        },
+        {
+          "client_id": "991688112000-osbdl7mues1uti8rel2qdjhn0usgqge0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLMdNHGrjdaRn3psCITZjT1vrS-wJlA88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991688112000-osbdl7mues1uti8rel2qdjhn0usgqge0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

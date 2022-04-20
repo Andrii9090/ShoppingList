@@ -4,7 +4,7 @@ import com.kasandco.shoplist.R;
 
 public interface Constants {
     String REST_API_VERSION = "/api/v1/";
-    String BASE_URL = "https://dedfqwfc.shneider-host.ru";
+    String BASE_URL = "https://987b-83-213-25-33.ngrok.io";
     String IS_ADDED_ICONS = "is_added_icons";
 
     int REQUEST_TAKE_PHOTO = 1;
@@ -16,20 +16,16 @@ public interface Constants {
     String SHP_DEFAULT_CURRENCY = "default_currency";
     String DEFAULT_CURRENCY_VALUE = "USD";
 
-    int TYPE_COSTS = 1;
-    int TYPE_INCOME = 2;
-
     int CODE_VOICE_RESULT = 12345;
-    String STAT_TYPE = "statistic_type";
     String COLOR_THEME = "color_theme";
     String USER_NAME = "user_name";
-    String FINANCE_CATEGORY_ID = "finance_category_id";
     String IS_FIRST_START = "is_first_start";
     String TOKEN = "token";
     String EMAIL = "email";
     String DEVICE_ID = "device_id";
-    int THEME_DEFAULT = R.style.Theme_FamilyFinanceBlue;
+    int THEME_DEFAULT = R.style.Theme_FamilyFinance;
     int MAX_QUANTITY_WITHOUT_REG = 3;
     String FMC_TOKEN = "fmc_token";
     String UUID = "uuid";
+    String IS_SHOW_INFO_ADD_LIST = "is_show_add_list";
 }

@@ -87,7 +87,7 @@ public class ListModule {
     }
     @Provides
     @ListActivityScope
-    ShowCaseUtil providesShowcaseUtil(@Named("activity_context")Context context){
-        return new ShowCaseUtil((Activity) context);
+    ShowCaseUtil providesShowcaseUtil(@Named("activity_context")Context context, SharedPreferenceUtil s){
+        return new ShowCaseUtil((Activity) context, s);
     }
 }

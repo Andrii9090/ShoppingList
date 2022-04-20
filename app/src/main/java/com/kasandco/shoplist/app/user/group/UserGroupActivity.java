@@ -105,7 +105,7 @@ public class UserGroupActivity extends BaseActivity implements ContractUserGroup
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage(R.string.not_register_user)
-                .setPositiveButton(R.string.ok, dialogListener);
+                .setPositiveButton(R.string.text_ok, dialogListener);
 
         builder.show();
     }

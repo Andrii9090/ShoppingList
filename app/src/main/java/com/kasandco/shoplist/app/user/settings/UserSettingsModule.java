@@ -16,13 +16,13 @@ import retrofit2.Retrofit;
 public class UserSettingsModule {
     private Activity activity;
 
-    public UserSettingsModule(Activity activity){
+    public UserSettingsModule(Activity activity) {
         this.activity = activity;
     }
 
     @Provides
     @UserSettingScope
-    Activity providesActivity(){
+    Activity providesActivity() {
         return activity;
     }
 
@@ -34,7 +34,7 @@ public class UserSettingsModule {
 
     @Provides
     @UserSettingScope
-    ShowCaseUtil providesShowCaseUtil(Activity activity){
-        return new ShowCaseUtil(activity);
+    ShowCaseUtil providesShowCaseUtil(Activity activity, SharedPreferenceUtil s) {
+        return new ShowCaseUtil(activity, s);
     }
 }

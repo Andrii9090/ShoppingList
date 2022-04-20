@@ -55,7 +55,7 @@ public class SaveImageUtils {
 
     public Uri getPhotoUri() {
         return FileProvider.getUriForFile(context,
-                "com.kasandco.familyfinance",
+                "com.kasandco.shoplist",
                 fileImage);
     }
 
