@@ -57,7 +57,6 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
     private RecyclerView recyclerView;
     private TextView emptyText;
-    private FloatingActionButton createFloatingBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,6 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         recyclerView = findViewById(R.id.item_activity_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         emptyText = findViewById(R.id.item_activity_text_empty);
-        createFloatingBtn = findViewById(R.id.create_item_floating_btn);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.item_activity_toolbar);
@@ -86,15 +84,15 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(listName);
-        createFloatingBtn.setOnClickListener(view -> startVoiceRecognitionActivity());
     }
 
     @Inject
-    public void getFragmentZoomImage(FragmentZoomImage fragmentZoomImage){
+    public void getFragmentZoomImage(FragmentZoomImage fragmentZoomImage) {
         this.fragmentZoomImage = fragmentZoomImage;
     }
+
     @Inject
-    public void getFragmentZoomImage(FragmentItemCreate fragmentItemCreate){
+    public void getFragmentZoomImage(FragmentItemCreate fragmentItemCreate) {
         this.createFragment = fragmentItemCreate;
     }
 
@@ -106,10 +104,10 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
     @Override
     protected void startNewActivity(Class<?> activityClass) {
-        if (getClass()!=activityClass) {
+        if (getClass() != activityClass) {
             Intent intent = new Intent(this, activityClass);
             startActivity(intent);
-        }else{
+        } else {
             drawerLayout.closeDrawer(Gravity.LEFT);
         }
     }
@@ -188,11 +186,11 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         }
     }
 
-    private void showFloatingBtn(boolean isShow){
-        if(!isShow){
-            createFloatingBtn.setVisibility(View.GONE);
-        }else {
-            createFloatingBtn.setVisibility(View.VISIBLE);
+    private void showFloatingBtn(boolean isShow) {
+        if (!isShow) {
+//            createFloatingBtn.setVisibility(View.GONE);
+        } else {
+//            createFloatingBtn.setVisibility(View.VISIBLE);
         }
     }
 
@@ -217,7 +215,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
     @Override
     public void showSnackBarToast(int text, int length) {
-        if (snackbar==null || !snackbar.isShown()) {
+        if (snackbar == null || !snackbar.isShown()) {
             snackbar = Snackbar.make(this, recyclerView, getString(text), Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
@@ -236,6 +234,9 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         switch (item.getItemId()) {
             case R.id.menu_item_activity_add_new_list:
                 showCreateFragment();
+                break;
+            case R.id.create_item_floating_btn:
+                startVoiceRecognitionActivity();
                 break;
         }
         return true;
@@ -292,9 +293,9 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
     private void removeItem() {
         DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
-            if(i==DialogInterface.BUTTON_POSITIVE){
+            if (i == DialogInterface.BUTTON_POSITIVE) {
                 presenter.removeItem();
-            }else{
+            } else {
                 dialogInterface.cancel();
             }
         };
@@ -336,7 +337,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
                     RecognizerIntent.EXTRA_RESULTS);
             String textEntered = Character.toString(matches.get(0).charAt(0)).toUpperCase() + matches.get(0).substring(1);
             presenter.createNewItem(textEntered, listId, serverListId);
-        } else if(requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_TAKE_GALLERY && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_TAKE_GALLERY && resultCode == RESULT_OK) {
             try {
                 presenter.activityResult(requestCode, resultCode, data);
             } catch (IOException e) {

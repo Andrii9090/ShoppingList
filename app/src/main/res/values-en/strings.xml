@@ -86,4 +86,6 @@
     <string name="title_copy_uuid">How do I become a member of another user\'s group?</string>
     <string name="text_detail_copy_uid">Click here and send this code to the user whose group you want to become a member of</string>
     <string name="text_ok">ok</string>
+    <string name="title_pro">Remove ads</string>
+    <string name="pro_description">By subscribing to our application, you not only remove ads, but also help our team develop and maintain our application <b>Listera</b></string>
 </resources>

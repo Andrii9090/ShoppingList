@@ -86,6 +86,8 @@
     <string name="user_uuid">Код користувача</string>
     <string name="text_error_uuid">Перевірте ID користувача на коректність</string>
     <string name="text_ok">ok</string>
+    <string name="title_pro">Відключити рекламу</string>
+    <string name="pro_description">Своєю підпискою на наш додаток Ви не тільки прибираєте рекламу, але ще й допомагаєте нашій команді розвивати та підтримувати нашу програму <b>Listera</b></string>
 
 
 </resources>

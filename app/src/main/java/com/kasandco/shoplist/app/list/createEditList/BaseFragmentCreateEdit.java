@@ -4,12 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +21,8 @@ import com.kasandco.shoplist.core.icon.IconModel;
 import com.kasandco.shoplist.utils.KeyboardUtil;
 import com.kasandco.shoplist.utils.ToastUtils;
 
-import java.util.List;
 
-
-public abstract class BaseFragmentCreateEdit extends Fragment implements AdapterView.OnItemSelectedListener, CreateEditListBaseView, OnClickIconListener {
+public abstract class BaseFragmentCreateEdit extends Fragment implements CreateEditListBaseView, OnClickIconListener {
 
     protected CreateEditListBasePresenter presenter;
 
@@ -105,13 +100,6 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
     }
 
     @Override
-    public void setDataToSelection(List<String> names) {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, names);
-        financeCategorySpinner.setAdapter(arrayAdapter);
-        financeCategorySpinner.setOnItemSelectedListener(this);
-    }
-
-    @Override
     public void setRecyclerViewAdapter(AdapterIcon adapterIcon) {
         recyclerViewIcons.setAdapter(adapterIcon);
     }
@@ -122,13 +110,6 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
     }
 
     @Override
-    public String getStringResource(int resId) {
-        return getStringView(resId);
-    }
-
-    protected abstract String getStringView(int resId);
-
-    @Override
     public void clearViewData() {
         name.getText().clear();
     }
@@ -136,16 +117,6 @@ public abstract class BaseFragmentCreateEdit extends Fragment implements Adapter
     @Override
     public void onClickIcon(IconModel icon) {
         iconPath = icon.path;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        presenter.selectedSpinner(i);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        presenter.selectedSpinner(0);
     }
 
     public interface CreateListListener {

@@ -15,7 +15,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-public interface ListNetworkInterface extends BaseNetworkInterface {
+public interface ListNetworkInterface {
 
     @POST(Constants.REST_API_VERSION+"lists/create-list/")
     Call<ListApiModel> createNewList(@Body ListApiModel list);

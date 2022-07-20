@@ -260,7 +260,7 @@ public class ItemRepository extends BaseRepository {
                     if (item.getIsDelete() == 1) {
                         networkRemove(item);
                     }
-                    if (item.getDateModServer() != null && Long.parseLong(item.getDateMod().substring(0, 10)) > Long.parseLong(item.getDateModServer().substring(0, 10))) {
+                    if (item.getDateModServer() != null && Long.parseLong(item.getDateMod())/1000 > Long.parseLong(item.getDateModServer())/1000) {
                         networkUpdate(item);
                     }
                 }

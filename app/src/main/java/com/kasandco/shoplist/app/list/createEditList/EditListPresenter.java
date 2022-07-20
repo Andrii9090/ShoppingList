@@ -47,24 +47,12 @@ public class EditListPresenter extends BaseCreateEditPresenter<EditListContract.
     public void setEditItem(ListModel item) {
         editItem = item;
         view.setName(editItem.getName());
-        if (financeCategoryNames.size() > 0) {
-            setEditDataSpinner();
-        }
     }
 
     @Override
     public void setIcons(List<IconModel> iconModels) {
         super.setIcons(iconModels);
         setEditDataIcon();
-    }
-
-    private void setEditDataSpinner() {
-        if (editItem.getFinanceCategoryId() != null && editItem.getFinanceCategoryId() != 0) {
-            if (positionSpinner >= 0) {
-                positionSpinner += 2;
-            }
-        }
-        view.setSpinnerPosition(positionSpinner);
     }
 
     private void setEditDataIcon() {

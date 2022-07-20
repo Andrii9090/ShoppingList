@@ -1,5 +1,6 @@
 package com.kasandco.shoplist.app.splash;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.Animator;
@@ -9,8 +10,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.settings.SettingsActivity;
@@ -32,6 +41,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     IconDao iconDao;
     SharedPreferenceUtil sharedPreferenceUtil;
     ImageView logo;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +74,10 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     @Override
     protected void onResume() {
         super.onResume();
+        startMainActivity();
+    }
+
+    private void startMainActivity() {
         Intent intent;
         if (sharedPreferenceUtil.getSharedPreferences().getBoolean(Constants.IS_FIRST_START, false)) {
             intent = new Intent(this, ListActivity.class);
@@ -80,7 +94,6 @@ public class SplashActivity extends AppCompatActivity implements Constants {
         valueAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-
             }
 
             @Override
@@ -100,12 +113,10 @@ public class SplashActivity extends AppCompatActivity implements Constants {
 
             @Override
             public void onAnimationCancel(Animator animator) {
-
             }
 
             @Override
             public void onAnimationRepeat(Animator animator) {
-
             }
         });
     }

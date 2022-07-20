@@ -2,13 +2,6 @@ package com.kasandco.shoplist.app.list;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kasandco.shoplist.core.BaseRepository;
 import com.kasandco.shoplist.core.Constants;

@@ -5,6 +5,8 @@ import android.content.Context;
 import com.kasandco.shoplist.utils.NetworkConnect;
 import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
+import java.util.Locale;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -34,10 +36,12 @@ public class NetworkModule implements Constants {
     @Provides
     @Singleton
     OkHttpClient createHttpConnection(HttpLoggingInterceptor interceptor, SharedPreferenceUtil sharedPreference) {
+        String defaultLocale = Locale.getDefault().getLanguage();
 
         Interceptor interceptor1 = chain -> {
             Request newRequest = chain.request().newBuilder()
                     .addHeader("Authorization", "Token " + sharedPreference.getSharedPreferences().getString(Constants.TOKEN, ""))
+                    .addHeader("Accept-Language", defaultLocale)
                     .build();
             return chain.proceed(newRequest);
         };

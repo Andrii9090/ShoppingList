@@ -4,7 +4,7 @@ import com.kasandco.shoplist.R;
 
 public interface Constants {
     String REST_API_VERSION = "/api/v1/";
-    String BASE_URL = "https://987b-83-213-25-33.ngrok.io";
+    String BASE_URL = "https://listera.ovh";
     String IS_ADDED_ICONS = "is_added_icons";
 
     int REQUEST_TAKE_PHOTO = 1;

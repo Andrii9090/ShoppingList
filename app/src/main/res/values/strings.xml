@@ -57,7 +57,7 @@
     <string name="my_group">Моя группа</string>
     <string name="connect_to_group">Добавить в группу</string>
     <string name="disconnect_from_group">Выйти из группы</string>
-    <string name="error_remove_user" >Не удалось удалить, возможно нет соединения с Интернетом</string>
+    <string name="error_remove_user">Не удалось удалить, возможно нет соединения с Интернетом</string>
     <string name="user_email">Email пользователя</string>
     <string name="text_add_user_to_group">Добавить</string>
     <string name="text_close_dialog">Закрыть</string>
@@ -86,4 +86,6 @@
     <string name="text_detail_copy_uid">Нажмите здесь и отправьте этот код пользователю, участником группы которого вы хотите стать</string>
     <string name="text_ok">ok</string>
     <string name="server_client_id">991688112000-ss562nibrj6pflb4fihupao2iji3iv4l.apps.googleusercontent.com</string>
+    <string name="title_pro">Убрать рекламу</string>
+    <string name="pro_description">Своею подпиской на наше приложение Вы не только убираете рекламу, но еще и помогаете нашей команде развивать и поддерживать наше приложение <b>Listera</b></string>
 </resources>

@@ -2,7 +2,9 @@ package com.kasandco.shoplist;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
+import com.google.android.gms.ads.MobileAds;
 import com.kasandco.shoplist.app.item.ItemComponent;
 import com.kasandco.shoplist.app.item.ItemModule;
 import com.kasandco.shoplist.app.list.ListActivityComponent;
@@ -22,6 +24,7 @@ public class App extends Application {
     public void onCreate() {
         appComponent = DaggerAppComponent.builder().appModule(new AppModule(getApplicationContext())).build();
         super.onCreate();
+        startAddMob();
     }
 
     public static void recreateDagger(Context appContext){
@@ -44,5 +47,10 @@ public class App extends Application {
             return getAppComponent().plus(new ItemModule(context));
         }
         return itemComponent;
+    }
+
+
+    private void startAddMob() {
+        MobileAds.initialize(this, initializationStatus -> Log.e("Status ADDMOB", initializationStatus.toString()));
     }
 }

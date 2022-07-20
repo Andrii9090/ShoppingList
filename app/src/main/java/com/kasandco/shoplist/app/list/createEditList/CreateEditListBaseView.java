@@ -10,13 +10,10 @@ public interface CreateEditListBaseView extends BaseContract {
 
     void close();
 
-    void setDataToSelection(List<String> names);
 
     void setRecyclerViewAdapter(AdapterIcon adapterIcon);
 
     void getInputData();
-
-    String getStringResource(int text_empty_statistic_category);
 
     void clearViewData();
 }

@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.list.ListModel;
+
+
 public class FragmentEditList extends BaseFragmentCreateEdit implements EditListContract.View{
     private ListModel editItem;
     private EditListContract.BasePresenter presenter;
@@ -24,11 +26,6 @@ public class FragmentEditList extends BaseFragmentCreateEdit implements EditList
         btnCreate.setText(R.string.text_edit);
     }
 
-    @Override
-    protected String getStringView(int resId) {
-        return getContext().getString(resId);
-    }
-
     public void setEditItem(ListModel editItem){
         this.editItem = editItem;
         iconPath = editItem.getIcon();
@@ -40,10 +37,6 @@ public class FragmentEditList extends BaseFragmentCreateEdit implements EditList
         presenter.setEditItem(editItem);
     }
 
-    @Override
-    public void setSpinnerPosition(int positionSpinner) {
-        financeCategorySpinner.setSelection(positionSpinner, true);
-    }
 
     @Override
     public void setIconPosition(int iconPosition) {

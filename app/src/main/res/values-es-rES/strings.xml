@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">Listera</string>
     <string name="text_empty">No hay listas</string>
-    <string name="text_clear_empty">Quitar inactivos</string>
+    <string name="text_clear_empty">Borar inactivos</string>
     <string name="text_edit">Cambiar</string>
-    <string name="text_clear_all">Quitar todo</string>
-    <string name="text_remove">Quitar</string>
+    <string name="text_clear_all">Borar todo</string>
+    <string name="text_remove">Borar</string>
     <string name="text_error">Error</string>
     <string name="text_new_list">Crear</string>
     <string name="text_create_list_item">Nombre de la lista</string>
-    <string name="text_error_create_list">Error</string>
+    <string name="text_error_create_list">Ocurrió un error al crear la lista</string>
     <string name="text_select_icon">Icon</string>
-    <string name="text_list_added">Nueva lista ha creado</string>
+    <string name="text_list_added">Ha creado nueva lista</string>
     <string name="select_icon">Icon</string>
     <string name="text_change_icon">Cambiar icon</string>
     <string name="create_category">Crear categoria</string>
@@ -86,6 +86,8 @@
     <string name="select_photo">Seleccionar foto</string>
     <string name="connect_to_group">Añadir al grupo</string>
     <string name="text_ok">ok</string>
+    <string name="title_pro">" Quitar anuncios"</string>
+    <string name="pro_description">Al suscribirse a nuestra aplicación, no solo elimina los anuncios, sino que también ayuda a nuestro equipo a desarrollar y mantener nuestra aplicación <b>Listera</b></string>
 
 
 </resources>

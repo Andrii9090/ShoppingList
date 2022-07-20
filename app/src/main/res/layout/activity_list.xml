@@ -31,22 +31,30 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent=".85"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/activity_list_toolbar">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/activity_list_rv_items"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbarSize="3dp"
-                android:scrollbars="vertical"
-                app:layout_constraintTop_toBottomOf="@id/activity_list_toolbar"
-                tools:itemCount="50"
-                tools:listitem="@layout/rv_list_cell" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_list_rv_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbarSize="3dp"
+                    android:scrollbars="vertical"
+                    tools:listitem="@layout/rv_list_cell" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/list_item_adView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/swipe_container" />
 
         <FrameLayout
             android:id="@+id/activity_list_fragment"

@@ -56,7 +56,6 @@
             android:padding="16dp"
             app:layout_constraintTop_toBottomOf="@+id/user_settings_logout_all"
             tools:layout_editor_absoluteX="-150dp" />
-
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/user_settings_loading"
             android:layout_width="match_parent"

@@ -21,9 +21,8 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
     AdapterIcon adapterIcon;
 
     protected List<String> financeCategoryNames;
-    protected long statId;
     protected long financeCategory;
-    protected String name, pathIcon, textSpinnerSelected;
+    protected String name, pathIcon;
     protected CreateEditListBaseView view;
 
     public BaseCreateEditPresenter() {
@@ -51,9 +50,6 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
         if (name != null && name.length() > 2) {
             return true;
         }
-        if (!textSpinnerSelected.isEmpty()){
-            return true;
-        }
         return false;
     }
 
@@ -70,17 +66,6 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
         name = _name;
         pathIcon = _iconPath;
         create();
-    }
-
-    public void selectedSpinner(int position) {
-        if (position == 0) {
-            textSpinnerSelected = "nothing";
-            financeCategory = -1;
-        } else if (position == 1) {
-            financeCategory = 0;
-        } else {
-            textSpinnerSelected = financeCategoryNames.get(position);
-        }
     }
 
     @Override
