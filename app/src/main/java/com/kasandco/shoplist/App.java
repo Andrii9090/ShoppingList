@@ -9,6 +9,8 @@ import com.kasandco.shoplist.app.item.ItemComponent;
 import com.kasandco.shoplist.app.item.ItemModule;
 import com.kasandco.shoplist.app.list.ListActivityComponent;
 import com.kasandco.shoplist.app.list.ListModule;
+import com.kasandco.shoplist.app.pro.ProComponent;
+import com.kasandco.shoplist.app.pro.ProModule;
 import com.kasandco.shoplist.core.AppComponent;
 import com.kasandco.shoplist.core.AppModule;
 import com.kasandco.shoplist.core.DaggerAppComponent;
@@ -19,6 +21,7 @@ public class App extends Application {
     public static AppComponent appComponent;
     public static ListActivityComponent listActivityComponent;
     public static ItemComponent itemComponent;
+    public static ProComponent proComponent;
 
     @Override
     public void onCreate() {
@@ -49,6 +52,12 @@ public class App extends Application {
         return itemComponent;
     }
 
+    public static ProComponent getProComponent(Context context){
+        if(proComponent==null){
+            return getAppComponent().plus(new ProModule(context));
+        }
+        return proComponent;
+    }
 
     private void startAddMob() {
         MobileAds.initialize(this, initializationStatus -> Log.e("Status ADDMOB", initializationStatus.toString()));

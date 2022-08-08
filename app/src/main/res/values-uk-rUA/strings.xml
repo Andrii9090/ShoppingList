@@ -24,7 +24,7 @@
     <string name="text_add_photo_gallery">Обрати із галереї</string>
     <string name="no_camera">На вашому девайсі немає камери</string>
     <string name="error_todo_photo">Помилка камери</string>
-    <string name="text_change">Змінити</string>
+    <string name="text_change">Змінити назву</string>
     <string name="error_show_img">Помилка зображення</string>
     <string name="text_name_error">Назва не може бути порожньою або бути порожньою</string>
     <string name="lists">Мої списки</string>

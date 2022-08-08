@@ -28,4 +28,5 @@ public interface Constants {
     String FMC_TOKEN = "fmc_token";
     String UUID = "uuid";
     String IS_SHOW_INFO_ADD_LIST = "is_show_add_list";
+    String IS_PRO = "is_pro";
 }

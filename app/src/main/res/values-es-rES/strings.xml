@@ -23,7 +23,7 @@
     <string name="text_add_photo_gallery">Seleccionar de la galería</string>
     <string name="no_camera">Tu movil no tiene camara</string>
     <string name="error_todo_photo">Error la camara</string>
-    <string name="text_change">Cambiar</string>
+    <string name="text_change">Cambiar nombre</string>
     <string name="error_show_img">Error de la imagen</string>
     <string name="text_name_error">Por favor añade un nombre</string>
     <string name="lists">Mis listas</string>

@@ -8,4 +8,5 @@
     <dimen name="ItemListSize">18sp</dimen>
     <dimen name="SizeSecond">13sp</dimen>
     <dimen name="categorySize">15sp</dimen>
+    <dimen name="bigTextSize">45sp</dimen>
 </resources>

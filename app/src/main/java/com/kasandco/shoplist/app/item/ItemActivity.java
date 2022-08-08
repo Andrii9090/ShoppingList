@@ -25,9 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textview.MaterialTextView;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.BaseActivity;

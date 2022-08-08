@@ -25,7 +25,7 @@
     <string name="text_add_photo_gallery">Select from gallery</string>
     <string name="no_camera">Your device dosen\'t have a camera</string>
     <string name="error_todo_photo">Camera error</string>
-    <string name="text_change">Change</string>
+    <string name="text_change">Change name</string>
     <string name="error_show_img">Image display error</string>
     <string name="text_name_error">Title cannot be empty or less than 3 characters</string>
     <string name="lists">My Lists</string>

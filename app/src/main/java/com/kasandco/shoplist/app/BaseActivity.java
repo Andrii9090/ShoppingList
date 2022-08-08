@@ -1,5 +1,6 @@
 package com.kasandco.shoplist.app;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.kasandco.shoplist.BuildConfig;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.list.ListActivity;
+import com.kasandco.shoplist.app.pro.ProActivity;
 import com.kasandco.shoplist.app.settings.SettingsActivity;
 import com.kasandco.shoplist.app.user.group.UserGroupActivity;
 import com.kasandco.shoplist.app.user.login.LoginActivity;
@@ -85,6 +87,23 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                 break;
             case R.id.menu_drawer_group:
                 startNewActivity(UserGroupActivity.class);
+                break;
+                case R.id.menu_drawer_pro:
+                    if (!sharedPreferenceUtil.isLogged()) {
+                        AlertDialog dialogAlert = new AlertDialog.Builder(this).setMessage(R.string.pro_not_register)
+                                .setTitle(R.string.registration)
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                    startNewActivity(LoginActivity.class);
+                                })
+                                .setOnCancelListener(dialog -> {
+                                    startNewActivity(LoginActivity.class);
+                                })
+                                .create();
+                        dialogAlert.show();
+
+                    }else {
+                        startNewActivity(ProActivity.class);
+                    }
                 break;
             case R.id.menu_drawer_feed:
                 ToastUtils.showToast("Скоро...", this);
