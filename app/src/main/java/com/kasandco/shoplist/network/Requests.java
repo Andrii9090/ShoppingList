@@ -1,6 +1,8 @@
 package com.kasandco.shoplist.network;
 
+import java.util.Objects;
 
+import okhttp3.Headers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -12,11 +14,12 @@ public class Requests {
         call.enqueue(new Callback<R>() {
             @Override
             public void onResponse(Call<R> call, Response<R> response) {
+
                 if (response.code() == 401 || response.code() == 403) {
                     callback.noPermit();
                 } else if (response.isSuccessful()) {
                     if (callback != null)
-                        new Thread(() -> callback.success(response.body())).start();
+                        new Thread(() -> callback.success(response.body(), response.headers())).start();
                 } else {
                     if (callback != null)
                         callback.error();
@@ -32,11 +35,10 @@ public class Requests {
     }
 
     public interface RequestsInterface<M> {
-        void success(M responseObj);
+        void success(M responseObj, Headers headers);
 
         void error();
 
         void noPermit();
-
     }
 }

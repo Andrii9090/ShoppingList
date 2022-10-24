@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,24 +41,22 @@ public class LoginRepository {
             @Override
             public void onResponse(Call<UserTokenApiModel> call, Response<UserTokenApiModel> response) {
                 if (response.isSuccessful()) {
+                    assert response.body() != null;
                     saveToken(response.body().getToken(), response.body().getEmail());
                     Call<UserSettingsApiModel> callSettings = network.getSettings("Token " + response.body().getToken(), sharedPreference.getDeviceId());
                     Requests.RequestsInterface<UserSettingsApiModel> callbackResponse = new Requests.RequestsInterface<UserSettingsApiModel>() {
                         @Override
-                        public void success(UserSettingsApiModel responseObj) {
-                            if (responseObj.getSettings_json() != null) {
-                                Gson gson = new Gson();
-                                UserSettingObj json = gson.fromJson(responseObj.getSettings_json().toString(), UserSettingObj.class);
-                                if (json != null) {
-                                    sharedPreference.getEditor().putString(Constants.SHP_DEFAULT_CURRENCY, json.currency).apply();
-                                    sharedPreference.getEditor().putInt(Constants.COLOR_THEME, json.theme).apply();
-                                }
-                                handler.post(() -> {
-                                    callback.logged(true, response.body().getToken());
-                                });
-                            } else {
-                                saveSettingsToServer();
+                        public void success(UserSettingsApiModel responseObj, Headers headers) {
+                            responseObj.getSettings_json();
+                            Gson gson = new Gson();
+                            UserSettingObj json = gson.fromJson(responseObj.getSettings_json().toString(), UserSettingObj.class);
+                            if (json != null) {
+                                sharedPreference.getEditor().putString(Constants.SHP_DEFAULT_CURRENCY, json.currency).apply();
+                                sharedPreference.getEditor().putInt(Constants.COLOR_THEME, json.theme).apply();
                             }
+                            handler.post(() -> {
+                                callback.logged(true, response.body().getToken());
+                            });
                         }
 
                         @Override
@@ -85,29 +84,6 @@ public class LoginRepository {
                 callback.logged(false, null);
             }
         });
-    }
-
-
-    public void saveSettingsToServer() {
-        Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
-            @Override
-            public void success(ResponseBody responseObj) {
-            }
-            @Override
-            public void error() {
-            }
-
-            @Override
-            public void noPermit() {
-
-            }
-        };
-        HashMap<String, String> settings = new HashMap<>();
-        settings.put("theme", String.valueOf(sharedPreference.getSharedPreferences().getInt(Constants.COLOR_THEME, Constants.THEME_DEFAULT)));
-        settings.put("currency", sharedPreference.getSharedPreferences().getString(Constants.SHP_DEFAULT_CURRENCY, Constants.DEFAULT_CURRENCY_VALUE));
-        UserSettingsApiModel settingsBody = new UserSettingsApiModel(settings);
-        Call<ResponseBody> call = network.saveSettings(settingsBody, sharedPreference.getDeviceId());
-        Requests.request(call, callbackResponse);
     }
 
     public void saveToken(String token, String email) {

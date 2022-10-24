@@ -29,4 +29,5 @@ public interface Constants {
     String UUID = "uuid";
     String IS_SHOW_INFO_ADD_LIST = "is_show_add_list";
     String IS_PRO = "is_pro";
+    String SUBSCR_TOKEN = "subscr_token";
 }

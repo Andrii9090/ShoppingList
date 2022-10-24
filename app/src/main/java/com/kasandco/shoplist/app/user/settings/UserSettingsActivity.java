@@ -64,12 +64,14 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
         btnExitAll = findViewById(R.id.user_settings_logout_all);
         photo = findViewById(R.id.user_settings_img_profile);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        Picasso.get()
-                .load(account.getPhotoUrl())
-                .centerCrop()
-                .placeholder(R.drawable.progress_animation)
-                .resize(500, 500)
-                .into(photo);
+        if (account != null) {
+            Picasso.get()
+                    .load(account.getPhotoUrl())
+                    .centerCrop()
+                    .placeholder(R.drawable.progress_animation)
+                    .resize(500, 500)
+                    .into(photo);
+        }
 
         setSupportActionBar(toolbar);
         TextView title = toolbar.findViewById(R.id.toolbar_title);

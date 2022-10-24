@@ -2,7 +2,7 @@
     <string name="app_name">Listera</string>
     <string name="text_empty">No hay listas</string>
     <string name="text_clear_empty">Borar inactivos</string>
-    <string name="text_edit">Cambiar</string>
+    <string name="text_edit">Editar</string>
     <string name="text_clear_all">Borar todo</string>
     <string name="text_remove">Borar</string>
     <string name="text_error">Error</string>
@@ -14,7 +14,7 @@
     <string name="select_icon">Icon</string>
     <string name="text_change_icon">Cambiar icon</string>
     <string name="create_category">Crear categoria</string>
-    <string name="text_create">Ok</string>
+    <string name="text_create">Vale</string>
     <string name="text_add_photo">Sacar una foto</string>
     <string name="name_quantity_item">Nombre</string>
     <string name="text_item_created">Ha añadido</string>
@@ -38,8 +38,8 @@
     <string name="title_list">Mis listas</string>
     <string name="text_send_list">Enviar la lista…</string>
     <string name="text_header_msg">La lista:</string>
-    <string name="text_footer_msg">Ha crwado con app %s</string>
-    <string name="delete_dialog">¿Quitar?</string>
+    <string name="text_footer_msg">Ha creado con app %s</string>
+    <string name="delete_dialog">¿Borar?</string>
     <string name="text_positive_btn">Si</string>
     <string name="text_negative_btn">No</string>
     <string name="login_registrations">Usuario</string>
@@ -55,7 +55,7 @@
     <string name="menu_group">Mi grupo</string>
     <string name="my_group">Mi grupo</string>
     <string name="disconnect_from_group">Salir del grupo</string>
-    <string name="error_remove_user">Error al eliminar, es posible que no esté conectado a Internet</string>
+    <string name="error_remove_user">Error al eliminar, es posible que no conectado a Internet</string>
     <string name="user_email">Email</string>
     <string name="text_add_user_to_group">Añadir</string>
     <string name="text_close_dialog">Cerrar</string>
@@ -67,7 +67,7 @@
     <string name="error_upload_image">¡Límite de imágenes excedido! Eliminar imágenes o cambiar al modo PRO</string>
     <string name="text_no_permissions">¡No tienes derechos para esta acción!</string>
     <string name="text_error_load_group">Ocurrió un error al cargar</string>
-    <string name="text_error_no_group_user">No hay usuarios en el grupo.</string>
+    <string name="text_error_no_group_user">No hay usuarios en el grupo</string>
     <string name="title_my_family">Mi familia</string>
     <string name="error_load_data">¡Error de carga de datos!</string>
     <!--    <string name="server_client_id">317045841784-hmir9faqn7d7eisudddp14fp8tdj7bic.apps.googleusercontent.com</string>-->
@@ -83,11 +83,19 @@
     <string name="text_uid_copied">¡Copiado! Envíe este código a otro usuario para convertirse en miembro de su grupo y mantener las listas juntos</string>
     <string name="user_uuid">Codigo de usuario</string>
     <string name="text_error_uuid">Verifique la ID de usuario para ver si es correcta</string>
-    <string name="select_photo">Seleccionar foto</string>
+    <string name="select_photo">Seleccionar una foto</string>
     <string name="connect_to_group">Añadir al grupo</string>
     <string name="text_ok">ok</string>
     <string name="title_pro">" Quitar anuncios"</string>
     <string name="pro_description">Al suscribirse a nuestra aplicación, no solo elimina los anuncios, sino que también ayuda a nuestro equipo a desarrollar y mantener nuestra aplicación <b>Listera</b></string>
+    <string name="btn_text_pro_bye">Comprar</string>
+    <string name="btn_pro_period">1 mes</string>
+    <string name="pro_restore_text">Renovar la suscripción</string>
+    <string name="pro_not_register">Para comprar la versión PRO necesitas registrarte</string>
+    <string name="registration">Se requiere registro</string>
+    <string name="error_for_pay_subscr">El pago de la suscripción falló, ¡inténtalo de nuevo más tarde!</string>
+    <string name="payed_success">¡El pago fue exitoso! ¡Gracias por suscribirse!</string>
+    <string name="pro_cancel">Cancelar suscripción</string>
 
 
 </resources>

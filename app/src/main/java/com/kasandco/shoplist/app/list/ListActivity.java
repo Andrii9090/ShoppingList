@@ -20,6 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.BaseActivity;
@@ -51,6 +57,8 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     @Inject
     ShowCaseUtil showCaseUtil;
 
+    AdView mAdView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,26 +71,41 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         emptyText = findViewById(R.id.activity_list_text_empty);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        mAdView = findViewById(R.id.list_item_adView);
         setSupportActionBar(toolbar);
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(R.string.title_list);
         toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
         refreshLayout.setOnRefreshListener(refreshListener);
         emptyText.setVisibility(View.GONE);
+        showAdd();
+    }
+
+    private void showAdd() {
+        if (sharedPreferenceUtil.isPro()) {
+            mAdView.setVisibility(View.GONE);
+        }else {
+            AdView adView = new AdView(this);
+            adView.setAdSize(AdSize.BANNER);
+            adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+            MobileAds.initialize(this, initializationStatus -> {
+            });
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         presenter.viewReady(this);
-        new Handler().postDelayed(()->{
-            if(sharedPreferenceUtil.getSharedPreferences().getString(Constants.IS_SHOW_INFO_ADD_LIST,null)==null)
-            {
+        new Handler().postDelayed(() -> {
+            if (sharedPreferenceUtil.getSharedPreferences().getString(Constants.IS_SHOW_INFO_ADD_LIST, null) == null) {
                 showCaseUtil.setCase(findViewById(R.id.menu_list_activity_add_new_list), R.string.creating_new_list, R.string.creating_new_list_text);
                 showCaseUtil.show();
                 showCaseUtil.setOnClickListener(this);
             }
-        },1000);
+        }, 1000);
     }
 
     @Override

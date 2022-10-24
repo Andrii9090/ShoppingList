@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -13,7 +12,6 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesResponseListener;
-import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.firebase.crashlytics.internal.model.ImmutableList;
@@ -71,6 +69,7 @@ public class BillingClientWrapper implements PurchasesResponseListener {
     @Override
     public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
         Log.e("bil", billingResult.getDebugMessage());
+
     }
 
     public void startBilling(Activity activity) {
@@ -86,7 +85,7 @@ public class BillingClientWrapper implements PurchasesResponseListener {
                                 .setOfferToken(offerToken)
                                 .build()
                 );
-
+        BillingResult billingResult = billingClient.launchBillingFlow(activity, BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList).build());
     }
 
 }

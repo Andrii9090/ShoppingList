@@ -19,12 +19,14 @@ import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -70,7 +72,7 @@ public class ListRepository extends BaseRepository {
                 Call<ListApiModel> call = network.createNewList(networkData);
                 Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
                     @Override
-                    public void success(ListApiModel obj) {
+                    public void success(ListApiModel obj, Headers headers) {
                         if (networkData.equals(obj)) {
                             listModel.setServerId(obj.getId());
                             listModel.setDateMod(obj.getDateMod());
@@ -111,7 +113,7 @@ public class ListRepository extends BaseRepository {
                 Call<ListApiModel> call = network.updateList(networkData);
                 Requests.RequestsInterface<ListApiModel> callbackResponse = new Requests.RequestsInterface<ListApiModel>() {
                     @Override
-                    public void success(ListApiModel obj) {
+                    public void success(ListApiModel obj, Headers headers) {
                         if (networkData.equals(obj)) {
                             ListModel responseItem = new ListModel(obj);
                             new Thread(() -> listDao.update(responseItem)).start();
@@ -166,7 +168,13 @@ public class ListRepository extends BaseRepository {
 
             Requests.RequestsInterface<List<ListApiModel>> callbackResponse = new Requests.RequestsInterface<List<ListApiModel>>() {
                 @Override
-                public void success(List<ListApiModel> responseObj) {
+                public void success(List<ListApiModel> responseObj, Headers headers) {
+                    if (headers.get("Is-Pro")!=null && Objects.equals(headers.get("Is-Pro"), "True")){
+                        sharedPreference.setIsPro(true);
+                    }
+                    if(headers.get("Is-Pro")!=null && Objects.equals(headers.get("Is-Pro"), "False")){
+                        sharedPreference.setIsPro(false);
+                    }
                     new Thread(() -> listSyncHistoryDao.clear()).start();
                     if (responseObj != null && responseObj.size() > 0) {
                         for (ListApiModel item : responseObj) {
@@ -229,6 +237,32 @@ public class ListRepository extends BaseRepository {
 
     }
 
+    private void getIsPro() {
+        String subscrToken = sharedPreference.getSharedPreferences().getString(Constants.SUBSCR_TOKEN, null);
+        if (subscrToken !=null){
+                new Thread(()->{
+                    Call<ResponseBody> call = network.isPro(subscrToken);
+
+                    Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
+                        @Override
+                        public void success(ResponseBody responseObj, Headers headers) {
+                        }
+
+                        @Override
+                        public void error() {
+                            sharedPreference.getEditor().putBoolean(Constants.IS_PRO, false).commit();
+                        }
+
+                        @Override
+                        public void noPermit() {
+                            sharedPreference.getEditor().putBoolean(Constants.IS_PRO, false).commit();
+                        }
+                    };
+                    Requests.request(call, callbackResponse);
+                }).start();
+        }
+    }
+
     private void sendFMSToken() {
         String oldToken = sharedPreference.getSharedPreferences().getString(Constants.FMC_TOKEN, null);
 
@@ -245,7 +279,7 @@ public class ListRepository extends BaseRepository {
 
                             Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                                 @Override
-                                public void success(ResponseBody responseObj) {
+                                public void success(ResponseBody responseObj, Headers headers) {
                                     sharedPreference.getEditor().putString(Constants.FMC_TOKEN, token).commit();
                                 }
 
@@ -276,7 +310,7 @@ public class ListRepository extends BaseRepository {
                         Call<ResponseBody> call = network.removeList(serverId);
                         Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                             @Override
-                            public void success(ResponseBody responseObj) {
+                            public void success(ResponseBody responseObj, Headers headers) {
                                 new Thread(() -> listDao.delete(listModel)).start();
                             }
 
@@ -309,7 +343,7 @@ public class ListRepository extends BaseRepository {
                     long serverListId = listDao.getServerListId(listId);
                     Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                         @Override
-                        public void success(ResponseBody responseObj) {
+                        public void success(ResponseBody responseObj, Headers headers) {
                             new Thread(() -> itemDao.deleteActiveItems(listId)).start();
                         }
 
@@ -342,7 +376,7 @@ public class ListRepository extends BaseRepository {
 
                     Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                         @Override
-                        public void success(ResponseBody responseObj) {
+                        public void success(ResponseBody responseObj, Headers headers) {
                             new Thread(() -> itemDao.deleteInActiveItems(listId)).start();
                         }
 

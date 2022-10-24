@@ -2,7 +2,6 @@ package com.kasandco.shoplist.app.pro;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -19,6 +18,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.BaseActivity;
+import com.kasandco.shoplist.core.Constants;
 import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
 import java.util.List;
@@ -66,26 +66,22 @@ public class ProActivity extends BaseActivity implements PurchasesUpdatedListene
 
     public void showErrorDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this).setMessage(R.string.error_for_pay_subscr)
-                .setPositiveButton("OK", (dialog1, which) -> {
-                    dialog1.cancel();
-                }).create();
+                .setPositiveButton("OK", (dialog1, which) -> dialog1.cancel()).create();
         dialog.show();
     }
 
-    public void showSuccessDialog() {
-        AlertDialog dialog = new AlertDialog.Builder(this).setMessage(R.string.payed_success)
-                .setPositiveButton("OK", (dialog1, which) -> {
-                    dialog1.cancel();
-                }).create();
-        dialog.show();
-    }
     @Override
     public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
         if (BillingClient.BillingResponseCode.OK == billingResult.getResponseCode()) {
+            assert list != null;
             presenter.payedSuccess(list);
         } else {
             presenter.payedError();
         }
     }
 
+    public void reloadApp() {
+        finish();
+        startActivity(getIntent());
+    }
 }

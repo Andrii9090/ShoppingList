@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
@@ -60,7 +61,7 @@ public class ItemRepository extends BaseRepository {
             ItemApiModel body = new ItemApiModel(item);
             Requests.RequestsInterface<ItemApiModel> callbackResponse = new Requests.RequestsInterface<ItemApiModel>() {
                 @Override
-                public void success(ItemApiModel responseObj) {
+                public void success(ItemApiModel responseObj, Headers headers) {
                     ItemModel itemResp = new ItemModel(responseObj);
                     itemResp.setLocalListId(item.getLocalListId());
                     new Thread(() -> itemDao.update(itemResp)).start();
@@ -104,7 +105,7 @@ public class ItemRepository extends BaseRepository {
         } else {
             Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                 @Override
-                public void success(ResponseBody responseObj) {
+                public void success(ResponseBody responseObj, Headers headers) {
                     new Thread(() -> itemDao.delete(item)).start();
                 }
 
@@ -137,7 +138,7 @@ public class ItemRepository extends BaseRepository {
 
             Requests.RequestsInterface<ItemApiModel> callbackResponse = new Requests.RequestsInterface<ItemApiModel>() {
                 @Override
-                public void success(ItemApiModel responseObj) {
+                public void success(ItemApiModel responseObj, Headers headers) {
                     new Thread(() -> {
                         ItemModel itemConverted = new ItemModel(responseObj);
                         itemConverted.setLocalListId(item.getLocalListId());
@@ -181,7 +182,7 @@ public class ItemRepository extends BaseRepository {
 
                 Requests.RequestsInterface<List<ItemApiModel>> callbackResponse = new Requests.RequestsInterface<List<ItemApiModel>>() {
                     @Override
-                    public void success(List<ItemApiModel> responseObj) {
+                    public void success(List<ItemApiModel> responseObj, Headers headers) {
                         new Thread(() -> itemSyncDao.clearAll(serverListId)).start();
                         if (responseObj != null && responseObj.size() > 0) {
                             for (ItemApiModel itemResponse : responseObj) {
@@ -272,7 +273,7 @@ public class ItemRepository extends BaseRepository {
     private void downloadImageFromServer(long serverId) {
         Requests.RequestsInterface<ImageItemApiModel> callbackResponse = new Requests.RequestsInterface<ImageItemApiModel>() {
             @Override
-            public void success(ImageItemApiModel responseObj) {
+            public void success(ImageItemApiModel responseObj, Headers headers) {
                 if (responseObj != null) {
                     try {
                         if (responseObj.getImage() != null && !responseObj.getImage().isEmpty()) {
@@ -337,7 +338,7 @@ public class ItemRepository extends BaseRepository {
                 ImageItemApiModel imageBody = new ImageItemApiModel(item.getServerId(), encodedBase64);
                 Requests.RequestsInterface<ImageItemApiModel> callbackResponse = new Requests.RequestsInterface<ImageItemApiModel>() {
                     @Override
-                    public void success(ImageItemApiModel responseObj) {
+                    public void success(ImageItemApiModel responseObj, Headers headers) {
                         new Thread(() -> itemDao.setServerImageName(id, responseObj.getImage())).start();
                     }
 

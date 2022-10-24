@@ -32,8 +32,8 @@
             android:id="@+id/swipe_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent=".85"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/list_item_adView"
             app:layout_constraintTop_toBottomOf="@id/activity_list_toolbar">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -48,13 +48,15 @@
         <com.google.android.gms.ads.AdView
             android:id="@+id/list_item_adView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             app:adSize="BANNER"
+            tools:visibility="gone"
+
             app:adUnitId="ca-app-pub-3940256099942544/6300978111"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/swipe_container" />
+            app:layout_constraintTop_toBottomOf="@id/swipe_container"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <FrameLayout
             android:id="@+id/activity_list_fragment"

@@ -31,14 +31,16 @@
             android:textColor="@color/text_color_info"
             android:textSize="@dimen/ItemTitleTextSize"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/item_activity_toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/item_activity_toolbar"
+            />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/item_activity_swipe"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent=".85"
+            app:layout_constraintBottom_toTopOf="@id/list_item_adView"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_activity_toolbar">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -51,26 +53,26 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
+            android:id="@+id/list_item_adView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:adSize="BANNER"
             app:adUnitId="ca-app-pub-3940256099942544/6300978111"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_activity_swipe" />
-
-        <FrameLayout
-            android:id="@+id/item_activity_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+             />
 
         <FrameLayout
             android:id="@+id/item_activity_fragment2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            tools:visibility="gone"
+            android:layout_height="match_parent" />
+        <FrameLayout
+            android:id="@+id/item_activity_fragment"
+            android:layout_width="match_parent"
+            tools:visibility="gone"
+            android:layout_height="match_parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

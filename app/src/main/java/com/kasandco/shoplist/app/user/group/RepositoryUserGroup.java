@@ -12,6 +12,7 @@ import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
 import javax.inject.Inject;
 
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -35,7 +36,7 @@ public class RepositoryUserGroup {
             Handler handler = new Handler();
             Requests.RequestsInterface<ModelGroup> callbackResponse = new Requests.RequestsInterface<ModelGroup>() {
                 @Override
-                public void success(ModelGroup responseObj) {
+                public void success(ModelGroup responseObj, Headers headers) {
                     if (responseObj != null && responseObj.getUsers().size() > 0) {
                         if (!responseObj.getUsers().get(0).equals("0")) {
                             handler.post(() -> callback.setAllUsers(responseObj));
@@ -74,7 +75,7 @@ public class RepositoryUserGroup {
         Handler handler = new Handler();
         Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
             @Override
-            public void success(ResponseBody responseObj) {
+            public void success(ResponseBody responseObj, Headers headers) {
                 handler.post(() -> callback.removedUser(email, true));
             }
 
@@ -101,7 +102,7 @@ public class RepositoryUserGroup {
             Handler handler = new Handler();
             Requests.RequestsInterface<ResponseBody> requests = new Requests.RequestsInterface<ResponseBody>() {
                 @Override
-                public void success(ResponseBody responseObj) {
+                public void success(ResponseBody responseObj, Headers headers) {
                     handler.post(() -> {
                         getAllUsers(callback);
                     });

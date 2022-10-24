@@ -31,8 +31,8 @@ public class ProModule {
 
     @Provides
     @ProScope
-    public ProPresenter providesProPresenter(BillingClientWrapper billingClientWrapper){
-        return new ProPresenter(billingClientWrapper);
+    public ProPresenter providesProPresenter(BillingClientWrapper billingClientWrapper, ProRepository repository){
+        return new ProPresenter(billingClientWrapper, repository);
     }
 
     @Provides

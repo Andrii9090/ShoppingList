@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -30,7 +31,7 @@ public class SettingsRepository extends BaseRepository {
         if(isLogged && isNetworkConnect.isInternetAvailable()) {
             Requests.RequestsInterface<ResponseBody> callbackResponse = new Requests.RequestsInterface<ResponseBody>() {
                 @Override
-                public void success(ResponseBody responseObj) {
+                public void success(ResponseBody responseObj, Headers headers) {
 
                 }
 

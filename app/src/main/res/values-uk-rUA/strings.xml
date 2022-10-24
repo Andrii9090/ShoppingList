@@ -88,6 +88,14 @@
     <string name="text_ok">ok</string>
     <string name="title_pro">Відключити рекламу</string>
     <string name="pro_description">Своєю підпискою на наш додаток Ви не тільки прибираєте рекламу, але ще й допомагаєте нашій команді розвивати та підтримувати нашу програму <b>Listera</b></string>
+    <string name="btn_text_pro_bye">Купити</string>
+    <string name="btn_pro_period">1 місяць</string>
+    <string name="pro_restore_text">Поновити підписку</string>
+    <string name="pro_not_register">Для покупки версії PRO необхідно зареєструватись</string>
+    <string name="registration">Необхідна реєстрація</string>
+    <string name="error_for_pay_subscr">Виникла помилка при оплаті, спробуйте ще раз!</string>
+    <string name="payed_success">Успіх! Дякуємо за підписку!</string>
+    <string name="pro_cancel">Відмінити підписку</string>
 
 
 </resources>

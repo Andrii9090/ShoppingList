@@ -18,6 +18,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.kasandco.shoplist.App;
@@ -27,6 +29,8 @@ import com.kasandco.shoplist.core.icon.IconDao;
 import com.kasandco.shoplist.core.icon.IconModel;
 import com.kasandco.shoplist.app.list.ListActivity;
 import com.kasandco.shoplist.core.Constants;
+import com.kasandco.shoplist.network.ProNetworkInterface;
+import com.kasandco.shoplist.network.Requests;
 import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
 import java.io.IOException;
@@ -35,6 +39,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity implements Constants {
     @Inject
@@ -42,6 +50,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     SharedPreferenceUtil sharedPreferenceUtil;
     ImageView logo;
     private InterstitialAd mInterstitialAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +78,74 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                 }
             }
         }).start();
+
+        showAdd();
+
+    }
+
+    private void showAdd() {
+        if(!sharedPreferenceUtil.isPro()) {
+            MobileAds.initialize(this, initializationStatus -> {});
+            AdRequest adRequest = new AdRequest.Builder().build();
+            InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                            mInterstitialAd = interstitialAd;
+                            if (!sharedPreferenceUtil.isPro() && mInterstitialAd != null) {
+                                mInterstitialAd.show(SplashActivity.this);
+                            } else {
+                                startMainActivity();
+                                Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                            }
+                            Log.i("TAG", "onAdLoaded");
+                            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                                @Override
+                                public void onAdClicked() {
+                                    // Called when a click is recorded for an ad.
+                                    startMainActivity();
+                                }
+
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    mInterstitialAd = null;
+                                    startMainActivity();
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                    // Called when ad fails to show.
+                                    mInterstitialAd = null;
+                                    startMainActivity();
+                                }
+
+                                @Override
+                                public void onAdImpression() {
+                                    startMainActivity();
+                                }
+
+                                @Override
+                                public void onAdShowedFullScreenContent() {
+                                    startMainActivity();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            mInterstitialAd = null;
+                            startMainActivity();
+                        }
+                    });
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        startMainActivity();
+        if(sharedPreferenceUtil.isPro())
+            startMainActivity();
     }
 
     private void startMainActivity() {

@@ -1,27 +1,24 @@
 package com.kasandco.shoplist.app.pro;
 
-import androidx.annotation.NonNull;
+import android.app.AlertDialog;
 
-import com.android.billingclient.api.AcknowledgePurchaseParams;
-import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 
 import java.util.List;
 
-public class ProPresenter implements OnListenerLoadBillingData, ProServerListener{
+public class ProPresenter implements OnListenerLoadBillingData, ProServerListener {
     private ProActivity activity;
     private List<ProductDetails> productDetailsList;
     private BillingClientWrapper billingClientWrapper;
     private ProRepository repository;
 
-    public ProPresenter(BillingClientWrapper billingClientWrapper){
+    public ProPresenter(BillingClientWrapper billingClientWrapper, ProRepository repository) {
         this.billingClientWrapper = billingClientWrapper;
+        this.repository = repository;
     }
 
-    public void viewReady(ProActivity activity){
+    public void viewReady(ProActivity activity) {
         this.activity = activity;
         billingClientWrapper.connect(this);
         billingClientWrapper.getSubs();
@@ -39,24 +36,10 @@ public class ProPresenter implements OnListenerLoadBillingData, ProServerListene
 
     public void payedSuccess(List<Purchase> list) {
         for (Purchase purchase : list) {
-            if(purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED){
-                repository.verificationSubs(purchase, this);
+            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                repository.verificationSubs(purchase.getPurchaseToken(), this);
             }
         }
-    }
-
-    private void acknowledgePurchase(Purchase purchase) {
-        billingClientWrapper.billingClient.acknowledgePurchase(AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build(), new AcknowledgePurchaseResponseListener() {
-            @Override
-            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-                    acknowledgePurchase(purchase);
-                }else {
-                    activity.showSuccessDialog();
-
-                }
-            }
-        });
     }
 
     public void byeStart() {
@@ -64,8 +47,8 @@ public class ProPresenter implements OnListenerLoadBillingData, ProServerListene
     }
 
     @Override
-    public void success(Purchase purchase) {
-        acknowledgePurchase(purchase);
+    public void success() {
+        activity.reloadApp();
     }
 
     @Override

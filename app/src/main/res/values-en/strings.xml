@@ -88,4 +88,12 @@
     <string name="text_ok">ok</string>
     <string name="title_pro">Remove ads</string>
     <string name="pro_description">By subscribing to our application, you not only remove ads, but also help our team develop and maintain our application <b>Listera</b></string>
+    <string name="btn_text_pro_bye">Bye</string>
+    <string name="btn_pro_period">1 month</string>
+    <string name="pro_restore_text">Renew subscription</string>
+    <string name="pro_not_register">To purchase the PRO version you need to register</string>
+    <string name="registration">Registration required</string>
+    <string name="error_for_pay_subscr">Subscription payment failed, please try again later!</string>
+    <string name="payed_success">Payment was successful! Thank you for subscribing!</string>
+    <string name="pro_cancel">Cancel Subscription</string>
 </resources>

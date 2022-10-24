@@ -14,6 +14,7 @@ import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
 import java.util.List;
 
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -98,7 +99,7 @@ public class UserSettingsRepository extends BaseRepository {
         Handler handler = new Handler();
         Requests.RequestsInterface<UIdModel> requests = new Requests.RequestsInterface<UIdModel>() {
             @Override
-            public void success(UIdModel responseObj) {
+            public void success(UIdModel responseObj, Headers headers) {
                 sharedPreference.getEditor().putString(Constants.UUID, responseObj.getUid()).apply();
                 handler.post(()->callback.uid(responseObj.getUid()));
             }

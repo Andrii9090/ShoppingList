@@ -25,6 +25,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.snackbar.Snackbar;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
@@ -55,6 +59,8 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
     private RecyclerView recyclerView;
     private TextView emptyText;
+    AdView mAdView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,8 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         refreshLayout = findViewById(R.id.item_activity_swipe);
         refreshLayout.setOnRefreshListener(refreshListener);
 
+        mAdView = findViewById(R.id.list_item_adView);
+
         recyclerView = findViewById(R.id.item_activity_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         emptyText = findViewById(R.id.item_activity_text_empty);
@@ -82,6 +90,21 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         toolbar.findViewById(R.id.toolbar_menu).setOnClickListener(view -> drawerLayout.openDrawer(Gravity.LEFT));
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(listName);
+        if (sharedPreferenceUtil.isPro()) {
+            mAdView.setVisibility(View.GONE);
+        } else {
+            showAdd();
+        }
+    }
+
+    private void showAdd() {
+        AdView adView = new AdView(this);
+        adView.setAdSize(AdSize.BANNER);
+        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Inject

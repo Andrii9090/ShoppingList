@@ -26,6 +26,9 @@ public interface ListNetworkInterface {
     @POST(Constants.REST_API_VERSION+"user/save-fms-token/")
     Call<ResponseBody> saveFMSToken(@Body FMSTokenModel token);
 
+    @GET(Constants.REST_API_VERSION+"user/is-pro/{token}")
+    Call<ResponseBody> isPro(@Path("token") String token);
+
     @GET(Constants.REST_API_VERSION+"lists/delete-list/{id}/")
     Call<ResponseBody> removeList(@Path("id") long serverId);
 
