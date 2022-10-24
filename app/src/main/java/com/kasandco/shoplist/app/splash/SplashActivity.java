@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.android.gms.ads.AdError;
@@ -18,8 +17,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.kasandco.shoplist.App;
@@ -29,8 +26,6 @@ import com.kasandco.shoplist.core.icon.IconDao;
 import com.kasandco.shoplist.core.icon.IconModel;
 import com.kasandco.shoplist.app.list.ListActivity;
 import com.kasandco.shoplist.core.Constants;
-import com.kasandco.shoplist.network.ProNetworkInterface;
-import com.kasandco.shoplist.network.Requests;
 import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
 import java.io.IOException;
@@ -39,14 +34,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Retrofit;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity implements Constants {
     @Inject
     IconDao iconDao;
+    @Inject
     SharedPreferenceUtil sharedPreferenceUtil;
     ImageView logo;
     private InterstitialAd mInterstitialAd;
@@ -54,12 +47,12 @@ public class SplashActivity extends AppCompatActivity implements Constants {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        App.appComponent.plus(new SplashModule()).inject(this);
+        showAdd();
         super.onCreate(savedInstanceState);
-        sharedPreferenceUtil = new SharedPreferenceUtil(this);
         int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, Constants.THEME_DEFAULT);
         setTheme(themeResource);
         setContentView(R.layout.activity_splash);
-        App.appComponent.plus(new SplashModule()).inject(this);
         logo = findViewById(R.id.splash_logo);
 
         @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(getContentResolver(),
@@ -78,9 +71,6 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                 }
             }
         }).start();
-
-        showAdd();
-
     }
 
     private void showAdd() {
@@ -92,17 +82,12 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                         @Override
                         public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                             mInterstitialAd = interstitialAd;
-                            if (!sharedPreferenceUtil.isPro() && mInterstitialAd != null) {
+                            if (mInterstitialAd != null) {
                                 mInterstitialAd.show(SplashActivity.this);
-                            } else {
-                                startMainActivity();
-                                Log.d("TAG", "The interstitial ad wasn't ready yet.");
                             }
-                            Log.i("TAG", "onAdLoaded");
                             mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
                                 @Override
                                 public void onAdClicked() {
-                                    // Called when a click is recorded for an ad.
                                     startMainActivity();
                                 }
 
@@ -114,19 +99,16 @@ public class SplashActivity extends AppCompatActivity implements Constants {
 
                                 @Override
                                 public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                    // Called when ad fails to show.
                                     mInterstitialAd = null;
                                     startMainActivity();
                                 }
 
                                 @Override
                                 public void onAdImpression() {
-                                    startMainActivity();
                                 }
 
                                 @Override
                                 public void onAdShowedFullScreenContent() {
-                                    startMainActivity();
                                 }
                             });
 
@@ -138,14 +120,9 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                             startMainActivity();
                         }
                     });
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(sharedPreferenceUtil.isPro())
+        }else{
             startMainActivity();
+        }
     }
 
     private void startMainActivity() {

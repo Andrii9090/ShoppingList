@@ -155,13 +155,6 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
         startNewActivity(ListActivity.class);
     }
 
-    @SuppressLint("HardwareIds")
-    @Override
-    public String getDeviceId() {
-        return Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-    }
-
     @Override
     public void showLoader() {
         loader.setVisibility(View.VISIBLE);

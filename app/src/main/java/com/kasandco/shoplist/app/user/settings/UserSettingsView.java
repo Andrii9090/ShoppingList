@@ -6,8 +6,6 @@ public interface UserSettingsView {
 
     void startListActivity();
 
-    String getDeviceId();
-
     void showLoader();
     void hideLoader();
 
