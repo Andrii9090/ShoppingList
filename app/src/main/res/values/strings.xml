@@ -4,7 +4,7 @@
     <string name="text_clear_empty">Очистить неактивные</string>
     <string name="text_edit">Редактировать</string>
     <string name="text_clear_all">Очистить все</string>
-    <string name="text_remove">Удалить</string>
+    <string name="text_remove">Удалить список</string>
     <string name="text_error">Ошибка</string>
     <string name="text_new_list">Создать</string>
     <string name="text_create_list_item">Название списка</string>
@@ -26,7 +26,7 @@
     <string name="error_todo_photo">Ошибка камеры</string>
     <string name="text_change">Изменить имя</string>
     <string name="error_show_img">Ошибка  показа изображения</string>
-    <string name="text_name_error">Название не может быть пустым или меньше 3 символов</string>
+    <string name="text_name_error">Укажите название и/или выберите иконку</string>
     <string name="lists">Мои списки</string>
     <string name="menu_settings">Настройки</string>
     <string name="menu_feed">Оставить отзыв</string>

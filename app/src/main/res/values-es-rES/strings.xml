@@ -4,7 +4,7 @@
     <string name="text_clear_empty">Borar inactivos</string>
     <string name="text_edit">Editar</string>
     <string name="text_clear_all">Borar todo</string>
-    <string name="text_remove">Borar</string>
+    <string name="text_remove">Borar la lista</string>
     <string name="text_error">Error</string>
     <string name="text_new_list">Crear</string>
     <string name="text_create_list_item">Nombre de la lista</string>
@@ -25,7 +25,7 @@
     <string name="error_todo_photo">Error la camara</string>
     <string name="text_change">Cambiar nombre</string>
     <string name="error_show_img">Error de la imagen</string>
-    <string name="text_name_error">Por favor añade un nombre</string>
+    <string name="text_name_error">Introduce un título y/o selecciona un icono</string>
     <string name="lists">Mis listas</string>
     <string name="menu_settings">Ajustes</string>
     <string name="menu_feed">Dejar la revisión</string>

@@ -65,14 +65,9 @@ public class FragmentItemCreate extends Fragment implements FragmentItemCreateCo
         });
     }
 
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.create_item_enter:
-                    click_create();
-                    break;
-            }
+    private View.OnClickListener clickListener = view -> {
+        if (view.getId() == R.id.create_item_enter) {
+            click_create();
         }
     };
 

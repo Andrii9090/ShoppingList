@@ -48,7 +48,6 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         App.appComponent.plus(new SplashModule()).inject(this);
-        showAdd();
         super.onCreate(savedInstanceState);
         int themeResource = sharedPreferenceUtil.getSharedPreferences().getInt(Constants.COLOR_THEME, Constants.THEME_DEFAULT);
         setTheme(themeResource);
@@ -71,6 +70,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                 }
             }
         }).start();
+        showAdd();
     }
 
     private void showAdd() {
@@ -82,9 +82,7 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                         @Override
                         public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                             mInterstitialAd = interstitialAd;
-                            if (mInterstitialAd != null) {
-                                mInterstitialAd.show(SplashActivity.this);
-                            }
+                            mInterstitialAd.show(SplashActivity.this);
                             mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
                                 @Override
                                 public void onAdClicked() {

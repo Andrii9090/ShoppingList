@@ -45,6 +45,4 @@ public interface ItemDao extends BaseDao<ItemModel> {
     @Query("SELECT * FROM list_item WHERE server_id=:serverId")
     ItemModel getItemForServerId(long serverId);
 
-    @Query("SELECT id FROM list_item WHERE server_id = :serverId")
-    long getLocalId(long serverId);
 }

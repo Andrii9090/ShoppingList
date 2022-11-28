@@ -33,7 +33,7 @@ public class ItemModule {
     @ItemActivityScope
     @Provides
     ItemPresenter providesPresenter(ItemRepository repository, ItemDao dao, ItemAdapter adapter, SaveImageUtils saveImageUtils){
-        return new ItemPresenter(repository, dao, adapter, saveImageUtils);
+        return new ItemPresenter(repository, adapter, saveImageUtils);
     }
 
     @Provides

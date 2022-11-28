@@ -47,7 +47,7 @@ public abstract class BaseCreateEditPresenter<T extends CreateEditListBaseView> 
     }
 
     protected boolean validate() {
-        if (name != null && name.length() > 2) {
+        if (name != null && name.length() > 2 && pathIcon!=null) {
             return true;
         }
         return false;

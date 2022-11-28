@@ -24,8 +24,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.BaseActivity;
@@ -36,6 +34,8 @@ import com.kasandco.shoplist.core.Constants;
 import com.kasandco.shoplist.utils.KeyboardUtil;
 import com.kasandco.shoplist.utils.ShowCaseUtil;
 import com.kasandco.shoplist.utils.ToastUtils;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
@@ -84,7 +84,7 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     private void showAdd() {
         if (sharedPreferenceUtil.isPro()) {
             mAdView.setVisibility(View.GONE);
-        }else {
+        } else {
             AdView adView = new AdView(this);
             adView.setAdSize(AdSize.BANNER);
             adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
@@ -211,16 +211,16 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_list_item_remove:
-                removeList();
+                confirmRemove("selectRemoveList");
                 break;
             case R.id.context_menu_list_item_edit:
                 presenter.selectEditList();
                 break;
             case R.id.context_menu_list_item_clear_bought:
-                presenter.selectClearBought();
+                confirmRemove("selectClearBought");
                 break;
             case R.id.context_menu_list_item_clear_all:
-                presenter.selectClearAll();
+                confirmRemove("selectClearAll");
                 break;
             case R.id.context_menu_list_item_send_list:
                 presenter.selectSendListToMessage();
@@ -232,15 +232,15 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         return true;
     }
 
-    private void removeList() {
+    private void confirmRemove(String removeName) {
         DialogInterface.OnClickListener dialogListener = (dialogInterface, i) -> {
             if (i == DialogInterface.BUTTON_POSITIVE) {
-                presenter.selectRemoveList();
-
+                remove(removeName);
             } else {
                 dialogInterface.cancel();
             }
         };
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage(R.string.delete_dialog)
                 .setPositiveButton(R.string.text_positive_btn, dialogListener)
@@ -248,6 +248,21 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
 
         builder.show();
     }
+
+    private void remove(String removeName) {
+        switch (removeName){
+            case "selectRemoveList":
+                presenter.selectRemoveList();
+                break;
+            case "selectClearBought":
+                presenter.selectClearBought();
+                break;
+            case "selectClearAll":
+                presenter.selectClearAll();
+                break;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -4,7 +4,7 @@
     <string name="text_clear_empty">Видалити неактивні</string>
     <string name="text_edit">Редагувати</string>
     <string name="text_clear_all">Очистити все</string>
-    <string name="text_remove">Видалити</string>
+    <string name="text_remove">Видалити список</string>
     <string name="text_error">Помилка</string>
     <string name="text_new_list">Створити</string>
     <string name="text_create_list_item">Назва списку</string>
@@ -26,7 +26,7 @@
     <string name="error_todo_photo">Помилка камери</string>
     <string name="text_change">Змінити назву</string>
     <string name="error_show_img">Помилка зображення</string>
-    <string name="text_name_error">Назва не може бути порожньою або бути порожньою</string>
+    <string name="text_name_error">Вкажіть назву та/або оберіть іконку</string>
     <string name="lists">Мої списки</string>
     <string name="menu_settings">Налаштування</string>
     <string name="menu_feed">Залишити відгук</string>

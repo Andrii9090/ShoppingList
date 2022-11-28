@@ -16,11 +16,7 @@ public class CreatePresenter extends BaseCreateEditPresenter<CreateListContract.
     @Override
     public void create() {
         if (validate()) {
-            if (financeCategory != -1) {
-                createListItem(financeCategory);
-            } else {
-                createListItem(0);
-            }
+            createListItem(0);
         } else {
             view.showToast(R.string.text_name_error);
         }

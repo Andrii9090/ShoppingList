@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,9 +78,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
 
         refreshLayout = findViewById(R.id.item_activity_swipe);
         refreshLayout.setOnRefreshListener(refreshListener);
-
         mAdView = findViewById(R.id.list_item_adView);
-
         recyclerView = findViewById(R.id.item_activity_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         emptyText = findViewById(R.id.item_activity_text_empty);
@@ -159,7 +158,6 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     public void showEditForm(ItemModel item) {
         showCreateFragment();
         createFragment.edit(item);
-        showFloatingBtn(false);
     }
 
     @Override
@@ -196,22 +194,12 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
     public void showZoomFragment(String imagePath) throws IOException {
         getSupportFragmentManager().beginTransaction().add(R.id.item_activity_fragment, fragmentZoomImage).commitNow();
         fragmentZoomImage.setImage(imagePath);
-        showFloatingBtn(false);
     }
 
     @Override
     public void closeZoomFragment() {
         if (fragmentZoomImage.isAdded()) {
             getSupportFragmentManager().beginTransaction().remove(fragmentZoomImage).commitNow();
-            showFloatingBtn(true);
-        }
-    }
-
-    private void showFloatingBtn(boolean isShow) {
-        if (!isShow) {
-//            createFloatingBtn.setVisibility(View.GONE);
-        } else {
-//            createFloatingBtn.setVisibility(View.VISIBLE);
         }
     }
 
@@ -275,7 +263,6 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         }
         getSupportFragmentManager().executePendingTransactions();
         KeyboardUtil.showKeyboard(this);
-        showFloatingBtn(false);
     }
 
     @Override
@@ -337,7 +324,6 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         if (createFragment.isAdded()) {
             KeyboardUtil.hideKeyboard(this);
             getSupportFragmentManager().beginTransaction().remove(createFragment).commit();
-            showFloatingBtn(true);
         }
     }
 
@@ -356,8 +342,9 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         if (requestCode == Constants.CODE_VOICE_RESULT && resultCode == RESULT_OK) {
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
+            Log.e("Voice", "activity");
             String textEntered = Character.toString(matches.get(0).charAt(0)).toUpperCase() + matches.get(0).substring(1);
-            presenter.createNewItem(textEntered, listId, serverListId);
+            presenter.createNewItem(textEntered, listId);
         } else if (requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_TAKE_GALLERY && resultCode == RESULT_OK) {
             try {
                 presenter.activityResult(requestCode, resultCode, data);

@@ -17,7 +17,6 @@ import java.util.List;
 
 public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRepository.ItemRepositoryCallback {
 
-    private ItemDao itemDao;
     private ItemAdapter adapter;
     private ItemRepository repository;
     private SaveImageUtils imageUtils;
@@ -26,9 +25,8 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
     long serverListId;
     private List<ItemModel> items;
 
-    public ItemPresenter(ItemRepository repository, ItemDao dao, ItemAdapter adapter, SaveImageUtils imageUtils) {
+    public ItemPresenter(ItemRepository repository, ItemAdapter adapter, SaveImageUtils imageUtils) {
         this.repository = repository;
-        this.itemDao = dao;
         this.adapter = adapter;
         this.imageUtils = imageUtils;
     }
@@ -162,8 +160,11 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
         repository.changeStatus(item);
     }
 
-    public void createNewItem(String textEntered, long listId, long serverId) {
-        repository.create(textEntered, listId, serverId);
+    public void createNewItem(String name, long listId) {
+        if (!name.isEmpty()) {
+            repository.create(name, listId, serverListId);
+        }
+        view.showToast(R.string.text_item_created);
     }
 
     public void destroy() {

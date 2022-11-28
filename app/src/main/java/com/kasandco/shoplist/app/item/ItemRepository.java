@@ -51,8 +51,7 @@ public class ItemRepository extends BaseRepository {
     public void create(String name, long listId, long serverListId) {
         new Thread(() -> {
             long itemId = itemDao.insert(new ItemModel(name, listId, serverListId));
-            ItemModel item = itemDao.getItem(itemId);
-            networkCreate(item);
+            itemDao.getItem(itemId);
         }).start();
     }
 
@@ -261,7 +260,7 @@ public class ItemRepository extends BaseRepository {
                     if (item.getIsDelete() == 1) {
                         networkRemove(item);
                     }
-                    if (item.getDateModServer() != null && Long.parseLong(item.getDateMod())/1000 > Long.parseLong(item.getDateModServer())/1000) {
+                    if (item.getDateModServer() != null && Long.parseLong(item.getDateMod()) / 1000 > Long.parseLong(item.getDateModServer()) / 1000) {
                         networkUpdate(item);
                     }
                 }
