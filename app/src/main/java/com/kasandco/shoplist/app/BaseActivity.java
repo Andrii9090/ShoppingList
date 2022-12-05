@@ -2,6 +2,7 @@ package com.kasandco.shoplist.app;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.kasandco.shoplist.BuildConfig;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.list.ListActivity;
 import com.kasandco.shoplist.app.pro.ProActivity;
@@ -82,9 +82,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             case R.id.menu_drawer_setting:
                 startNewActivity(SettingsActivity.class);
                 break;
-            case R.id.menu_drawer_mail:
-                startEmailIntent();
-                break;
             case R.id.menu_drawer_group:
                 startNewActivity(UserGroupActivity.class);
                 break;
@@ -106,19 +103,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                     }
                 break;
             case R.id.menu_drawer_feed:
-                ToastUtils.showToast("Скоро...", this);
+                openPlayMarket();
                 break;
         }
         return true;
     }
 
-    private void startEmailIntent() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "Version " + BuildConfig.VERSION_NAME);
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"webdevua2017@gmail.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.subject_review_email));
-        intent.setType("message/rfc822");
-        startActivity(Intent.createChooser(intent, getString(R.string.select_mail_app)));
+    private void openPlayMarket() {
+        final String appPackageName = getPackageName();
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     protected abstract void startNewActivity(Class<?> activityClass);
