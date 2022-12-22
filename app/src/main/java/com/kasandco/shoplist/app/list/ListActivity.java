@@ -35,8 +35,6 @@ import com.kasandco.shoplist.utils.KeyboardUtil;
 import com.kasandco.shoplist.utils.ShowCaseUtil;
 import com.kasandco.shoplist.utils.ToastUtils;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.inject.Inject;
 
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;

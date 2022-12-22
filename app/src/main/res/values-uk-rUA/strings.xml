@@ -96,6 +96,7 @@
     <string name="error_for_pay_subscr">Виникла помилка при оплаті, спробуйте ще раз!</string>
     <string name="payed_success">Успіх! Дякуємо за підписку!</string>
     <string name="pro_cancel">Відмінити підписку</string>
+    <string name="text_remove_item">Видалити</string>
 
 
 </resources>

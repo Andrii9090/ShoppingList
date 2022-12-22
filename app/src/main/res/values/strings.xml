@@ -85,7 +85,7 @@
     <string name="title_copy_uuid">Как стать участником группы другого пользователя?</string>
     <string name="text_detail_copy_uid">Нажмите здесь и отправьте этот код пользователю, участником группы которого вы хотите стать</string>
     <string name="text_ok">ok</string>
-    <string name="server_client_id">991688112000-ss562nibrj6pflb4fihupao2iji3iv4l.apps.googleusercontent.com</string>
+    <string name="server_client_id">991688112000-o4j2bhnsm4r0aim1ql4j1i3ifvsv1slc.apps.googleusercontent.com</string>
     <string name="title_pro">Убрать рекламу</string>
     <string name="pro_description">Своею подпиской Вы не только убираете рекламу, но еще и помогаете нашей команде развивать и поддерживать приложение <b>Listera</b> \n\n\n<i>ВНИМАНИЕ! Платеж за подписку списывается каждый месяц!</i></string>
     <string name="btn_text_pro_bye">"Купить всего за "</string>
@@ -96,4 +96,5 @@
     <string name="error_for_pay_subscr">"Ошибка при оплате подпиcки, попробуйте позже! "</string>
     <string name="payed_success">Оплата прошла успешно! Спасибо Вам за подписку!</string>
     <string name="pro_cancel">Отменить подписку</string>
+    <string name="text_remove_item">Удалить</string>
 </resources>
