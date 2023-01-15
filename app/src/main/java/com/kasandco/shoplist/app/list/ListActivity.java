@@ -20,16 +20,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.BaseActivity;
 import com.kasandco.shoplist.app.item.ItemActivity;
 import com.kasandco.shoplist.app.list.createEditList.FragmentCreateList;
 import com.kasandco.shoplist.app.list.createEditList.FragmentEditList;
+import com.kasandco.shoplist.app.splash.SplashActivity;
 import com.kasandco.shoplist.core.Constants;
 import com.kasandco.shoplist.utils.KeyboardUtil;
 import com.kasandco.shoplist.utils.ShowCaseUtil;
@@ -58,6 +64,8 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
     ShowCaseUtil showCaseUtil;
 
     AdView mAdView;
+    private InterstitialAd mInterstitialAd;
+
 
 
     @Override
@@ -92,6 +100,57 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
             });
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
+        }
+    }
+
+    private void showAdFullScreenBanner(Intent intent){
+        if(!sharedPreferenceUtil.isPro()) {
+            MobileAds.initialize(this, initializationStatus -> {});
+            AdRequest adRequest = new AdRequest.Builder().build();
+            InterstitialAd.load(this,"ca-app-pub-2199413045845818/9300584376", adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                            mInterstitialAd = interstitialAd;
+                            mInterstitialAd.show(ListActivity.this);
+                            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                                @Override
+                                public void onAdClicked() {
+                                    startActivity(intent);
+
+                                }
+
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    mInterstitialAd = null;
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                    mInterstitialAd = null;
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onAdImpression() {
+                                }
+
+                                @Override
+                                public void onAdShowedFullScreenContent() {
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            mInterstitialAd = null;
+                            startActivity(intent);
+                        }
+                    });
+        }else{
+            startActivity(intent);
         }
     }
 
@@ -184,7 +243,8 @@ public class ListActivity extends BaseActivity implements Constants, ListContrac
         intent.putExtra(LIST_ITEM_ID, listModel.getId());
         intent.putExtra(LIST_SERVER_ID, listModel.getServerId());
         intent.putExtra(LIST_NAME, listModel.getName());
-        startActivity(intent);
+
+        showAdFullScreenBanner(intent);
     }
 
     @Override

@@ -79,11 +79,7 @@ public class ListPresenter extends BasePresenter<ListActivity> implements ListRe
     }
 
     public void clickShowCreateFragment() {
-        if(!repository.isLogged() && adapter.getItemCount()>=MAX_QUANTITY_WITHOUT_REG){
-            view.showToast(R.string.text_error_max_quantity);
-        }else {
-            view.showCreateFragment();
-        }
+        view.showCreateFragment();
     }
 
     public void selectRemoveList() {

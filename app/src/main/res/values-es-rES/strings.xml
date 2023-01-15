@@ -96,6 +96,7 @@
     <string name="error_for_pay_subscr">El pago de la suscripción falló, ¡inténtalo de nuevo más tarde!</string>
     <string name="payed_success">¡El pago fue exitoso! ¡Gracias por suscribirse!</string>
     <string name="pro_cancel">Cancelar suscripción</string>
+    <string name="text_item_remove">Borrar</string>
 
 
 </resources>

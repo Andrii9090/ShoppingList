@@ -97,4 +97,5 @@
     <string name="payed_success">Payment was successful! Thank you for subscribing!</string>
     <string name="pro_cancel">Cancel Subscription</string>
     <string name="google_api_key" translatable="false">AIzaSyDLMdNHGrjdaRn3psCITZjT1vrS-wJlA88</string>
+    <string name="text_item_remove">Remove</string>
 </resources>

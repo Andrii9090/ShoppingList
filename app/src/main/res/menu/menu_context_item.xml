@@ -9,6 +9,6 @@
     <item android:id="@+id/menu_context_item_edit"
         android:title="@string/text_edit"/>
     <item android:id="@+id/menu_context_item_remove"
-        android:title="@string/text_remove"/>
+        android:title="@string/text_item_remove"/>
 
 </menu>

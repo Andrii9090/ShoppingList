@@ -24,7 +24,6 @@ public interface Constants {
     String EMAIL = "email";
     String DEVICE_ID = "device_id";
     int THEME_DEFAULT = R.style.Theme_FamilyFinance;
-    int MAX_QUANTITY_WITHOUT_REG = 3;
     String FMC_TOKEN = "fmc_token";
     String UUID = "uuid";
     String IS_SHOW_INFO_ADD_LIST = "is_show_add_list";

@@ -6,8 +6,6 @@ import com.kasandco.shoplist.app.item.ItemComponent;
 import com.kasandco.shoplist.app.item.ItemModule;
 import com.kasandco.shoplist.app.list.ListActivityComponent;
 import com.kasandco.shoplist.app.list.ListModule;
-import com.kasandco.shoplist.app.pro.ProComponent;
-import com.kasandco.shoplist.app.pro.ProModule;
 import com.kasandco.shoplist.app.settings.SettingsComponent;
 import com.kasandco.shoplist.app.settings.SettingsModule;
 import com.kasandco.shoplist.app.splash.SplashComponent;
@@ -34,5 +32,4 @@ public interface AppComponent {
     UserSettingsComponent plus(UserSettingsModule module);
     SettingsComponent plus(SettingsModule module);
     ComponentUserGroup plus(ModuleUserGroup module);
-    ProComponent plus(ProModule module);
 }

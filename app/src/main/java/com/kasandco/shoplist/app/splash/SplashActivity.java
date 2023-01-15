@@ -1,6 +1,5 @@
 package com.kasandco.shoplist.app.splash;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.Animator;
@@ -12,13 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.ImageView;
 
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.kasandco.shoplist.App;
 import com.kasandco.shoplist.R;
 import com.kasandco.shoplist.app.settings.SettingsActivity;
@@ -42,7 +35,6 @@ public class SplashActivity extends AppCompatActivity implements Constants {
     @Inject
     SharedPreferenceUtil sharedPreferenceUtil;
     ImageView logo;
-    private InterstitialAd mInterstitialAd;
 
 
     @Override
@@ -70,58 +62,9 @@ public class SplashActivity extends AppCompatActivity implements Constants {
                 }
             }
         }).start();
-        showAdd();
+        startMainActivity();
     }
 
-    private void showAdd() {
-        if(!sharedPreferenceUtil.isPro()) {
-            MobileAds.initialize(this, initializationStatus -> {});
-            AdRequest adRequest = new AdRequest.Builder().build();
-            InterstitialAd.load(this,"ca-app-pub-2199413045845818/9300584376", adRequest,
-                    new InterstitialAdLoadCallback() {
-                        @Override
-                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                            mInterstitialAd = interstitialAd;
-                            mInterstitialAd.show(SplashActivity.this);
-                            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-                                @Override
-                                public void onAdClicked() {
-                                    startMainActivity();
-                                }
-
-                                @Override
-                                public void onAdDismissedFullScreenContent() {
-                                    mInterstitialAd = null;
-                                    startMainActivity();
-                                }
-
-                                @Override
-                                public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                    mInterstitialAd = null;
-                                    startMainActivity();
-                                }
-
-                                @Override
-                                public void onAdImpression() {
-                                }
-
-                                @Override
-                                public void onAdShowedFullScreenContent() {
-                                }
-                            });
-
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                            mInterstitialAd = null;
-                            startMainActivity();
-                        }
-                    });
-        }else{
-            startMainActivity();
-        }
-    }
 
     private void startMainActivity() {
         Intent intent;
