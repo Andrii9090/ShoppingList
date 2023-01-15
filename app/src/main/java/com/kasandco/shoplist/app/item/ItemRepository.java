@@ -165,9 +165,9 @@ public class ItemRepository extends BaseRepository {
     }
 
     public void getAll(long listId, long serverListId, ItemRepositoryCallback callback) {
+        this.callback = callback;
         sync(listId);
         this.serverListId = serverListId;
-        this.callback = callback;
         disposable.add(itemDao.getAllItems(listId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -176,6 +176,7 @@ public class ItemRepository extends BaseRepository {
 
     public void sync(long listId) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            this.callback.showLoading();
             new Thread(() -> {
                 List<ItemSyncHistoryModel> syncHistory = itemSyncDao.getAll(serverListId);
 
@@ -228,16 +229,19 @@ public class ItemRepository extends BaseRepository {
 
                                 }).start();
                             }
+                            callback.hideLoading();
                         }
                     }
 
                     @Override
                     public void error() {
+                        callback.hideLoading();
                         callback.error();
                     }
 
                     @Override
                     public void noPermit() {
+                        callback.hideLoading();
                         if (callback != null) {
                             callback.noPerm();
                         }
@@ -383,5 +387,9 @@ public class ItemRepository extends BaseRepository {
         void noPerm();
 
         void error();
+
+        void showLoading();
+
+        void hideLoading();
     }
 }

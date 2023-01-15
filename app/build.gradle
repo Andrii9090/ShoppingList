@@ -13,8 +13,8 @@ android {
         applicationId "com.kasandco.shoplist"
         minSdk 21
         targetSdk 32
-        versionCode 22
-        versionName "1.2.8"
+        versionCode 26
+        versionName "1.2.9"
         multiDexEnabled true
         buildConfigField "String", "ADD_MOB", "\"$ADD_MOB\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

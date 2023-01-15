@@ -12,4 +12,6 @@ public interface UserSettingsView {
     void copyToClipBoard(String uid);
 
     void showDialog();
+
+    void googleLogout();
 }

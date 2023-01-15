@@ -40,9 +40,13 @@ public class SharedPreferenceUtil {
     }
 
     public void logout() {
-        getEditor().putString(Constants.EMAIL, null).apply();
-        getEditor().putString(Constants.TOKEN, null).apply();
-        getEditor().putString(Constants.UUID, null).apply();
+        getEditor().putString(Constants.EMAIL, null).commit();
+        getEditor().putString(Constants.TOKEN, null).commit();
+        getEditor().putString(Constants.UUID, null).commit();
+        getEditor().putString(Constants.FMC_TOKEN, null).commit();
+        getEditor().putString(Constants.USER_NAME, null).commit();
+        getEditor().putString(Constants.IS_PRO, null).commit();
+        getEditor().putString(Constants.SUBSCR_TOKEN, null).commit();
     }
 
     public void setIsPro(boolean isPro) {

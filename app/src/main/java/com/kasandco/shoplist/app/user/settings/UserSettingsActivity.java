@@ -122,13 +122,12 @@ public class UserSettingsActivity extends BaseActivity implements UserSettingsVi
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.logout) {
-            googleLogout();
             presenter.clickLogOut();
         }
         return true;
     }
 
-    private void googleLogout() {
+    public void googleLogout() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 status -> startListActivity());
     }

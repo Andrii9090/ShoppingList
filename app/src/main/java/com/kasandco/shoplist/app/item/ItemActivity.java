@@ -94,6 +94,7 @@ public class ItemActivity extends BaseActivity implements ItemAdapter.ShowZoomIm
         } else {
             showAdd();
         }
+        showLoading();
     }
 
     private void showAdd() {

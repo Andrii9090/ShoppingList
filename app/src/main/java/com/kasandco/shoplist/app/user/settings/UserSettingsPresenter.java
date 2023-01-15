@@ -7,12 +7,10 @@ import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 import javax.inject.Inject;
 
 public class UserSettingsPresenter extends BasePresenter<UserSettingsView> implements UserSettingsRepository.UserSettingsRepositoryCallback {
-    private SharedPreferenceUtil sharedPreference;
     private UserSettingsRepository repository;
 
     @Inject
-    public UserSettingsPresenter(UserSettingsRepository _repository, SharedPreferenceUtil sharedPreferenceUtil) {
-        sharedPreference = sharedPreferenceUtil;
+    public UserSettingsPresenter(UserSettingsRepository _repository) {
         repository = _repository;
     }
 
@@ -37,8 +35,8 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> imple
 
     @Override
     public void dataCleared() {
+        view.googleLogout();
         view.hideLoader();
-        view.startListActivity();
     }
 
     @Override
