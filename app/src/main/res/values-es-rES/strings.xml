@@ -3,8 +3,8 @@
     <string name="text_empty">No hay listas</string>
     <string name="text_clear_empty">Borar inactivos</string>
     <string name="text_edit">Editar</string>
-    <string name="text_clear_all">Borar todo</string>
-    <string name="text_remove">Borar la lista</string>
+    <string name="text_clear_all">Borrar todo</string>
+    <string name="text_remove">Borrar la lista</string>
     <string name="text_error">Error</string>
     <string name="text_new_list">Crear</string>
     <string name="text_create_list_item">Nombre de la lista</string>
@@ -39,7 +39,7 @@
     <string name="text_send_list">Enviar la lista…</string>
     <string name="text_header_msg">La lista:</string>
     <string name="text_footer_msg">Ha creado con app %s</string>
-    <string name="delete_dialog">¿Borar?</string>
+    <string name="delete_dialog">¿Borrar?</string>
     <string name="text_positive_btn">Si</string>
     <string name="text_negative_btn">No</string>
     <string name="login_registrations">Usuario</string>
