@@ -166,17 +166,21 @@ public class ItemRepository extends BaseRepository {
 
     public void getAll(long listId, long serverListId, ItemRepositoryCallback callback) {
         this.callback = callback;
-        sync(listId);
+        if (isLogged && isNetworkConnect.isInternetAvailable()) {
+            sync(listId);
+        } else {
+            callback.hideLoading();
+        }
         this.serverListId = serverListId;
         disposable.add(itemDao.getAllItems(listId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::setItems, error -> Log.e("Error", error.toString())));
+
     }
 
     public void sync(long listId) {
         if (isLogged && isNetworkConnect.isInternetAvailable()) {
-            this.callback.showLoading();
             new Thread(() -> {
                 List<ItemSyncHistoryModel> syncHistory = itemSyncDao.getAll(serverListId);
 
@@ -229,8 +233,9 @@ public class ItemRepository extends BaseRepository {
 
                                 }).start();
                             }
-                            callback.hideLoading();
                         }
+                        callback.hideLoading();
+
                     }
 
                     @Override

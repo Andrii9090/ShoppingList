@@ -56,9 +56,7 @@ public class ItemPresenter extends BasePresenter<ItemContract> implements ItemRe
     public void setItems(List<ItemModel> list) {
         items = new ArrayList<>();
         items.addAll(list);
-        view.hideLoading();
         adapter.updateList(list);
-        view.hideLoading();
         setEmptyText();
     }
 

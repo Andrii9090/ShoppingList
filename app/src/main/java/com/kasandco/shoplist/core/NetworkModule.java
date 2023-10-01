@@ -6,6 +6,7 @@ import com.kasandco.shoplist.utils.NetworkConnect;
 import com.kasandco.shoplist.utils.SharedPreferenceUtil;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -45,7 +46,12 @@ public class NetworkModule implements Constants {
                     .build();
             return chain.proceed(newRequest);
         };
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        OkHttpClient.Builder client = new OkHttpClient
+                .Builder()
+                .connectTimeout(1, TimeUnit.MINUTES) // connect timeout
+                .writeTimeout(1, TimeUnit.MINUTES) // write timeout
+                .readTimeout(1, TimeUnit.MINUTES) // read timeout
+        ;
         if(sharedPreference.getSharedPreferences().getString(Constants.TOKEN, null)!=null){
             client.addInterceptor(interceptor1);
         }

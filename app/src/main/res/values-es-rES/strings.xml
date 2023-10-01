@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Listera</string>
     <string name="text_empty">No hay listas</string>
-    <string name="text_clear_empty">Borar inactivos</string>
+    <string name="text_clear_empty">Borrar inactivos</string>
     <string name="text_edit">Editar</string>
     <string name="text_clear_all">Borrar todo</string>
     <string name="text_remove">Borrar la lista</string>
@@ -42,12 +42,12 @@
     <string name="delete_dialog">¿Borrar?</string>
     <string name="text_positive_btn">Si</string>
     <string name="text_negative_btn">No</string>
-    <string name="login_registrations">Usuario</string>
+    <string name="login_registrations">Login</string>
     <string name="login_btn">Entrada</string>
     <string name="subject_review_email">Comentarios y sugerencias</string>
     <string name="select_mail_app">Send Email</string>
-    <string name="settings_user">Mi usuario</string>
-    <string name="user_settings_title">Usuario</string>
+    <string name="settings_user">Mi perfil</string>
+    <string name="user_settings_title">Perfil</string>
     <string name="logout">Salir</string>
     <string name="title_share_dialog">Compartir lista</string>
     <string name="text_error_connect_to_internet">Comprobar las conexiones a Internet</string>
